@@ -1,12 +1,9 @@
 package vehicleType;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeoutException;
 
 /**
  * This is a single run-time class that creates a vehicle type for the OBD2 for the simulations to run and
@@ -89,7 +86,7 @@ public class PopulateOBD2VehicleType {
 
         // Engine RPM Field
         attributes.add(new VehicleAttribute(
-                "EngingRPM",
+                "EngineRPM",
                 "NUMBER",
                 "urn:com:oracle:iot:device:obd2",
                 false,
@@ -200,6 +197,10 @@ public class PopulateOBD2VehicleType {
         return attributes;
     }
 
+    public void setType(VehicleType type) {
+        this.type = type;
+    }
+
     public VehicleType getType() {
         return type;
     }
@@ -207,6 +208,8 @@ public class PopulateOBD2VehicleType {
     public ArrayList<VehicleAttribute> getOBD2Attributes() { return type.getAttributes(); }
 
     public VehicleType sendQuery() {
-        return client.create(type);
+        VehicleType response = client.create(type);
+        type.setId(response.getId());
+        return response;
     }
 }

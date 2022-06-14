@@ -22,14 +22,10 @@ public class UserAPIClient extends APIClient {
         User response = null;
 
         try {
-            String header = POJOtoJson(user);
-            System.out.println(header);
-            String json = AsyncPOST(baseUrl + "/iot/privateclientapi/v2/users", authHeader, header);
-            System.out.println(json);
+            String json = AsyncPOST(baseUrl + "/iot/privateclientapi/v2/users", authHeader, POJOToJson(user));
             response = ParseJson.deserializeResponse(json, User.class);
         } catch (Exception e) {
-            e.printStackTrace();
-            // LOGGER.warning("Exception @UserAPIClient: " + e);
+             LOGGER.warning("Exception @UserAPIClient: " + e);
         }
 
         return response;

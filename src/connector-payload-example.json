@@ -3,7 +3,7 @@
   "deviceDescription": "Follows OBD2 device model",
   "deviceType": "OBD2 Modular Vehicle sensor",
   "deviceIdentifier": "obd2-sensor-4a6caf83-dade-438a-8195-f3cb836112a0",
-  "measurementTime": "2022-06-13T21:45:00.844Z",
+  "measurementTime": "2022-06-14T21:45:00.844Z",
   "data": {
     "latitude": 12.972442,
     "longitude": 77.580643,
@@ -12,7 +12,7 @@
     "number_of_dtcs": 2,
     "engine_coolant_temperature": 26.8,
     "true_odometer": 381,
-    "throttle_position": 13,
+    "throttle_position": 4.1,
     "total_fuel_used": 147,
     "runtime_since_engine_start": 1234,
     "mass_air_flow": 187,

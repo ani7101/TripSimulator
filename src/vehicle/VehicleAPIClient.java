@@ -1,7 +1,6 @@
 package vehicle;
 
 import utils.APIClient;
-import utils.IotDeserializerList;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Logger;
 
-// FIXME: 09/06/2022 Implement custom parsers for the metrics and the OBD2 parameters queries
 public class VehicleAPIClient extends APIClient {
     private String authHeader;
 
@@ -102,11 +100,14 @@ public class VehicleAPIClient extends APIClient {
         Vehicle response = null;
 
         try {
-            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader, POJOtoJson(vehicle));
-
+            String form = POJOToJson(vehicle);
+            System.out.println(form);
+            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader, form);
+            System.out.println(json);
             response = ParseJson.deserializeResponse(json, Vehicle.class);
         } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+            e.printStackTrace();
+//            LOGGER.warning("Exception @VehicleAPIClient: " + e);
         }
         return response;
     }
@@ -130,7 +131,7 @@ public class VehicleAPIClient extends APIClient {
         Vehicle response = null;
 
         try {
-            String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId, authHeader, POJOtoJson(updatedVehicle));
+            String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId, authHeader, POJOToJson(updatedVehicle));
 
             response = ParseJson.deserializeResponse(json, Vehicle.class);
         } catch (Exception e) {

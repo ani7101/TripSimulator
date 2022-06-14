@@ -1,4 +1,4 @@
-package connector;
+package device;
 
 import java.util.Random;
 
@@ -9,7 +9,7 @@ public class GeneratePayload {
     public int minEngineRPM = 1000;
     public int maxEngineRPM = 8000;
 
-    public double minCoolantTemp = 30; // In celcius
+    public double minCoolantTemp = 30; // In celsius
     public double maxCoolantTemp = 45;
 
     public int minMassAirFlow = 90;
@@ -53,7 +53,7 @@ public class GeneratePayload {
 
     public boolean isDTCFixed(int distanceTravelled) {
         // We can use (1 - negative exponential function) with a constant to check the probability that the DTC is resolved on that day
-        // Although this is hard, it's quite hard to compute and considering its done at every iteration, its quite a bad thing
+        // Although this is hard, it's quite hard to compute and considering it's done at every iteration, it's quite a bad thing
         return true;
     }
 

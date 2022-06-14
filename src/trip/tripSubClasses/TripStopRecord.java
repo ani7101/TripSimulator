@@ -74,6 +74,12 @@ public class TripStopRecord {
         }
     }
 
+    public TripStopRecord(double latitude, double longitude) {
+        geoLocation = new ArrayList<Double>();
+        geoLocation.add(latitude);  // At index 0
+        geoLocation.add(longitude); // At index 1
+    }
+
     public TripStopRecord(ArrayList<Double> geoLocation) {
         this.geoLocation = geoLocation;
     }

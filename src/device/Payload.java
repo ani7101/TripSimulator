@@ -1,10 +1,7 @@
-package connector;
+package device;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import utils.DateTimeFormatter;
-
-import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Payload {
@@ -25,10 +22,10 @@ public class Payload {
     private String deviceName;
 
     @JsonProperty(DEVICE_DESCRIPTION)
-    private String deviceDescription;
+    private String deviceDescription = "Trip simulator following OBD2 device model";
 
     @JsonProperty(DEVICE_TYPE)
-    private String deviceType;
+    private String deviceType = "OBD2 Modular Vehicle sensor";
 
     @JsonProperty(DEVICE_IDENTIFIER)
     private String deviceIdentifier;
@@ -75,16 +72,8 @@ public class Payload {
         return measurementTime;
     }
 
-    public LocalDateTime getMeasurementTimeInLocalDateTime() {
-        return DateTimeFormatter.iso8601ToLocalDateTime(measurementTime);
-    }
-
     public void setMeasurementTime(String measurementTime) {
         this.measurementTime = measurementTime;
-    }
-
-    public void setMeasurementTime(LocalDateTime measurementTime) {
-        this.measurementTime = DateTimeFormatter.localDateTimeToIso8601(measurementTime);
     }
 
     public PayloadData getData() {

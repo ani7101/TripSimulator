@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IotDeserializerList {
+public class IoTDeserializerList {
 
     public static final String LINKS = "links";
 

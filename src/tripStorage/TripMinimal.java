@@ -1,10 +1,9 @@
 package tripStorage;
 
-import connector.Payload;
+import device.Payload;
 import utils.Generator;
 import utils.PolylineEncoderDecoder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,15 +56,10 @@ public class TripMinimal {
 
     public void createPayload() {
         String deviceName = "simulator-vehicle-" + vehicleName + "-sensor";
-        String deviceDescription = "Trip simulator following OBD2 device model";
-        String deviceType = "OBD2 Modular Vehicle sensor";
         String deviceIdentifier = "obd2-sensor" + Generator.generateRandomUUID();
 
         payload.setDeviceName(deviceName);
-        payload.setDeviceDescription(deviceDescription);
-        payload.setDeviceType(deviceType);
         payload.setDeviceIdentifier(deviceIdentifier);
-        payload.setMeasurementTime(LocalDateTime.now()); // Dummy value
+        payload.setMeasurementTime(""); // Need to fix formatter
     }
-
 }

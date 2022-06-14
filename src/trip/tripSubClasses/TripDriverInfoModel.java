@@ -31,6 +31,11 @@ public class TripDriverInfoModel {
         this.loginId = loginId;
         this.name = name;
     }
+
+    public TripDriverInfoModel(String loginId) {
+        this.loginId = loginId;
+    }
+
     public TripDriverInfoModel() {}
 
     // Getters

@@ -54,6 +54,7 @@ public class User {
         phoneNumbers = new ArrayList<>();
         roles = new ArrayList<>();
         addDriverRole();
+        addToDefaultOrganization();
     }
 
     public User(String name,
@@ -73,6 +74,8 @@ public class User {
     public String getId() {
         return id;
     }
+
+    public void setId(String id) { this.id = id; }
 
     public String getName() {
         return name;
@@ -132,5 +135,40 @@ public class User {
         if (!roles.contains("IoTDriver")) {
             roles.add("IoTDriver");
         }
+    }
+
+    public void addToOrganization(String organizationId) {
+
+        boolean inOrganization = false;
+        String temp = null;
+
+        for (String role : roles) {
+            if(role.contains("IoTOrganization$")) {
+                inOrganization = true;
+                temp = role;
+                break;
+            }
+        }
+        if (inOrganization) {
+            roles.remove(temp);
+        }
+        roles.add("IoTOrganization$" + organizationId);
+    }
+
+    public void addToDefaultOrganization() {
+        boolean inOrganization = false;
+        String temp = null;
+
+        for (String role : roles) {
+            if(role.contains("IoTOrganization$")) {
+                inOrganization = true;
+                temp = role;
+                break;
+            }
+        }
+        if (inOrganization) {
+            roles.remove(temp);
+        }
+        roles.add("IoTOrganization$ORA_DEFAULT_ORG");
     }
 }

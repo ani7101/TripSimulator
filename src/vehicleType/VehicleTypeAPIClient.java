@@ -1,8 +1,6 @@
 package vehicleType;
 
-import trip.TripList;
 import utils.APIClient;
-import utils.IotDeserializerList;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -90,10 +88,11 @@ public class VehicleTypeAPIClient extends APIClient {
         VehicleType response = null;
 
         try {
-            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/", authHeader, POJOtoJson(type));
+            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/", authHeader, POJOToJson(type));
             response = ParseJson.deserializeResponse(json, VehicleType.class);
         } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleTypeAPIClient: " + e);
+            e.printStackTrace();
+//            LOGGER.warning("Exception @VehicleTypeAPIClient: " + e);
         }
 
         return response;
@@ -117,7 +116,7 @@ public class VehicleTypeAPIClient extends APIClient {
         VehicleType response = null;
 
         try {
-            String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/" + typeId, authHeader, POJOtoJson(type));
+            String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/" + typeId, authHeader, POJOToJson(type));
             response = ParseJson.deserializeResponse(json, VehicleType.class);
         } catch (Exception e) {
             LOGGER.warning("Exception @VehicleTypeAPIClient: " + e);

@@ -1,6 +1,5 @@
 package tests;
 
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import user.*;
@@ -11,7 +10,8 @@ public class TestUser {
     private UserAPIClient client;
     private PopulateUser user;
 
-    @BeforeTest
+    @Test(priority = 1)
+    @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new UserAPIClient(baseUrl, username, password);
         user = new PopulateUser(baseUrl, username, password);

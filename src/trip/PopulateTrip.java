@@ -8,6 +8,7 @@ import trip.tripSubClasses.TripVehicleInfoModel;
 import user.PopulateUser;
 import utils.*;
 import vehicle.PopulateVehicle;
+import vehicleType.PopulateOBD2VehicleType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class PopulateTrip {
 
     private PopulateUser populateUser;
 
+    private PopulateOBD2VehicleType populateType;
+
 
     public PopulateTrip(String baseUrl, String username, String password,
                         Trip trip) {
@@ -45,7 +48,7 @@ public class PopulateTrip {
     public PopulateTrip(String baseUrl, String username, String password,
                         TripRepository repository,
                         String vehicleName,
-                        String driverLoginId, String driverName) {
+                        String driverLoginId) {
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
         hereAPIClient = new HEREMapsAPIClient();
@@ -67,7 +70,7 @@ public class PopulateTrip {
                 destination,
                 stops,
                 new TripVehicleInfoModel(vehicleName),
-                new TripDriverInfoModel(driverLoginId, driverName)
+                new TripDriverInfoModel(driverLoginId)
         );
 
         trip.setName("Trip simulator-" + Generator.generateRandomUUID());
@@ -151,6 +154,51 @@ public class PopulateTrip {
                 destination,
                 stops,
                 new TripVehicleInfoModel(populateVehicle.getVehicle().getName()),
+                new TripDriverInfoModel(populateUser.getUser().getName()));
+
+        trip.setName("Trip simulator-" + Generator.generateRandomUUID());
+
+        ArrayList<HEREMapsRouteSection> route = getRoute(source.getGeoLocation(), destination.getGeoLocation(), stopsLocation);
+
+
+        List<Long> hereResponse = parseHEREMapsSummary(route);
+        ArrayList<String> polyline = parseHEREMapsPolyline(route);
+
+        trip.setRoute(polyline);
+        trip.setPlannedDriveDistance(hereResponse.get(1));
+        trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
+    }
+
+    public PopulateTrip(String baseUrl, String username, String password,
+                        TripRepository repository) {
+
+        // populate argument is a dummy to distinguish it from the vehicleName variant
+
+        tripAPIClient = new TripAPIClient(baseUrl, username, password);
+        populateType = new PopulateOBD2VehicleType(baseUrl, username, password);
+        populateVehicle = new PopulateVehicle(baseUrl, username, password, populateType.getType().getId());
+        populateUser = new PopulateUser(baseUrl, username, password);
+
+        hereAPIClient = new HEREMapsAPIClient();
+
+        this.repository = repository;
+
+        // Generating the source, destination and stops
+        TripStopRecord source = new TripStopRecord(repository.getRandomSource());
+        TripStopRecord destination = new TripStopRecord(repository.getRandomDestination());
+
+        ArrayList<TripStopRecord> stops = new ArrayList<>();
+        ArrayList<ArrayList<Double>> stopsLocation = repository.getRandomStop(2);
+
+        for (ArrayList<Double> stop : stopsLocation) {
+            stops.add(new TripStopRecord(stop));
+        }
+
+        trip = new Trip(
+                source,
+                destination,
+                stops,
+                new TripVehicleInfoModel(populateVehicle.getVehicle().getName()),
                 new TripDriverInfoModel(populateUser.getUser().getId(), populateUser.getUser().getName()));
 
         trip.setName("Trip simulator-" + Generator.generateRandomUUID());
@@ -167,11 +215,20 @@ public class PopulateTrip {
     }
 
     public Trip sendQuery() {
-        return tripAPIClient.create(trip);
+        populateUser.sendQuery();
+        populateVehicle.sendQuery();
+        Trip response = tripAPIClient.create(trip);
+        trip.setId(response.getId());
+
+        return response;
     }
 
     public Trip getTrip() {
         return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     // Utils

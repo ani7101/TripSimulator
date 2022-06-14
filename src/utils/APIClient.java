@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,7 @@ public class APIClient {
                 .build();
 
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        return response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
+        return response.thenApply(HttpResponse::body).get(10, TimeUnit.SECONDS);
     }
 
     /**
@@ -82,7 +83,7 @@ public class APIClient {
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
 
-    public <T> String POJOtoJson(T data) throws JsonProcessingException {
+    public <T> String POJOToJson(T data) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();

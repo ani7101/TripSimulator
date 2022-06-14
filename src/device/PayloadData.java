@@ -1,4 +1,4 @@
-package connector;
+package device;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,7 +32,6 @@ public class PayloadData {
 
     public static final String DISTANCE_SINCE_DTCS_CLEARED = "distance_since_dtcs_cleared";
 
-
     @JsonProperty(LATITUDE)
     private double latitude;
 
@@ -40,10 +39,10 @@ public class PayloadData {
     private double longitude;
 
     @JsonProperty(VEHICLE_SPEED)
-    private double vehicleSpeed;
+    private int vehicleSpeed;
 
     @JsonProperty(ENGINE_RPM)
-    private double engineRPM;
+    private int engineRPM;
 
     @JsonProperty(NUMBER_OF_DTCS)
     private double numberOfDTCs;
@@ -52,16 +51,16 @@ public class PayloadData {
     private double engineCoolantTemperature;
 
     @JsonProperty(TRUE_ODOMETER)
-    private double trueOdometer;
+    private int trueOdometer;
 
     @JsonProperty(THROTTLE_POSITION)
     private double throttlePosition;
 
     @JsonProperty(TOTAL_FUEL_USED)
-    private double totalFuelUsed;
+    private int totalFuelUsed;
 
     @JsonProperty(RUNTIME_SINCE_ENGINE_START)
-    private double runtimeSinceEngineStart;
+    private long runtimeSinceEngineStart;
 
     @JsonProperty(MASS_AIR_FLOW)
     private double massAirFlow;
@@ -70,7 +69,25 @@ public class PayloadData {
     private double averageFuelEconomy;
 
     @JsonProperty(DISTANCE_SINCE_DTCS_CLEARED)
-    private double distanceSinceDTCsCleared;
+    private int distanceSinceDTCsCleared;
+
+    public PayloadData(double latitude, double longitude, int vehicleSpeed, int engineRPM, double numberOfDTCs, double engineCoolantTemperature, int trueOdometer, double throttlePosition, int totalFuelUsed, long runtimeSinceEngineStart, double massAirFlow, double averageFuelEconomy, int distanceSinceDTCsCleared) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.vehicleSpeed = vehicleSpeed;
+        this.engineRPM = engineRPM;
+        this.numberOfDTCs = numberOfDTCs;
+        this.engineCoolantTemperature = engineCoolantTemperature;
+        this.trueOdometer = trueOdometer;
+        this.throttlePosition = throttlePosition;
+        this.totalFuelUsed = totalFuelUsed;
+        this.runtimeSinceEngineStart = runtimeSinceEngineStart;
+        this.massAirFlow = massAirFlow;
+        this.averageFuelEconomy = averageFuelEconomy;
+        this.distanceSinceDTCsCleared = distanceSinceDTCsCleared;
+    }
+
+    public PayloadData() {}
 
     public double getLatitude() {
         return latitude;
@@ -88,19 +105,19 @@ public class PayloadData {
         this.longitude = longitude;
     }
 
-    public double getVehicleSpeed() {
+    public int getVehicleSpeed() {
         return vehicleSpeed;
     }
 
-    public void setVehicleSpeed(double vehicleSpeed) {
+    public void setVehicleSpeed(int vehicleSpeed) {
         this.vehicleSpeed = vehicleSpeed;
     }
 
-    public double getEngineRPM() {
+    public int getEngineRPM() {
         return engineRPM;
     }
 
-    public void setEngineRPM(double engineRPM) {
+    public void setEngineRPM(int engineRPM) {
         this.engineRPM = engineRPM;
     }
 
@@ -120,11 +137,11 @@ public class PayloadData {
         this.engineCoolantTemperature = engineCoolantTemperature;
     }
 
-    public double getTrueOdometer() {
+    public int getTrueOdometer() {
         return trueOdometer;
     }
 
-    public void setTrueOdometer(double trueOdometer) {
+    public void setTrueOdometer(int trueOdometer) {
         this.trueOdometer = trueOdometer;
     }
 
@@ -136,19 +153,19 @@ public class PayloadData {
         this.throttlePosition = throttlePosition;
     }
 
-    public double getTotalFuelUsed() {
+    public int getTotalFuelUsed() {
         return totalFuelUsed;
     }
 
-    public void setTotalFuelUsed(double totalFuelUsed) {
+    public void setTotalFuelUsed(int totalFuelUsed) {
         this.totalFuelUsed = totalFuelUsed;
     }
 
-    public double getRuntimeSinceEngineStart() {
+    public long getRuntimeSinceEngineStart() {
         return runtimeSinceEngineStart;
     }
 
-    public void setRuntimeSinceEngineStart(double runtimeSinceEngineStart) {
+    public void setRuntimeSinceEngineStart(long runtimeSinceEngineStart) {
         this.runtimeSinceEngineStart = runtimeSinceEngineStart;
     }
 
@@ -168,11 +185,11 @@ public class PayloadData {
         this.averageFuelEconomy = averageFuelEconomy;
     }
 
-    public double getDistanceSinceDTCsCleared() {
+    public int getDistanceSinceDTCsCleared() {
         return distanceSinceDTCsCleared;
     }
 
-    public void setDistanceSinceDTCsCleared(double distanceSinceDTCsCleared) {
+    public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
         this.distanceSinceDTCsCleared = distanceSinceDTCsCleared;
     }
 }

@@ -13,17 +13,19 @@ public class TestTrip {
 
     private PopulateTrip trip;
 
-    @BeforeTest()
-    public void setupTestRepository() {
-        repository = new TripRepository();
-        // Need to fill the trip repository
-    }
+//    @BeforeTest()
+//    public void setupTestRepository() {
+//        repository = new TripRepository();
+//        // Need to fill the trip repository
+//    }
 
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password", "vehicleType"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password, String vehicleType) {
         client = new TripAPIClient(baseUrl, username, password);
+
+        repository = new TripRepository();
 
         trip = new PopulateTrip(baseUrl, username, password, repository, vehicleType, true);
     }

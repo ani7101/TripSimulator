@@ -12,9 +12,12 @@
     <test name="IotAPI">
         <classes>
             <class name="tests.TestVehicleTypes"></class>
-            <class name="tests.TestVehicles"></class>
+            <!--            Yet to integrate device with device-->
+            <!--            <class name="tests.TestVehicles"></class>-->
             <class name="tests.TestUser"></class>
-            <class name="tests.TestTrip"/>
+            <class name="tests.testOrganization"></class>
+<!--            Need to fix the proxy and debug with HEREmaps & Iot server-->
+<!--            <class name="tests.TestTrip"/>-->
         </classes>
 
     </test>

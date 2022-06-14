@@ -1,4 +1,4 @@
-package connector;
+package device;
 
 import utils.APIClient;
 
@@ -20,11 +20,11 @@ public class ConnectorAPIClient extends APIClient {
         String response = null;
 
         try {
-            response = AsyncPOST(connectorUrl, authHeader, POJOtoJson(payload));
+            response = AsyncPOST(connectorUrl, authHeader, POJOToJson(payload));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warning("Exception @ConnectorAPIClient: " + e);
         }
 
-        return response;
+        return response; // Should report `Request accepted` if it's a valid call
     }
 }
