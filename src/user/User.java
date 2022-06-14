@@ -1,10 +1,11 @@
-package Driver;
+package user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
+// FIXME: 13/06/2022 Buggy on the tests
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     public static final String ID = "id";
@@ -48,7 +49,11 @@ public class User {
         this.name = name;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phoneNumbers = new ArrayList<>();
+
+        emailAddresses = new ArrayList<>();
+        phoneNumbers = new ArrayList<>();
+        roles = new ArrayList<>();
+        addDriverRole();
     }
 
     public User(String name,
@@ -58,7 +63,9 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.roles = roles;
-        this.phoneNumbers = new ArrayList<>();
+
+        emailAddresses = new ArrayList<>();
+        phoneNumbers = new ArrayList<>();
     }
 
     public User() {}
@@ -94,6 +101,8 @@ public class User {
     public void setPhoneNumbers(ArrayList<Long> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
+
+    public void addPhoneNumber(long phoneNumber) { this.phoneNumbers.add(phoneNumber); }
 
     public String getFirstName() {
         return firstName;

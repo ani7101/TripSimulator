@@ -11,17 +11,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
-public class HereAPIClient extends APIClient {
+public class HEREMapsAPIClient extends APIClient {
     private String accessToken;
     private LocalDateTime lastGenerated;
 
-    public HereAPIClient(String accessToken) {
-        this.accessToken = accessToken;
-        lastGenerated = LocalDateTime.now();
-    }
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public HereAPIClient() {}
+    public HEREMapsAPIClient() {
+        generateToken();
+    }
 
     public void generateToken() {
         HereAccessTokenProvider accessTokens = HereAccessTokenProvider.builder().build();
@@ -29,14 +29,21 @@ public class HereAPIClient extends APIClient {
         lastGenerated = LocalDateTime.now();
     }
 
-    public String getGeoLocation(double latitude, double longitude) throws ExecutionException, InterruptedException, TimeoutException, IOException {
+    public String getGeoLocation(double latitude, double longitude) {
         if (lastGenerated == null || Duration.between(lastGenerated, LocalDateTime.now()).toHours() > 24) {
             generateToken();
         }
 
         String url = new StringBuilder().append("https://revgeocode.search.hereapi.com/v1/revgeocode?lang=en-US&at=").append(latitude).append(",").append(longitude).toString();
 
-        return AsyncGET(url, "Bearer " + accessToken);
+        String response = null;
+
+        try {
+            response = AsyncGET(url, "Bearer " + accessToken);
+        } catch (Exception e) {
+            LOGGER.warning("Exception @HEREMapsAPIClient: " + e);
+        }
+        return response;
     }
 
 
@@ -44,7 +51,7 @@ public class HereAPIClient extends APIClient {
     public ArrayList<HEREMapsRouteSection> getRoute(double sourceLat, double sourceLong,
                                                     double destinationLat, double destinationLong,
                                                     ArrayList<Double> stopsLat, ArrayList<Double> stopsLong,
-                                                    boolean requirePolyline) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+                                                    boolean requirePolyline) {
         if (lastGenerated == null || Duration.between(lastGenerated, LocalDateTime.now()).toHours() > 24) {
             generateToken();
         }
@@ -62,17 +69,25 @@ public class HereAPIClient extends APIClient {
             urlBuilder.append("&via=%s,%s".formatted(stopsLat.get(i), stopsLong.get(i)));
         }
 
-        String json = AsyncGET(urlBuilder.toString(), "Bearer " + accessToken);
+        ArrayList<HEREMapsRouteSection> response = null;
 
-        HEREMapsRoutes temp = ParseJson.deserializeResponse(json, HEREMapsRoutes.class);
-        return temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
+        try {
+            String json = AsyncGET(urlBuilder.toString(), "Bearer " + accessToken);
+
+            HEREMapsRoutes temp = ParseJson.deserializeResponse(json, HEREMapsRoutes.class);
+            response = temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
+        } catch (Exception e) {
+            LOGGER.warning("Exception @HEREMapsAPIClient: " + e);
+        }
+
+        return response;
     }
 
 
 
     public ArrayList<HEREMapsRouteSection> getRoute(double sourceLat, double sourceLong,
                                                     double destinationLat, double destinationLong,
-                                                    boolean requirePolyline) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+                                                    boolean requirePolyline) {
         if (lastGenerated == null || Duration.between(lastGenerated, LocalDateTime.now()).toHours() > 24) {
             generateToken();
         }
@@ -86,10 +101,18 @@ public class HereAPIClient extends APIClient {
         urlBuilder.append("&origin=%s,%s".formatted(sourceLat, sourceLong));
         urlBuilder.append("&destination=%s,%s".formatted(destinationLat, destinationLong));
 
-        String json = AsyncGET(urlBuilder.toString(), "Bearer " + accessToken);
+        ArrayList<HEREMapsRouteSection> response = null;
 
-        HEREMapsRoutes temp = ParseJson.deserializeResponse(json, HEREMapsRoutes.class);
-        return temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
+        try {
+            String json = AsyncGET(urlBuilder.toString(), "Bearer " + accessToken);
+
+            HEREMapsRoutes temp = ParseJson.deserializeResponse(json, HEREMapsRoutes.class);
+            response = temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
+        } catch (Exception e) {
+            LOGGER.warning("Exception @HEREMapsAPIClient: " + e);
+        }
+
+        return response;
     }
 
     public String getAccessToken() { return accessToken; }

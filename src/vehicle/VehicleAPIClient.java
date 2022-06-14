@@ -27,7 +27,7 @@ public class VehicleAPIClient extends APIClient {
 
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader);
-            list = ParseJson.deserializeIoTResponse(json, new IotDeserializerList<Vehicle>()).getItems();
+            list = ParseJson.deserializeResponse(json, VehicleList.class).getItems();
         } catch (Exception e) {
             LOGGER.warning("Exception @VehicleAPIClient: " + e);
         }

@@ -1,4 +1,4 @@
-package Driver;
+package user;
 
 import utils.Generator;
 
@@ -21,6 +21,9 @@ public class PopulateUser {
 
     public PopulateUser(String baseUrl, String username, String password,
                         ArrayList<String> roles) {
+
+        client = new UserAPIClient(baseUrl, username, password);
+
         String firstName = Generator.generateRandomString(5);
         String lastName = Generator.generateRandomString(5);
 
@@ -44,7 +47,7 @@ public class PopulateUser {
         this(baseUrl, username, password, new ArrayList<>(of("IoTDriver")));
     }
 
-    public User SendQuery() {
+    public User sendQuery() {
         return client.create(user);
     }
 

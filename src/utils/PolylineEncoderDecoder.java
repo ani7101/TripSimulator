@@ -119,15 +119,15 @@ public class PolylineEncoderDecoder {
     private static class Encoder {
 
         private final StringBuilder result;
-        private final Converter latConveter;
-        private final Converter lngConveter;
-        private final Converter zConveter;
+        private final Converter latConverter;
+        private final Converter lngConverter;
+        private final Converter zConverter;
         private final ThirdDimension thirdDimension;
 
         public Encoder(int precision, ThirdDimension thirdDimension, int thirdDimPrecision) {
-            this.latConveter = new Converter(precision);
-            this.lngConveter = new Converter(precision);
-            this.zConveter = new Converter(thirdDimPrecision);
+            this.latConverter = new Converter(precision);
+            this.lngConverter = new Converter(precision);
+            this.zConverter = new Converter(thirdDimPrecision);
             this.thirdDimension = thirdDimension;
             this.result = new StringBuilder();
             encodeHeader(precision, this.thirdDimension.getNum(), thirdDimPrecision);
@@ -154,14 +154,14 @@ public class PolylineEncoderDecoder {
         }
 
         private void add(double lat, double lng) {
-            latConveter.encodeValue(lat, result);
-            lngConveter.encodeValue(lng, result);
+            latConverter.encodeValue(lat, result);
+            lngConverter.encodeValue(lng, result);
         }
 
         private void add(double lat, double lng, double z) {
             add(lat, lng);
             if (this.thirdDimension != ThirdDimension.ABSENT) {
-                zConveter.encodeValue(z, result);
+                zConverter.encodeValue(z, result);
             }
         }
 
@@ -264,7 +264,7 @@ public class PolylineEncoderDecoder {
     }
 
     /*
-     * Stateful instance for encoding and decoding on a sequence of Coordinates part of an request.
+     * Stateful instance for encoding and decoding on a sequence of Coordinates part of a request.
      * Instance should be specific to type of coordinates (e.g. Lat, Lng)
      * so that specific type delta is computed for encoding.
      * Lat0 Lng0 3rd0 (Lat1-Lat0) (Lng1-Lng0) (3rdDim1-3rdDim0)

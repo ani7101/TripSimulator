@@ -1,7 +1,6 @@
 package trip;
 
 import utils.APIClient;
-import utils.IotDeserializerList;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -10,8 +9,8 @@ import java.util.logging.Logger;
 
 
 public class TripAPIClient extends APIClient {
-    private String authHeader;
-    private String baseUrl;
+    private final String authHeader;
+    private final String baseUrl;
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -25,9 +24,9 @@ public class TripAPIClient extends APIClient {
 
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader);
-            list = ParseJson.deserializeIoTResponse(json, new IotDeserializerList<Trip>()).getItems();
+            list = ParseJson.deserializeResponse(json, TripList.class).getItems();
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return list;
@@ -40,7 +39,7 @@ public class TripAPIClient extends APIClient {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/count", authHeader);
             count = ParseJson.deserializeCountResponse(json);
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return count;
@@ -53,7 +52,7 @@ public class TripAPIClient extends APIClient {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/" + tripId, authHeader);
             response = ParseJson.deserializeResponse(json, Trip.class);
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;
@@ -67,7 +66,7 @@ public class TripAPIClient extends APIClient {
             String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, formDataStr);
             response = ParseJson.deserializeResponse(json, Trip.class);
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;
@@ -81,7 +80,7 @@ public class TripAPIClient extends APIClient {
             response = ParseJson.deserializeResponse(json, Trip.class);
 
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;
@@ -97,7 +96,7 @@ public class TripAPIClient extends APIClient {
             response = ParseJson.deserializeResponse(json, Trip.class);
 
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;
@@ -111,7 +110,7 @@ public class TripAPIClient extends APIClient {
             response = ParseJson.deserializeResponse(json, Trip.class);
 
         } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClint: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;

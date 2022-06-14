@@ -7,26 +7,7 @@ import java.util.ArrayList;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IotDeserializerList <T> {
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    class Links {
-        public static final String HREF = "href";
-
-        public static final String REL = "rel";
-
-        @JsonProperty(HREF)
-        private String href;
-
-        @JsonProperty(REL)
-        private String rel;
-
-        public String getHref() { return href; }
-
-        public String getRel() { return rel; }
-    }
-
-    public static final String ITEMS = "items";
+public class IotDeserializerList {
 
     public static final String LINKS = "links";
 
@@ -38,27 +19,22 @@ public class IotDeserializerList <T> {
 
     public static final String HAS_MORE = "hasMore";
 
-    @JsonProperty(ITEMS)
-    private ArrayList<T> items;
-
     @JsonProperty(LINKS)
-    private ArrayList<Links> links;
+    protected ArrayList<IoTDeserializerLinks> links;
 
     @JsonProperty(OFFSET)
-    private int offset;
+    protected int offset;
 
     @JsonProperty(LIMIT)
-    private int limit;
+    protected int limit;
 
     @JsonProperty(COUNT)
-    private int count;
+    protected int count;
 
     @JsonProperty(HAS_MORE)
-    private boolean hasMore;
+    protected boolean hasMore;
 
-    public ArrayList<T> getItems() { return items; }
-
-    public ArrayList<Links> getLinks() { return links; }
+    public ArrayList<IoTDeserializerLinks> getLinks() { return links; }
 
     public int getOffset() { return offset; }
 

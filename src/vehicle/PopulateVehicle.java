@@ -40,7 +40,7 @@ public class PopulateVehicle {
         this(baseUrl, username, password, vehicleType, "defaultMake", "defaultModel");
     }
 
-    public Vehicle sendQuery() throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+    public Vehicle sendQuery() {
         return client.create(vehicle);
     }
 

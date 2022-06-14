@@ -1,0 +1,22 @@
+{
+  "deviceName": "simulator-vehicle-a9f5c0fc-88fd-46d9-af49-e43e5c209336-sensor",
+  "deviceDescription": "Follows OBD2 device model",
+  "deviceType": "OBD2 Modular Vehicle sensor",
+  "deviceIdentifier": "obd2-sensor-4a6caf83-dade-438a-8195-f3cb836112a0",
+  "measurementTime": "2022-06-13T21:45:00.844Z",
+  "data": {
+    "latitude": 12.972442,
+    "longitude": 77.580643,
+    "vehicle_speed": 95,
+    "engine_rpm": 2000,
+    "number_of_dtcs": 2,
+    "engine_coolant_temperature": 26.8,
+    "true_odometer": 381,
+    "throttle_position": 13,
+    "total_fuel_used": 147,
+    "runtime_since_engine_start": 1234,
+    "mass_air_flow": 187,
+    "average_fuel_economy": 21,
+    "distance_since_dtcs_cleared": 381
+  }
+}

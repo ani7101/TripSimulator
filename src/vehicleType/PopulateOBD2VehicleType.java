@@ -57,7 +57,7 @@ public class PopulateOBD2VehicleType {
                 "Latitude",
                 "NUMBER",
                 "urn:com:oracle:iot:device:obd2",
-                false, // Change to true after debugging
+                true,
                 false,
                 "ora_latitude",
                 "SENSOR"
@@ -68,7 +68,7 @@ public class PopulateOBD2VehicleType {
                 "Longitude",
                 "NUMBER",
                 "urn:com:oracle:iot:device:obd2",
-                false, // Change to true after debugging
+                true,
                 false,
                 "ora_longitude",
                 "SENSOR"
@@ -206,7 +206,7 @@ public class PopulateOBD2VehicleType {
 
     public ArrayList<VehicleAttribute> getOBD2Attributes() { return type.getAttributes(); }
 
-    public VehicleType sendQuery() throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+    public VehicleType sendQuery() {
         return client.create(type);
     }
 }

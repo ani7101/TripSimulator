@@ -10,7 +10,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +20,7 @@ public class APIClient {
             .version(HttpClient.Version.HTTP_2)
             .build();
 
-    public String AsyncGET(String url, String authHeader) throws ExecutionException, InterruptedException, TimeoutException, JsonProcessingException {
+    public String AsyncGET(String url, String authHeader) throws ExecutionException, InterruptedException, TimeoutException {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(url))
@@ -45,7 +44,7 @@ public class APIClient {
         response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
     }
 
-    public String AsyncUPDATE(String url, String authHeader, String postForm) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public String AsyncUPDATE(String url, String authHeader, String postForm) throws ExecutionException, InterruptedException, TimeoutException {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(postForm))
@@ -56,12 +55,10 @@ public class APIClient {
                 .build();
 
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        String jsonString = response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
-
-        return jsonString;
+        return response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
     }
 
-    public String AsyncPOST(String url, String authHeader, String postForm) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public String AsyncPOST(String url, String authHeader, String postForm) throws ExecutionException, InterruptedException, TimeoutException {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(postForm))
@@ -71,15 +68,13 @@ public class APIClient {
                 .build();
 
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        String jsonString = response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
-
-        return jsonString;
+        return response.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
     }
 
     /**
-     * This is used to convert a set of credentials using Base64 formatting into a authentication header
-     * @param username
-     * @param password
+     * This is used to convert a set of credentials using Base64 formatting into authentication header
+     * @param username Username for the basic auth
+     * @param password Password for the given username used in basic auth
      * @return String for authentication of the user
      */
     public String generateAuthenticationHeader(String username, String password) {

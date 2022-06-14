@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="TripSimulator">
+    <!--  Parameters for the API calls to the IoT server  -->
+    <parameter name="baseUrl" value="https://aniragha-lite.internal.iot.ocs.oraclecloud.com"></parameter>
+    <parameter name="username" value="iot-cloudops_ww_grp"></parameter>
+    <parameter name="password" value="Welcome1234#"></parameter>
+    <parameter name="vehicleType" value="4249ASEC2JR0"></parameter>
+    <parameter name="vehicle" value="424DXQ4M2JR0"></parameter>
+    <parameter name="trip" value="417F7MKM2JR0"></parameter>
+
+    <test name="IotAPI">
+        <classes>
+            <class name="tests.TestVehicleTypes"></class>
+            <class name="tests.TestVehicles"></class>
+            <class name="tests.TestUser"></class>
+            <class name="tests.TestTrip"/>
+        </classes>
+
+    </test>
+    <test name="HEREMaps">
+        <classes>
+            <class name="tests.TestHereMaps"></class>
+        </classes>
+    </test>
+</suite> <!-- Suite -->

@@ -1,4 +1,4 @@
-package Driver;
+package user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,4 +46,5 @@ public class UserEmailAddress {
     public boolean isPrimary() { return primary; }
 
     public void setPrimary(boolean primary) { this.primary = primary; }
+
 }

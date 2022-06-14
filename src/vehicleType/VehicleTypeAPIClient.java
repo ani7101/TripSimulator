@@ -1,25 +1,19 @@
 package vehicleType;
 
-import trip.Trip;
+import trip.TripList;
 import utils.APIClient;
 import utils.IotDeserializerList;
 import utils.ParseJson;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import vehicle.Vehicle;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class VehicleTypeAPIClient extends APIClient {
-    private String authHeader;
+    private final String authHeader;
 
-    private String baseUrl;
+    private final String baseUrl;
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -33,14 +27,14 @@ public class VehicleTypeAPIClient extends APIClient {
 
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/", authHeader);
-            list = ParseJson.deserializeIoTResponse(json, new IotDeserializerList<VehicleType>()).getItems();
+            list = ParseJson.deserializeResponse(json, VehicleTypeList.class).getItems();
         } catch (Exception e) {
             LOGGER.warning("Exception @VehicleTypeAPIClient: " + e);
         }
         return list;
     }
 
-    public int getCount() throws ExecutionException, InterruptedException, JsonProcessingException, TimeoutException {
+    public int getCount() {
         int count = 0;
 
         try {
@@ -52,7 +46,8 @@ public class VehicleTypeAPIClient extends APIClient {
         return count;
     }
 
-    public String getPreSeededFields() throws ExecutionException, InterruptedException, JsonProcessingException, TimeoutException {
+    // TODO: 13/06/2022 Implement parser (but most likely not required)
+    public String getPreSeededFields() {
         String response = null;
 
         try {
@@ -63,7 +58,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public VehicleType getOne(String typeId) throws ExecutionException, InterruptedException, JsonProcessingException, TimeoutException {
+    public VehicleType getOne(String typeId) {
         VehicleType response = null;
 
         try {
@@ -76,7 +71,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public VehicleType create(Map<String, Object> formData) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public VehicleType create(Map<String, Object> formData) {
         VehicleType response = null;
 
         try {
@@ -91,7 +86,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public VehicleType create(VehicleType type) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public VehicleType create(VehicleType type) {
         VehicleType response = null;
 
         try {
@@ -104,7 +99,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public VehicleType update(String typeId, Map<String, Object> formData) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public VehicleType update(String typeId, Map<String, Object> formData) {
         VehicleType response = null;
 
         try {
@@ -118,7 +113,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public VehicleType update(String typeId, VehicleType type) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public VehicleType update(String typeId, VehicleType type) {
         VehicleType response = null;
 
         try {
@@ -131,7 +126,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return response;
     }
 
-    public void delete(String typeId) throws ExecutionException, InterruptedException, TimeoutException {
+    public void delete(String typeId) {
         try {
             AsyncDELETE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/" + typeId, authHeader);
         } catch (Exception e) {

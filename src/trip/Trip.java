@@ -82,7 +82,7 @@ public class Trip {
     @JsonProperty(TRIP_STATUS)
     private String tripStatus;
 
-    private String route;            // Required for simulation
+    private ArrayList<String> route;            // Required for simulation
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops) {
         this.destination = destination;
@@ -108,9 +108,9 @@ public class Trip {
     public Trip() {}
 
 
-    public String getRoute() { return route; }
+    public ArrayList<String> getRoute() { return route; }
 
-    public void setRoute(String route) { this.route = route; }
+    public void setRoute(ArrayList<String> route) { this.route = route; }
 
     public TripStopRecord getDestination() {
         return destination;

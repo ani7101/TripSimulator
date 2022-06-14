@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import hereMaps.HEREMapsRouteSection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class ParseJson {
         return modelObject;
     }
 
-    // FIXME: 10/06/2022 Fix the deserializer to the appropriate class
+    @Deprecated
     public static <T> T deserializeIoTResponse(String serverResponse, T modelClass) {
         T response = null;
 
@@ -37,7 +36,7 @@ public class ParseJson {
         return response;
     }
 
-    // TODO: 10/06/2022 Simplify this and eliminate the HEREMaps deserializer sub-classes
+    @Deprecated
     public static <T> ArrayList<T> deserializeHEREAPIListResponse(String serverResponse, T modelClass) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> list = null;
@@ -48,7 +47,7 @@ public class ParseJson {
 
 
             if (node.has("routes") && node.get("routes").get(0).has("sections")) {
-                JsonNode temp = (JsonNode) node.get("routes").get(0).get("sections");
+                JsonNode temp = node.get("routes").get(0).get("sections");
                 ObjectReader reader = mapper.readerFor(new TypeReference<ArrayList<T>>() {});
                 list = reader.readValue(temp);
 
@@ -62,7 +61,7 @@ public class ParseJson {
         return list;
     }
 
-    public static <T> int deserializeCountResponse(String serverResponse) {
+    public static int deserializeCountResponse(String serverResponse) {
         int count = 0;
         try {
             ObjectNode node = new ObjectMapper().readValue(serverResponse, ObjectNode.class);
