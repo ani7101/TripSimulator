@@ -16,6 +16,8 @@ public class TripMinimal {
 
     private String driverId;
 
+    private String deviceId;
+
     private String vehicleName;
 
     private ArrayList<Double> source;
@@ -23,8 +25,6 @@ public class TripMinimal {
     private ArrayList<Double> destination;
 
     private ArrayList<ArrayList<Double>> stops;
-
-    private String currentState;
 
     private ArrayList<List<PolylineEncoderDecoder.LatLngZ>> route;
 

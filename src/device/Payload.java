@@ -36,6 +36,15 @@ public class Payload {
     @JsonProperty(DATA)
     private PayloadData data;
 
+    public Payload(String deviceName, String deviceIdentifier, String measurementTime, PayloadData data) {
+        this.deviceName = deviceName;
+        this.deviceIdentifier = deviceIdentifier;
+        this.measurementTime = measurementTime;
+        this.data = data;
+    }
+
+    public Payload() {}
+
     public String getDeviceName() {
         return deviceName;
     }

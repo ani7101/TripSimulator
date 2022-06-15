@@ -6,13 +6,13 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import utils.Generator;
 
-public class testConnector {
+public class TestConnector {
     ConnectorAPIClient client;
 
     @Test(priority = 1)
-    @Parameters({"username", "password"})
-    public void testConfig(String username, String password) {
-        client = new ConnectorAPIClient("https://aniragha-lite.device.internal.iot.ocs.oraclecloud.com/cgw/TripSimulatorController", username, password);
+    @Parameters({"connectorUrl", "username", "password"})
+    public void testConfig(String connectorUrl, String username, String password) {
+        client = new ConnectorAPIClient(connectorUrl, username, password);
     }
 
     @Test(priority = 2)

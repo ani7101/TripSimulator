@@ -20,6 +20,8 @@ import java.util.List;
  *  2. vehicle name (which is unique) and driver details are provided and the remaining data is generated
  *  3. vehicle name is provided and the remaining is generated (driver is ignored) (WILL BE DEPRECIATED SOON!)
  *  4. Nothing is provided and using PopulateUser and PopulateVehicle, a vehicle and a user are created and used
+ *
+ *  As a pre-requisite for creating a device
  */
 public class PopulateTrip {
     private HEREMapsAPIClient hereAPIClient;

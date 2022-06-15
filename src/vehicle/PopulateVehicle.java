@@ -29,17 +29,17 @@ public class PopulateVehicle {
         this.deviceId = deviceId;
 
         vehicle = new Vehicle(
-                "SimulatorVehicle-" + Generator.generateRandomUUID(),  // name
-                model,                                                        // Vehicle model
-                make,                                                         // Vehicle make
-                vehicleType,                                                  // ID of the vehicle type
-                Generator.generateRandomString(8),                    // Registration number
-                Generator.generateRandomString(6),                    // VIN
-                LocalDateTime.now().getYear()                                 // Vehicle launch year
+                "SimulatorVehicle-" + deviceId,                           // name
+                model,                                                          // Vehicle model
+                make,                                                           // Vehicle make
+                vehicleType,                                                    // ID of the vehicle type
+                Generator.generateRandomString(8),                       // Registration number
+                Generator.generateRandomString(6),                       // VIN
+                LocalDateTime.now().getYear()                                   // Vehicle launch year
         );
 
         // Vehicle description
-        vehicle.setDescription(vehicle.getName() + " for simlution of trips!");
+        vehicle.setDescription(vehicle.getName() + " for simulation of trips!");
         vehicle.setAttributes(addOBD2Attributes());
     }
 
@@ -56,7 +56,7 @@ public class PopulateVehicle {
         populateType.sendQuery();
 
         vehicle = new Vehicle(
-                "SimulatorVehicle-" + Generator.generateRandomUUID(),    // name
+                "SimulatorVehicle-" + deviceId,                          // name
                 "defaultModel",                                                // Vehicle model
                 "defaultMake",                                                 // Vehicle make
                 populateType.getType().getId(),                                // ID of the vehicle type

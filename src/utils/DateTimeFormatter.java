@@ -5,7 +5,7 @@ import java.time.ZoneId;
 
 public class DateTimeFormatter {
     public static LocalDateTime iso8601ToLocalDateTime(String date) {
-        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("+yyyy-MM-dd'T'HH:mm:ss'Z'")
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .withZone(ZoneId.of("UTC"));
         return LocalDateTime.parse(date, formatter);
     }

@@ -4,11 +4,10 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import organization.Organization;
 import organization.OrganizationAPIClient;
-import user.User;
 
 import java.util.ArrayList;
 
-public class testOrganization {
+public class TestOrganization {
     private OrganizationAPIClient client;
 
     @Test(priority = 1)

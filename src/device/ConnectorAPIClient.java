@@ -25,6 +25,6 @@ public class ConnectorAPIClient extends APIClient {
             LOGGER.warning("Exception @ConnectorAPIClient: " + e);
         }
 
-        return response; // Should report `Request accepted` if it's a valid call
+        return response; // Reports `Request accepted` if it's a valid call
     }
 }

@@ -8,6 +8,7 @@
     <parameter name="vehicleType" value="4249ASEC2JR0"></parameter>
     <parameter name="vehicle" value="424DXQ4M2JR0"></parameter>
     <parameter name="trip" value="417F7MKM2JR0"></parameter>
+    <parameter name="connectorUrl" value="https://aniragha-lite.device.internal.iot.ocs.oraclecloud.com/cgw/TripSimulatorController" />
 
     <test name="IotAPI">
         <classes>
@@ -15,7 +16,9 @@
             <!--            Yet to integrate device with device-->
             <!--            <class name="tests.TestVehicles"></class>-->
             <class name="tests.TestUser"></class>
-            <class name="tests.testOrganization"></class>
+            <class name="tests.TestOrganization"></class>
+            <class name="tests.TestConnector"></class>
+            <class name="tests.TestDevice"></class>
 <!--            Need to fix the proxy and debug with HEREmaps & Iot server-->
 <!--            <class name="tests.TestTrip"/>-->
         </classes>

@@ -1,5 +1,6 @@
 package trip.tripSubClasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +11,10 @@ public class TripVehicleInfoModel {
     public static final String NAME = "name";
 
     @JsonProperty(NAME)
-    private String name; // Optional
+    private String name;
+
+    @JsonIgnore
+    private String deviceId;
 
     public TripVehicleInfoModel(String name) {
         this.name = name;
@@ -24,4 +28,8 @@ public class TripVehicleInfoModel {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getDeviceId() { return deviceId; }
+
+    public void setDeviceId(String deviceId) { this.deviceId = deviceId; }
 }
