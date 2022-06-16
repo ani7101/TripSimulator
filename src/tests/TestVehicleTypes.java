@@ -4,17 +4,15 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import vehicleType.*;
 
-import java.util.ArrayList;
-
 public class TestVehicleTypes {
     private VehicleTypeAPIClient client;
-    private PopulateOBD2VehicleType type;
+    private GeneratedOBD2VehicleType type;
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new VehicleTypeAPIClient(baseUrl, username, password);
-        type = new PopulateOBD2VehicleType(baseUrl, username, password);
+        type = new GeneratedOBD2VehicleType(baseUrl, username, password);
     }
 
     @Test(priority = 2)

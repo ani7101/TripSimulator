@@ -5,17 +5,15 @@ import org.testng.annotations.Test;
 
 import vehicle.*;
 
-import java.util.ArrayList;
-
 public class TestVehicles {
     private VehicleAPIClient client;
-    private PopulateVehicle vehicle;
+    private GeneratedOBD2Vehicle vehicle;
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password", "vehicleType"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password, String vehicleType) {
         client = new VehicleAPIClient(baseUrl, username, password);
-        vehicle = new PopulateVehicle(baseUrl, username, password, vehicleType);
+        vehicle = new GeneratedOBD2Vehicle(baseUrl, username, password, vehicleType);
     }
 
     @Test(priority = 2)

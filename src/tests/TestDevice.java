@@ -21,17 +21,4 @@ public class TestDevice {
     public void testFetchAll() {
         System.out.println(client.getAll());
     }
-
-    @Test(priority = 3)
-    public void testWrapper() {
-        wrapper.populatePayload();
-        ArrayList<String> deviceIdentifiers = wrapper.getDeviceIdentifiers();
-
-        wrapper.createDeviceUsingConnector();
-
-        for (String deviceIdentifier : deviceIdentifiers) {
-            Device d1 = wrapper.searchDeviceId(deviceIdentifier);
-            System.out.println("Device:\nID:" + d1.getId() + "\nHardwareID: " + d1.getHardwareId());
-        }
-    }
 }

@@ -10,8 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class HEREMapsRouteSection {
 
     public final static String ID = "id";
-
-    // FIXME: 09/06/2022 Location of JsonProperty is wrongly given (Need to figure out)
+    
     public final static String SUMMARY = "summary";
 
     public final static String POLYLINE = "polyline";

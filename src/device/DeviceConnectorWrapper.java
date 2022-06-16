@@ -1,7 +1,10 @@
 package device;
 
+import utils.DateTimeFormatter;
 import utils.Generator;
+import vehicle.VehicleDevicePayload;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DeviceConnectorWrapper {
@@ -9,15 +12,14 @@ public class DeviceConnectorWrapper {
 
     protected DeviceAPIClient deviceClient;
 
-    protected int required;
+    protected int requiredInstances;
 
-    protected ArrayList<String> deviceIdentifiers; // Equivalent to hardwareIds
+    protected ArrayList<VehicleDevicePayload> vehicleDevicePayloads = new ArrayList<VehicleDevicePayload>();
 
-    protected ArrayList<Payload> connectorPayloads = new ArrayList<>();
+    @Deprecated
+    private ArrayList<Device> devices;
 
-    protected ArrayList<Device> devices;
-
-    protected PayloadData dummyPayload = new PayloadData(
+    private static PayloadData dummyPayloadData = new PayloadData(
             12.972442,  // latitude
             77.580643,  // longitude
             95,         // vehicle speed
@@ -34,48 +36,69 @@ public class DeviceConnectorWrapper {
     );
 
 
-    public DeviceConnectorWrapper(String baseUrl, String connectorUrl, String username, String password, ArrayList<String> deviceIdentifiers) {
+    /**
+     * Initializes the connection to the APIs and creates a random list of identifiers for the device-vehicle combination
+     * @param baseUrl URL to the IoT server instance
+     * @param connectorUrl URL to the (HTTP) connector API server
+     * @param username Username for basic auth for the API servers
+     * @param password Password for basic auth for the API servers
+     */
+    public DeviceConnectorWrapper(String baseUrl, String connectorUrl, String username, String password, int requiredInstances) {
         connectorClient = new ConnectorAPIClient(connectorUrl, username, password);
         deviceClient = new DeviceAPIClient(baseUrl, username, password);
 
-        this.deviceIdentifiers = deviceIdentifiers;
-        this.required = deviceIdentifiers.size();
-    }
+        this.requiredInstances = requiredInstances;
 
-    public DeviceConnectorWrapper(String baseUrl, String connectorUrl, String username, String password, int required) {
-        connectorClient = new ConnectorAPIClient(connectorUrl, username, password);
-        deviceClient = new DeviceAPIClient(baseUrl, username, password);
 
-        this.required = required;
-
-        deviceIdentifiers = new ArrayList<String>(required);
-        for (int i = 0; i < required; i++) {
-            deviceIdentifiers.add("obd2-sensor" + Generator.generateRandomUUID());
+        for (int i = 0; i < requiredInstances; i++) {
+            vehicleDevicePayloads.add(new VehicleDevicePayload());
+            vehicleDevicePayloads.get(i).setUniqueId(Generator.generateRandomUUID());
         }
     }
 
     public void populatePayload() {
+        String currTime = DateTimeFormatter.localDateTimeToIso8601(LocalDateTime.now());
 
-        for (int i = 0; i < required; i++) {
-            String deviceIdentifier = deviceIdentifiers.get(i);
+        for (int i = 0; i < requiredInstances; i++) {
+            Payload tempPayload = new Payload(
+                    "simulation-obd2-device-" + vehicleDevicePayloads.get(i).getUniqueId(),   // device name
+                    "simulation-obd2-sensor-" + vehicleDevicePayloads.get(i).getUniqueId(),              // device identifier
+                    currTime,                                                   // measurement time
+                    dummyPayloadData                                            // data
+            );
 
-            connectorPayloads.add(new Payload(
-                    "simulator-vehicle-" + deviceIdentifier + "-sensor", // device name
-                    deviceIdentifier,                                               // device identifier
-                    "2022-06-14T21:45:00.844Z",                                     // measurement time
-                    dummyPayload                                                    // data
-            ));
+            vehicleDevicePayloads.get(i).setPayload(tempPayload);
         }
     }
 
     public void createDeviceUsingConnector() {
-        // TODO: 15/06/2022 Have to handle errors in case a connector doesn't approve the request
-        for (Payload payload : connectorPayloads) {
-            connectorClient.postPayload(payload);
+        for (int i = 0; i < requiredInstances; i++) {
+            String response = connectorClient.postPayload(vehicleDevicePayloads.get(i).getPayload());
+            if (response != "Request Accepted") {
+                // TODO: 16/06/2022 Replace with proper logger logic
+                throw new RuntimeException(response);
+            }
         }
-        devices = deviceClient.getAll();
+        // Getting the device information (ID)
+        ArrayList<Device> devices = deviceClient.getAll();
+        for (int i = 0; i < requiredInstances; i++) {
+            vehicleDevicePayloads.get(i).setDevice(
+                    searchDeviceId(vehicleDevicePayloads.get(i).getPayload().getDeviceIdentifier(),
+                    devices));
+        }
     }
 
+    private Device searchDeviceId(String deviceIdentifier, ArrayList<Device> devices) {
+        for (Device device : devices) {
+            if (device.getHardwareId() == deviceIdentifier) {
+                return device;
+            }
+        }
+
+        return null;
+    }
+
+    @Deprecated
     public Device searchDeviceId(String deviceIdentifier) {
         if (devices != null) {
             for (Device device : devices) {
@@ -97,15 +120,17 @@ public class DeviceConnectorWrapper {
         return null;
     }
 
-    public ArrayList<String> getDeviceIdentifiers() {
-        return deviceIdentifiers;
-    }
 
+
+    @Deprecated
     public void updateDevices() {
         devices = deviceClient.getAll();
     }
 
-    public ArrayList<Device> getDevices() {
+
+    public ArrayList<Device> getDevicesFromAPI() {
         return deviceClient.getAll();
     }
+
+
 }

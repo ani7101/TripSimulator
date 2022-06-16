@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public class TestUser {
     private UserAPIClient client;
-    private PopulateUser user;
+    private GeneratedUser user;
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new UserAPIClient(baseUrl, username, password);
-        user = new PopulateUser(baseUrl, username, password);
+        user = new GeneratedUser(baseUrl, username, password);
 
         System.out.println(user.getUser().toString());
     }

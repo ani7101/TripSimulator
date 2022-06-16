@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
-// FIXME: 13/06/2022 Buggy on the tests
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     public static final String ID = "id";

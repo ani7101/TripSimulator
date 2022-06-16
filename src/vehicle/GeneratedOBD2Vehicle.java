@@ -1,29 +1,29 @@
 package vehicle;
 
 import utils.Generator;
-import vehicleType.PopulateOBD2VehicleType;
+import vehicleType.GeneratedOBD2VehicleType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class PopulateVehicle {
+public class GeneratedOBD2Vehicle {
 
     private final VehicleAPIClient client;
 
     private Vehicle vehicle;
 
-    private PopulateOBD2VehicleType populateType;
+    private GeneratedOBD2VehicleType populateType;
 
     private String deviceId;
 
     public static final String deviceModel = "urn:com:oracle:iot:device:obd2";
 
-    public PopulateVehicle(String baseUrl, String username, String password, Vehicle vehicle) {
+    public GeneratedOBD2Vehicle(String baseUrl, String username, String password, Vehicle vehicle) {
         client = new VehicleAPIClient(baseUrl, username, password);
         this.vehicle = vehicle;
     }
 
-    public PopulateVehicle(String baseUrl, String username, String password, String vehicleType, String make, String model,String deviceId) {
+    public GeneratedOBD2Vehicle(String baseUrl, String username, String password, String vehicleType, String make, String model, String deviceId) {
         client = new VehicleAPIClient(baseUrl, username, password);
 
         this.deviceId = deviceId;
@@ -43,20 +43,20 @@ public class PopulateVehicle {
         vehicle.setAttributes(addOBD2Attributes());
     }
 
-    public PopulateVehicle(String baseUrl, String username, String password, String vehicleType, String deviceId) {
+    public GeneratedOBD2Vehicle(String baseUrl, String username, String password, String vehicleType, String deviceId) {
         this(baseUrl, username, password, vehicleType, "defaultMake", "defaultModel", deviceId);
     }
 
-    public PopulateVehicle(String baseUrl, String username, String password, String deviceId) {
+    public GeneratedOBD2Vehicle(String baseUrl, String username, String password, String deviceId) {
         client = new VehicleAPIClient(baseUrl, username, password);
 
         this.deviceId = deviceId;
 
-        populateType = new PopulateOBD2VehicleType(baseUrl, username, password);
+        populateType = new GeneratedOBD2VehicleType(baseUrl, username, password);
         populateType.sendQuery();
 
         vehicle = new Vehicle(
-                "SimulatorVehicle-" + deviceId,                          // name
+                "simulator-vehicle-" + deviceId,                          // name
                 "defaultModel",                                                // Vehicle model
                 "defaultMake",                                                 // Vehicle make
                 populateType.getType().getId(),                                // ID of the vehicle type
@@ -66,7 +66,7 @@ public class PopulateVehicle {
         );
 
         // Vehicle description
-        vehicle.setDescription(vehicle.getName() + " for simulation of trips!");
+        vehicle.setDescription("Trip simulation vehicle linked with device " + deviceId);
         vehicle.setAttributes(addOBD2Attributes());
     }
 

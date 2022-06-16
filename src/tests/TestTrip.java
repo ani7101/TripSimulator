@@ -1,6 +1,5 @@
 package tests;
 
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import trip.*;
@@ -11,7 +10,7 @@ public class TestTrip {
 
     private TripAPIClient client;
 
-    private PopulateTrip trip;
+    private GeneratedTrip trip;
 
 //    @BeforeTest()
 //    public void setupTestRepository() {
@@ -27,7 +26,7 @@ public class TestTrip {
 
         repository = new TripRepository();
 
-        trip = new PopulateTrip(baseUrl, username, password, repository, vehicleType, true);
+        trip = new GeneratedTrip(baseUrl, username, password, repository, vehicleType, true);
     }
 
     @Test(priority = 2)

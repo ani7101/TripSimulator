@@ -10,19 +10,19 @@ import java.util.concurrent.ThreadLocalRandom;
  * stores the ID and name to the vehicle type created. This can also be ignored if one is already created and
  * can directly specify the vehicle type in it's constructor.
  */
-public class PopulateOBD2VehicleType {
+public class GeneratedOBD2VehicleType {
 
     private VehicleTypeAPIClient client;
     
     private VehicleType type;
 
-    public PopulateOBD2VehicleType(String baseUrl, String username, String password, VehicleType type) {
+    public GeneratedOBD2VehicleType(String baseUrl, String username, String password, VehicleType type) {
         client = new VehicleTypeAPIClient(baseUrl, username, password);
         this.type = type;
     }
 
 
-    public PopulateOBD2VehicleType(String baseUrl, String username, String password) {
+    public GeneratedOBD2VehicleType(String baseUrl, String username, String password) {
         client = new VehicleTypeAPIClient(baseUrl, username,  password);
 
         // Random value for the name field

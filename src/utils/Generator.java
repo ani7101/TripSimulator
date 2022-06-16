@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.Random;
 import static java.util.UUID.randomUUID;
 
@@ -25,5 +26,15 @@ public class Generator {
             salt.append(SALTCHARS.charAt(index));
         }
         return salt.toString();
+    }
+
+    public static ArrayList<String> generateRandomUUID(int count) {
+        ArrayList<String> UUIDS = new ArrayList<String>(count);
+
+        for (int i = 0; i < count; i++) {
+            UUIDS.add(Generator.generateRandomUUID());
+        }
+
+        return UUIDS;
     }
 }

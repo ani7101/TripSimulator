@@ -5,10 +5,10 @@ import hereMaps.HEREMapsAPIClient;
 import trip.tripSubClasses.TripDriverInfoModel;
 import trip.tripSubClasses.TripStopRecord;
 import trip.tripSubClasses.TripVehicleInfoModel;
-import user.PopulateUser;
+import user.GeneratedUser;
 import utils.*;
-import vehicle.PopulateVehicle;
-import vehicleType.PopulateOBD2VehicleType;
+import vehicle.GeneratedOBD2Vehicle;
+import vehicleType.GeneratedOBD2VehicleType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
  *  1. Trip class is given as an argument and is taken as support
  *  2. vehicle name (which is unique) and driver details are provided and the remaining data is generated
  *  3. vehicle name is provided and the remaining is generated (driver is ignored) (WILL BE DEPRECIATED SOON!)
- *  4. Nothing is provided and using PopulateUser and PopulateVehicle, a vehicle and a user are created and used
+ *  4. Nothing is provided and using GeneratedUser and GeneratedOBD2Vehicle, a vehicle and a user are created and used
  *
  *  As a pre-requisite for creating a device
  */
-public class PopulateTrip {
+public class GeneratedTrip {
     private HEREMapsAPIClient hereAPIClient;
 
     private TripAPIClient tripAPIClient;
@@ -32,25 +32,25 @@ public class PopulateTrip {
 
     private Trip trip;
 
-    private PopulateVehicle populateVehicle;
+    private GeneratedOBD2Vehicle generatedOBD2Vehicle;
 
-    private PopulateUser populateUser;
+    private GeneratedUser generatedUser;
 
-    private PopulateOBD2VehicleType populateType;
+    private GeneratedOBD2VehicleType populateType;
 
 
-    public PopulateTrip(String baseUrl, String username, String password,
-                        Trip trip) {
+    public GeneratedTrip(String baseUrl, String username, String password,
+                         Trip trip) {
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
         hereAPIClient = new HEREMapsAPIClient();
         this.trip = trip;
     }
 
-    public PopulateTrip(String baseUrl, String username, String password,
-                        TripRepository repository,
-                        String vehicleName,
-                        String driverLoginId) {
+    public GeneratedTrip(String baseUrl, String username, String password,
+                         TripRepository repository,
+                         String vehicleName,
+                         String driverLoginId) {
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
         hereAPIClient = new HEREMapsAPIClient();
@@ -88,9 +88,9 @@ public class PopulateTrip {
         trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
     }
 
-    public PopulateTrip(String baseUrl, String username, String password,
-                        TripRepository repository,
-                        String vehicleName) {
+    public GeneratedTrip(String baseUrl, String username, String password,
+                         TripRepository repository,
+                         String vehicleName) {
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
         hereAPIClient = new HEREMapsAPIClient();
@@ -127,14 +127,14 @@ public class PopulateTrip {
         trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
     }
 
-    public PopulateTrip(String baseUrl, String username, String password,
-                        TripRepository repository, String vehicleTypeId, boolean populate) {
+    public GeneratedTrip(String baseUrl, String username, String password,
+                         TripRepository repository, String vehicleTypeId, boolean populate) {
 
         // populate argument is a dummy to distinguish it from the vehicleName variant
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
-        populateVehicle = new PopulateVehicle(baseUrl, username, password, vehicleTypeId);
-        populateUser = new PopulateUser(baseUrl, username, password);
+        generatedOBD2Vehicle = new GeneratedOBD2Vehicle(baseUrl, username, password, vehicleTypeId);
+        generatedUser = new GeneratedUser(baseUrl, username, password);
 
         hereAPIClient = new HEREMapsAPIClient();
 
@@ -155,8 +155,8 @@ public class PopulateTrip {
                 source,
                 destination,
                 stops,
-                new TripVehicleInfoModel(populateVehicle.getVehicle().getName()),
-                new TripDriverInfoModel(populateUser.getUser().getName()));
+                new TripVehicleInfoModel(generatedOBD2Vehicle.getVehicle().getName()),
+                new TripDriverInfoModel(generatedUser.getUser().getName()));
 
         trip.setName("Trip simulator-" + Generator.generateRandomUUID());
 
@@ -171,15 +171,15 @@ public class PopulateTrip {
         trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
     }
 
-    public PopulateTrip(String baseUrl, String username, String password,
-                        TripRepository repository) {
+    public GeneratedTrip(String baseUrl, String username, String password,
+                         TripRepository repository) {
 
         // populate argument is a dummy to distinguish it from the vehicleName variant
 
         tripAPIClient = new TripAPIClient(baseUrl, username, password);
-        populateType = new PopulateOBD2VehicleType(baseUrl, username, password);
-        populateVehicle = new PopulateVehicle(baseUrl, username, password, populateType.getType().getId());
-        populateUser = new PopulateUser(baseUrl, username, password);
+        populateType = new GeneratedOBD2VehicleType(baseUrl, username, password);
+        generatedOBD2Vehicle = new GeneratedOBD2Vehicle(baseUrl, username, password, populateType.getType().getId());
+        generatedUser = new GeneratedUser(baseUrl, username, password);
 
         hereAPIClient = new HEREMapsAPIClient();
 
@@ -200,8 +200,8 @@ public class PopulateTrip {
                 source,
                 destination,
                 stops,
-                new TripVehicleInfoModel(populateVehicle.getVehicle().getName()),
-                new TripDriverInfoModel(populateUser.getUser().getId(), populateUser.getUser().getName()));
+                new TripVehicleInfoModel(generatedOBD2Vehicle.getVehicle().getName()),
+                new TripDriverInfoModel(generatedUser.getUser().getId(), generatedUser.getUser().getName()));
 
         trip.setName("Trip simulator-" + Generator.generateRandomUUID());
 
@@ -217,8 +217,8 @@ public class PopulateTrip {
     }
 
     public Trip sendQuery() {
-        populateUser.sendQuery();
-        populateVehicle.sendQuery();
+        generatedUser.sendQuery();
+        generatedOBD2Vehicle.sendQuery();
         Trip response = tripAPIClient.create(trip);
         trip.setId(response.getId());
 

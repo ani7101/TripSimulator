@@ -4,21 +4,24 @@ import device.DeviceConnectorWrapper;
 
 import java.util.ArrayList;
 
-public class VehicleDeviceWrapper extends DeviceConnectorWrapper{
-    protected ArrayList<PopulateVehicle> vehicles = new ArrayList<PopulateVehicle>();
 
-    public VehicleDeviceWrapper(String baseUrl, String connectorUrl, String username, String password, int required) {
-        super(baseUrl, connectorUrl, username, password, required);
+public class VehicleDeviceWrapper extends DeviceConnectorWrapper{
+
+    @Deprecated
+    protected ArrayList<GeneratedOBD2Vehicle> vehicles;
+
+    public VehicleDeviceWrapper(String baseUrl, String connectorUrl, String username, String password, int requiredInstances) {
+        super(baseUrl, connectorUrl, username, password, requiredInstances);
 
         populatePayload();
         createDeviceUsingConnector();
 
-        for (String deviceIdentifier : deviceIdentifiers) {
-            vehicles.add(new PopulateVehicle(baseUrl, username, password, searchDeviceId(deviceIdentifier).getId()));
-        }
+        for (int i = 0; i < requiredInstances; i++) {
+            GeneratedOBD2Vehicle tempVehicle = new GeneratedOBD2Vehicle(baseUrl, username, password, vehicleDevicePayloads.get(i).getDevice().getId());
 
-        for (PopulateVehicle vehicle : vehicles) {
-            vehicle.sendQuery();
+            tempVehicle.sendQuery();
+
+            vehicleDevicePayloads.get(i).setGeneratedOBD2Vehicle(tempVehicle);
         }
 
     }
@@ -26,10 +29,23 @@ public class VehicleDeviceWrapper extends DeviceConnectorWrapper{
     public ArrayList<Vehicle> getVehicles() {
         ArrayList<Vehicle> vehicleArrayList = new ArrayList<Vehicle>();
 
-        for (PopulateVehicle vehicle : vehicles) {
-            vehicleArrayList.add(vehicle.getVehicle());
+        for (VehicleDevicePayload vehicleDevicePayload : vehicleDevicePayloads) {
+            vehicleArrayList.add(vehicleDevicePayload.getGeneratedOBD2Vehicle().getVehicle());
         }
 
         return vehicleArrayList;
+    }
+    public Vehicle getVehicle(String vehicleName) {
+        for (VehicleDevicePayload vehicleDevicePayload : vehicleDevicePayloads) {
+            Vehicle vehicle = vehicleDevicePayload.getGeneratedOBD2Vehicle().getVehicle();
+            if (vehicle.getName().equals(vehicleName)) {
+                return vehicle;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<VehicleDevicePayload> getVehicleDevicePayloads() {
+        return vehicleDevicePayloads;
     }
 }

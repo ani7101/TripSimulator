@@ -1,5 +1,6 @@
 package device;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -91,5 +92,134 @@ public class Payload {
 
     public void setData(PayloadData data) {
         this.data = data;
+    }
+
+    // Data: Latitude
+
+    @JsonIgnore
+    public double getLatitude() { return data.getLatitude(); }
+
+    @JsonIgnore
+    public void setLatitude(double latitude) { data.setLatitude(latitude); }
+
+
+    // Data: Longitude
+    @JsonIgnore
+    public double getLongitude() { return data.getLongitude(); }
+
+    @JsonIgnore
+    public void setLongitude(double longitude) { data.setLongitude(longitude); }
+
+
+    // Data: Vehicle speed
+    @JsonIgnore
+    public int getVehicleSpeed() { return data.getVehicleSpeed(); }
+
+    @JsonIgnore
+    public void setVehicleSpeed(int vehicleSpeed) { data.setVehicleSpeed(vehicleSpeed); }
+
+
+    // Data: Engine RPM
+    @JsonIgnore
+    public double getEngineRPM() { return data.getEngineRPM(); }
+
+    @JsonIgnore
+    public void setEngineRPM(int engineRPM) { data.setEngineRPM(engineRPM); }
+
+
+    // Data: Number of DTCs
+    @JsonIgnore
+    public double getNumberOfDTCs() { return data.getNumberOfDTCs(); }
+
+    @JsonIgnore
+    public void setNumberOfDTCs(double numberOfDTCs) {
+        data.setNumberOfDTCs(numberOfDTCs);
+    }
+
+    // Data: Engine coolant temperature
+
+    @JsonIgnore
+    public double getEngineCoolantTemperature() { return data.getEngineCoolantTemperature(); }
+
+    @JsonIgnore
+    public void setEngineCoolantTemperature(double engineCoolantTemperature) {
+        this.data.setEngineCoolantTemperature(engineCoolantTemperature);
+    }
+
+
+    // Data: True odometer
+    @JsonIgnore
+    public int getTrueOdometer() { return data.getTrueOdometer(); }
+
+    @JsonIgnore
+    public void setTrueOdometer(int trueOdometer) { data.setTrueOdometer(trueOdometer); }
+
+
+    // Data: Throttle position
+    @JsonIgnore
+    public double getThrottlePosition() { return data.getThrottlePosition(); }
+
+    @JsonIgnore
+    public void setThrottlePosition(double throttlePosition) {
+        data.setThrottlePosition(throttlePosition);
+    }
+
+
+    // Data: Total fuel used
+    @JsonIgnore
+    public int getTotalFuelUsed() {
+        return data.getTotalFuelUsed();
+    }
+
+    @JsonIgnore
+    public void setTotalFuelUsed(int totalFuelUsed) {
+        this.data.setTotalFuelUsed(totalFuelUsed);
+    }
+
+
+    // Data: Runtime since engine start
+    @JsonIgnore
+    public long getRuntimeSinceEngineStart() {
+        return data.getRuntimeSinceEngineStart();
+    }
+
+    @JsonIgnore
+    public void setRuntimeSinceEngineStart(long runtimeSinceEngineStart) {
+        this.data.setRuntimeSinceEngineStart(runtimeSinceEngineStart);
+    }
+
+
+    // Data: mass air flow
+    @JsonIgnore
+    public double getMassAirFlow() {
+        return data.getMassAirFlow();
+    }
+
+    @JsonIgnore
+    public void setMassAirFlow(double massAirFlow) {
+        this.data.setMassAirFlow(massAirFlow);
+    }
+
+    // Data: Average fuel economy
+    @JsonIgnore
+    public double getAverageFuelEconomy() {
+        return data.getAverageFuelEconomy();
+    }
+
+    @JsonIgnore
+    public void setAverageFuelEconomy(double averageFuelEconomy) {
+        this.setAverageFuelEconomy(averageFuelEconomy);
+    }
+
+
+    // Data: Distance since DTCs cleared
+    @JsonIgnore
+    public int getDistanceSinceDTCsCleared() {
+        return getDistanceSinceDTCsCleared();
+    }
+
+    @JsonIgnore
+    public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
+        this.data.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
     }
 }

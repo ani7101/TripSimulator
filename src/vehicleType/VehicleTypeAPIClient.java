@@ -44,7 +44,7 @@ public class VehicleTypeAPIClient extends APIClient {
         return count;
     }
 
-    // TODO: 13/06/2022 Implement parser (but most likely not required)
+    // TODO: 13/06/2022 Implement parser (most likely not required)
     public String getPreSeededFields() {
         String response = null;
 

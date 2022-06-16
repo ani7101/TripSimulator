@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import static java.util.List.*;
 
 // Omitted usage of the phone number in users
-public class PopulateUser {
+public class GeneratedUser {
     private UserAPIClient client;
 
     private User user;
 
-    public PopulateUser(String baseUrl, String username, String password,
-                        User user) {
+    public GeneratedUser(String baseUrl, String username, String password,
+                         User user) {
 
         client = new UserAPIClient(baseUrl, username, password);
         this.user = user;
     }
 
-    public PopulateUser(String baseUrl, String username, String password,
-                        ArrayList<String> roles) {
+    public GeneratedUser(String baseUrl, String username, String password,
+                         ArrayList<String> roles) {
 
         client = new UserAPIClient(baseUrl, username, password);
 
@@ -43,11 +43,11 @@ public class PopulateUser {
         user.addEmailAddresses(recoveryEmail);
     }
 
-    public PopulateUser(String baseUrl, String username, String password, String organizationId) {
+    public GeneratedUser(String baseUrl, String username, String password, String organizationId) {
         this(baseUrl, username, password, new ArrayList<>(of("IoTDriver", "IoTOrganization$" + organizationId)));
     }
 
-    public PopulateUser(String baseUrl, String username, String password) {
+    public GeneratedUser(String baseUrl, String username, String password) {
         this(baseUrl, username, password, new ArrayList<>(of("IoTDriver", "IoTOrganization$ORA_DEFAULT_ORG")));
     }
 
