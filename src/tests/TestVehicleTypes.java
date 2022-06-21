@@ -6,18 +6,19 @@ import vehicleType.*;
 
 public class TestVehicleTypes {
     private VehicleTypeAPIClient client;
-    private GeneratedOBD2VehicleType type;
+
+    private VehicleType obd2Type;
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new VehicleTypeAPIClient(baseUrl, username, password);
-        type = new GeneratedOBD2VehicleType(baseUrl, username, password);
+        obd2Type = OBD2VehicleTypeGenerator.randomizedType(baseUrl, username, password);
     }
 
     @Test(priority = 2)
     public void testTypeCreation() {
-        type.sendQuery();
+        client.create(obd2Type);
     }
 
     @Test(priority = 2)

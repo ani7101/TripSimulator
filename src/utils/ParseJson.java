@@ -13,6 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ParseJson {
+    /** Private Constructor.
+     *  Suppress default constructor for non-instantiability */
+    private ParseJson() {
+        throw new AssertionError();
+    }
+
+
     public static <T> T deserializeResponse(String serverResponse, Class<T> modelType) {
         T modelObject = null;
         try {
@@ -21,44 +28,6 @@ public class ParseJson {
             e.printStackTrace();
         }
         return modelObject;
-    }
-
-    @Deprecated
-    public static <T> T deserializeIoTResponse(String serverResponse, T modelClass) {
-        T response = null;
-
-        try {
-            response = new ObjectMapper().readValue(serverResponse, new TypeReference<T>() {
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
-    @Deprecated
-    public static <T> ArrayList<T> deserializeHEREAPIListResponse(String serverResponse, T modelClass) {
-        ObjectMapper mapper = new ObjectMapper();
-        ArrayList<T> list = null;
-
-        try {
-            ObjectNode node = mapper.readValue(serverResponse, ObjectNode.class);
-            System.out.println(node.has("routes") && node.get("routes").get(0).has("sections"));
-
-
-            if (node.has("routes") && node.get("routes").get(0).has("sections")) {
-                JsonNode temp = node.get("routes").get(0).get("sections");
-                ObjectReader reader = mapper.readerFor(new TypeReference<ArrayList<T>>() {});
-                list = reader.readValue(temp);
-
-
-                String jsonList = mapper.writeValueAsString(node.get("routes").get(0).get("sections"));
-                list = mapper.readValue(jsonList, new TypeReference<ArrayList<T>>() {});
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
     }
 
     public static int deserializeCountResponse(String serverResponse) {

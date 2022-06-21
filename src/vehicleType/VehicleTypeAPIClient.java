@@ -3,6 +3,7 @@ package vehicleType;
 import utils.APIClient;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import vehicleType.subclasses.VehicleTypeList;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -44,7 +45,6 @@ public class VehicleTypeAPIClient extends APIClient {
         return count;
     }
 
-    // TODO: 13/06/2022 Implement parser (most likely not required)
     public String getPreSeededFields() {
         String response = null;
 

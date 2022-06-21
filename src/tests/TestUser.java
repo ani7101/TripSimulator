@@ -8,15 +8,15 @@ import java.util.ArrayList;
 
 public class TestUser {
     private UserAPIClient client;
-    private GeneratedUser user;
+
+    private User user;
 
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new UserAPIClient(baseUrl, username, password);
-        user = new GeneratedUser(baseUrl, username, password);
+        User newUser = UserGenerator.randomizedDefaultDriverUser(baseUrl, username, password);
 
-        System.out.println(user.getUser().toString());
     }
 
     @Test(priority = 2)
@@ -27,6 +27,6 @@ public class TestUser {
 
     @Test(priority = 2)
     public void testUserCreation() {
-        user.sendQuery();
+        client.create(user);
     }
 }

@@ -1,5 +1,6 @@
 package trip;
 
+import trip.subclasses.TripList;
 import utils.APIClient;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;

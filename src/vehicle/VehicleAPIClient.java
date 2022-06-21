@@ -3,6 +3,7 @@ package vehicle;
 import utils.APIClient;
 import utils.ParseJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import vehicle.subclasses.VehicleList;
 
 import java.util.ArrayList;
 import java.util.Map;

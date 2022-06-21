@@ -6,32 +6,21 @@ import trip.*;
 
 public class TestTrip {
 
-    private TripRepository repository;
-
     private TripAPIClient client;
 
-    private GeneratedTrip trip;
-
-//    @BeforeTest()
-//    public void setupTestRepository() {
-//        repository = new TripRepository();
-//        // Need to fill the trip repository
-//    }
-
+    private Trip trip;
 
     @Test(priority = 1)
-    @Parameters({"baseUrl", "username", "password", "vehicleType"})
-    public void testConfigAndRandomizer(String baseUrl, String username, String password, String vehicleType) {
+    @Parameters({"baseUrl", "username", "password", "vehicleName"})
+    public void testConfigAndRandomizer(String baseUrl, String username, String password, String vehicleName) {
         client = new TripAPIClient(baseUrl, username, password);
 
-        repository = new TripRepository();
-
-        trip = new GeneratedTrip(baseUrl, username, password, repository, vehicleType, true);
+        trip = TripGenerator.randomizedTripFromVehicle(baseUrl, username, password, vehicleName, 1);
     }
 
     @Test(priority = 2)
     public void testTripCreation() {
-        trip.sendQuery();
+        client.create(trip);
     }
 
     @Test(priority = 2)

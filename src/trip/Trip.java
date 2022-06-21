@@ -1,8 +1,8 @@
 package trip;
 
-import trip.tripSubClasses.TripDriverInfoModel;
-import trip.tripSubClasses.TripStopRecord;
-import trip.tripSubClasses.TripVehicleInfoModel;
+import trip.subclasses.TripDriverInfoModel;
+import trip.subclasses.TripStopRecord;
+import trip.subclasses.TripVehicleInfoModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

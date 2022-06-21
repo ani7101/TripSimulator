@@ -1,5 +1,6 @@
 package device;
 
+import device.subclasses.DeviceList;
 import utils.APIClient;
 import utils.ParseJson;
 

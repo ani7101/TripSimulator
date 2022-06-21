@@ -3,6 +3,7 @@ package vehicle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import vehicle.subclasses.VehicleAttributeMinimal;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,9 @@ public class Vehicle {
     // Unaccounted json properties
     @JsonIgnore
     private String deviceId;
+
+    @JsonIgnore
+    private String deviceName;
 
 
     // Constructor
@@ -179,4 +183,8 @@ public class Vehicle {
     public String getDeviceId() { return deviceId; }
 
     public void setDeviceId(String deviceId) { this.deviceId = deviceId; }
+
+    public String getDeviceName() { return deviceName; }
+
+    public void setDeviceName(String deviceName) { this.deviceName = deviceName; }
 }

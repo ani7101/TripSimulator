@@ -5,15 +5,11 @@ import java.util.Random;
 import static java.util.UUID.randomUUID;
 
 public class Generator {
-    private int currNumber = 1;
-
-    public int yield() {
-        int temp = currNumber;
-        next();
-        return temp;
+    /** Private Constructor.
+     *  Suppress default constructor for non-instantiability */
+    private Generator() {
+        throw new AssertionError();
     }
-
-    public void next() { currNumber++; }
 
     public static String generateRandomUUID() { return randomUUID().toString(); }
 
@@ -29,7 +25,7 @@ public class Generator {
     }
 
     public static ArrayList<String> generateRandomUUID(int count) {
-        ArrayList<String> UUIDS = new ArrayList<String>(count);
+        ArrayList<String> UUIDS = new ArrayList<>(count);
 
         for (int i = 0; i < count; i++) {
             UUIDS.add(Generator.generateRandomUUID());

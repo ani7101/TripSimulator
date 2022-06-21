@@ -1,14 +1,18 @@
 package utils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.*;
 import java.util.Properties;
 
 public class CredentialManager {
-    private static File targetFile;
+    /** Private Constructor.
+     *  Suppress default constructor for non-instantiability */
+    private CredentialManager() {
+        throw new AssertionError();
+    }
 
-    private static Properties credentials;
+    private static final File targetFile;
+
+    private static final Properties credentials;
 
     static
     {
@@ -22,11 +26,13 @@ public class CredentialManager {
         }
     }
 
-    public static String accessCredentials(String key) {
+    public static String get(String key) {
         return credentials.getProperty(key);
     }
 
-    public static void addNewCredentials(String key, String value) {
+    public static void add(String key, String value) {
+        if (has(key))
+            return;
         try {
             if (!targetFile.exists())
                 targetFile.createNewFile();
@@ -38,12 +44,21 @@ public class CredentialManager {
             bufferedWriter.close();
         } catch (IOException ioe) {
             System.err.println("Properties file does not exist in " + targetFile.getAbsolutePath());
+            ioe.printStackTrace();
         }
     }
 
-    public static @NotNull Boolean checkIfKeyValuePairExists(String queryKey, String queryValue) {
+    public static Boolean contains(String queryKey, String queryValue) {
         for (String key : credentials.stringPropertyNames()) {
             if (key.equals(queryKey) && credentials.getProperty(queryKey).equals(queryValue))
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean has(String queryKey) {
+        for (String key : credentials.stringPropertyNames()) {
+            if (key.equals(queryKey))
                 return true;
         }
         return false;

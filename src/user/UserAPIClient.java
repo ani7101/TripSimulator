@@ -1,5 +1,6 @@
 package user;
 
+import user.subclasses.UserList;
 import utils.APIClient;
 import utils.ParseJson;
 
