@@ -70,16 +70,25 @@ public class Trips {
         credentials.put("username", CredentialManager.get("username"));
 
         credentials.put("password", CredentialManager.get("password"));
+
+        credentials.put("accessTokenUrl", CredentialManager.get("accessTokenUrl"));
+
+        credentials.put("accessTokenUsername", CredentialManager.get("accessTokenUsername"));
+
+        credentials.put("accessTokenPassword", CredentialManager.get("accessTokenPassword"));
     }
 
     private void initializeTrips() {
         ArrayList<TripModel> tripModels = TripBulkGenerator.bulkCreateTrips(
+                credentials.get("accessTokenUrl"),
+                credentials.get("accessTokenUsername"),
+                credentials.get("accessTokenPassword"),
                 credentials.get("baseUrl"),
                 credentials.get("connectorUrl"),
                 credentials.get("username"),
                 credentials.get("password"),
                 requiredInstances,
-                2
+                1
         );
 
         for (TripModel tripModel : tripModels) {

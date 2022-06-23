@@ -77,14 +77,12 @@ public class TripAPIClient extends APIClient {
         Trip response = null;
 
         try {
-            String form = POJOToJson(trip);
-            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, form);
-            System.out.println(json);
+            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, POJOToJson(trip));
             response = ParseJson.deserializeResponse(json, Trip.class);
+            System.out.println("Created trip!");
 
         } catch (Exception e) {
-            e.printStackTrace();
-//            LOGGER.warning("Exception @TripAPIClient: " + e);
+            LOGGER.warning("Exception @TripAPIClient: " + e);
         }
 
         return response;

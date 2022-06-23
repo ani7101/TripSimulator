@@ -24,7 +24,6 @@ public class DeviceAPIClient extends APIClient {
 
         try {
             String json = AsyncGET(baseUrl + "/iot/api/v2/devices?limit=100", authHeader);
-            System.out.println(json);
             response = ParseJson.deserializeResponse(json, DeviceList.class).getItems();
         } catch (Exception e) {
             e.printStackTrace();

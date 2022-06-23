@@ -1,9 +1,11 @@
 package trip.subclasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TripStopRecord {
@@ -84,11 +86,20 @@ public class TripStopRecord {
 
     public TripStopRecord() {}
 
-    public ArrayList<Double> getGeoLocation() { return geoLocation; }
+    public String getGeoLocation() {
+        StringJoiner joiner = new StringJoiner(",");
+        for (Double value : geoLocation) {
+            joiner.add(String.valueOf(value));
+        }
+        return joiner.toString();
+    }
 
+    @JsonIgnore
     public double getLatitude() {
         return geoLocation.get(0);
     }
+
+    @JsonIgnore
 
     public double getLongitude() {
         return geoLocation.get(1);
@@ -96,10 +107,12 @@ public class TripStopRecord {
 
     public void setGeoLocation(ArrayList<Double> geoLocation) { this.geoLocation = geoLocation; }
 
+    @JsonIgnore
     public void setLatitude(double latitude) {
         this.geoLocation.add(0, latitude);
     }
 
+    @JsonIgnore
     public void setLongitude(double longitude) {
         this.geoLocation.add(0, longitude);
     }

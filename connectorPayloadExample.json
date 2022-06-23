@@ -7,16 +7,16 @@
   "data": {
     "latitude": 12.972442,
     "longitude": 77.580643,
-    "vehicle_speed": 95,
-    "engine_rpm": 2000,
-    "number_of_dtcs": 2,
+    "vehicle_speed": 0,
+    "engine_rpm": 0,
+    "number_of_dtcs": 0,
     "engine_coolant_temperature": 26.8,
-    "true_odometer": 381,
-    "throttle_position": 4.1,
-    "total_fuel_used": 147,
-    "runtime_since_engine_start": 1234,
+    "true_odometer": 0,
+    "throttle_position": 0,
+    "total_fuel_used": 0,
+    "runtime_since_engine_start": 0,
     "mass_air_flow": 187,
     "average_fuel_economy": 21,
-    "distance_since_dtcs_cleared": 381
+    "distance_since_dtcs_cleared": 0
   }
 }

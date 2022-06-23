@@ -24,14 +24,12 @@ public class VehicleBulkGenerator {
             String connectorUrl,
             String username,
             String password,
+            ArrayList<String> uniqueIds,
             int requiredVehicles
     ) {
         // Initialise the API clients
         VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
         VehicleTypeAPIClient typeClient = new VehicleTypeAPIClient(baseUrl, username, password);
-
-        // Generating a list of unique IDs
-        ArrayList<String> uniqueIds = Generator.generateRandomUUID(requiredVehicles);
 
         // Creating devices
         ArrayList<Device> devices = DeviceConnectorBulkGenerator.bulkCreateDevice(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
@@ -45,13 +43,51 @@ public class VehicleBulkGenerator {
         for (int i = 0; i < requiredVehicles; i++) {
             Device device = devices.get(i);
 
+            Vehicle vehicle = vehicleClient.create(
+              OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, type.getId(), device.getId(), uniqueIds.get(i))
+            );
 
-            Vehicle vehicle = vehicleClient.create(OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, type.getId(), device.getId()));
             // Adding the device details to the vehicle
             vehicle.setDeviceId(device.getId());
             vehicle.setDeviceName(device.getName());
-            vehicles.add(vehicle);
 
+            vehicles.add(vehicle);
+        }
+
+        return vehicles;
+    }
+
+    public static ArrayList<Vehicle> bulkCreateVehicles(
+            String baseUrl,
+            String connectorUrl,
+            String username,
+            String password,
+            String vehicleTypeId,
+            ArrayList<String> uniqueIds,
+            int requiredVehicles
+    ) {
+        // Initialise the API clients
+        VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
+
+        // Creating devices
+        ArrayList<Device> devices = DeviceConnectorBulkGenerator.bulkCreateDevice(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
+
+
+        ArrayList<Vehicle> vehicles = new ArrayList<>(requiredVehicles);
+
+        // Creating the vehicles
+        for (int i = 0; i < requiredVehicles; i++) {
+            Device device = devices.get(i);
+
+
+            Vehicle vehicle = vehicleClient.create(
+                    OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, vehicleTypeId, device.getId(), uniqueIds.get(i))
+            );
+            // Adding the device details to the vehicle
+            vehicle.setDeviceId(device.getId());
+            vehicle.setDeviceName(device.getName());
+
+            vehicles.add(vehicle);
         }
 
         return vehicles;

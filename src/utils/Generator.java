@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import static java.util.UUID.randomUUID;
 
+/**
+ * Generates random values (Strings, numbers)
+ */
 public class Generator {
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
@@ -11,10 +14,20 @@ public class Generator {
         throw new AssertionError();
     }
 
+    private static String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+    /**
+     * Generates a random UUID (128 bit value) which has a very, very small probability of collision
+     * @return String: Randomly generated UUID
+     */
     public static String generateRandomUUID() { return randomUUID().toString(); }
 
+    /**
+     * Generates a random alphanumerical String of required length
+     * @param length Required number of characters in the random string to be generated
+     * @return String: Randomly generated alphanumerical String
+     */
     public static String generateRandomString(int length) {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < length) {
@@ -24,6 +37,11 @@ public class Generator {
         return salt.toString();
     }
 
+    /**
+     * Generates a list of random UUIDs
+     * @param count Required number of UUIDs
+     * @return ArrayList(String): list of randomly generated UUIDs in String
+     */
     public static ArrayList<String> generateRandomUUID(int count) {
         ArrayList<String> UUIDS = new ArrayList<>(count);
 

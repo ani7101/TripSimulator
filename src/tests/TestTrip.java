@@ -10,12 +10,16 @@ public class TestTrip {
 
     private Trip trip;
 
+    private final String accessTokenUrl = "https://gdhanani2-dev.internal.iot.ocs.oraclecloud.com/iotapps/privateclientapi/v2/oauth/hereMapToken";
+
     @Test(priority = 1)
     @Parameters({"baseUrl", "username", "password", "vehicleName"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password, String vehicleName) {
         client = new TripAPIClient(baseUrl, username, password);
 
-        trip = TripGenerator.randomizedTripFromVehicle(baseUrl, username, password, vehicleName, 1);
+        trip = TripGenerator.randomizedTripFromVehicle(
+                accessTokenUrl, username, password,
+                baseUrl, username, password, vehicleName, "TestTrip",  1);
     }
 
     @Test(priority = 2)

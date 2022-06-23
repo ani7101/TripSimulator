@@ -2,7 +2,9 @@ package utils;
 
 import utils.PolylineEncoderDecoder.LatLngZ;
 
-
+/**
+ * Utility function to handle the distances and points in maps
+ */
 public class Navigation {
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
@@ -12,36 +14,36 @@ public class Navigation {
 
     private static final double EARTH_RADIUS_IN_METERS = 6371008.7714;
 
+    /**
+     * Gives distance between initial and final point with elevation playing a factor
+     * @param pt1 Initial point
+     * @param pt2 Final point
+     * @return double: Distance
+     */
+    public static double getDistanceWithEle(LatLngZ pt1, LatLngZ pt2) {
 
-    public static double getDistance(double lat1, double lat2, double lon1,
-                                  double lon2, double el1, double el2) {
 
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
+        double latDistance = Math.toRadians(pt2.lat - pt1.lat);
+        double lonDistance = Math.toRadians(pt2.lng - pt1.lng);
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                + Math.cos(Math.toRadians(pt1.lat)) * Math.cos(Math.toRadians(pt2.lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = EARTH_RADIUS_IN_METERS * c * 1000;
 
-        double height = el1 - el2;
+        double height = pt1.z - pt2.z;
 
         distance = Math.pow(distance, 2) + Math.pow(height, 2);
 
         return Math.sqrt(distance);
     }
 
-    public static double getDistance(double lat1, double lon1,
-                            double lat2,double lon2) {
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        return dist;
-    }
-
+    /**
+     * Gives distance between the initial and final point without taking elevation into consideration
+     * @param p1 Initial point
+     * @param p2 Final point
+     * @return double: Distance
+     */
     public static double getDistance(LatLngZ p1, LatLngZ p2) {
         double theta = p1.lat - p2.lng;
         double dist = Math.sin(deg2rad(p1.lat)) * Math.sin(deg2rad(p2.lng)) + Math.cos(deg2rad(p1.lat)) * Math.cos(deg2rad(p2.lng)) * Math.cos(deg2rad(theta));
@@ -51,6 +53,13 @@ public class Navigation {
         return dist;
     }
 
+    /**
+     * Interpolates point between initial point, pt1 and final point, pt2 with distance d from pt1
+     * @param pt1 Initial point
+     * @param pt2 Final point
+     * @param d Distance of the point from the pt1
+     * @return LatLngZ: Point between pt1 and pt2 with the given distance
+     */
     public static LatLngZ getPosition(LatLngZ pt1, LatLngZ pt2, double d) {
         double direction = getDirection(pt1, pt2);
 
@@ -71,6 +80,12 @@ public class Navigation {
 
     }
 
+    /**
+     * Gives the bearing with respect to the initial and final point
+     * @param pt1 Initial point
+     * @param pt2 Final point
+     * @return double: Direction to move towards from the initial to final point
+     */
     private static double getDirection(LatLngZ pt1, LatLngZ pt2) {
         double longitude2 = pt2.lat;
         double longitude1 = pt1.lng;
@@ -82,10 +97,20 @@ public class Navigation {
         return (Math.toDegrees(Math.atan2(y, x))+360)%360;
     }
 
+    /**
+     * Converts degrees to radians
+     * @param deg input value in degrees
+     * @return double: converted value in radians
+     */
     private static double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
+    /**
+     * Converts radians to degrees
+     * @param rad input value in radians
+     * @return double: converted value in degrees
+     */
     private static double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }

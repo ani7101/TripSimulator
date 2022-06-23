@@ -13,7 +13,10 @@ public class TestHereMaps {
 
     @Test(priority = 1)
     public void testTokenGeneration() {
-        client = new HEREMapsAPIClient();
+        String accessTokenUrl = "https://gdhanani2-dev.internal.iot.ocs.oraclecloud.com/iotapps/privateclientapi/v2/oauth/hereMapToken";
+        String accessTokenUsername = "iot-cloudops_ww_grp";
+        String accessTokenPassword = "Welcome1234#";
+        client = new HEREMapsAPIClient(accessTokenUrl, accessTokenUsername, accessTokenPassword);
     }
 
     @Test(priority = 2)

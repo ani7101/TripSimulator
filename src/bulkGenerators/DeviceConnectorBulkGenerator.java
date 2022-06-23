@@ -20,17 +20,17 @@ public class DeviceConnectorBulkGenerator {
     private static PayloadData dummyPayloadData = new PayloadData(
             12.972442,  // latitude
             77.580643,  // longitude
-            95,         // vehicle speed
-            2000,       // engine RPM
-            2,          // number of DTCs (at the time)
+            0,         // vehicle speed
+            0,       // engine RPM
+            0,          // number of DTCs (at the time)
             26.8,       // engine coolant temp
-            381,        // odometer
-            4.1,        // throttle position
-            147,        // total fuel used
-            1234,       // runtime since engine start
-            187,        // mass air flow
+            0,        // odometer
+            0,        // throttle position
+            0,        // total fuel used
+            0,       // runtime since engine start
+            0,        // mass air flow
             21,         // average fuel economy
-            87          // distance since DTCs cleared
+            0          // distance since DTCs cleared
     );
 
 
@@ -75,9 +75,7 @@ public class DeviceConnectorBulkGenerator {
         // Create devices
         for (int i = 0; i < requiredDevices; i++) {
             String response = connectorClient.postPayload(populatePayload(uniqueIds.get(i)));
-            if (response != "Request accepted") {
-                throw new RuntimeException(response);
-            }
+            // TODO: 21/06/2022 Handle exceptions while creating connectors
         }
 
         ArrayList<Device> devices = new ArrayList<>(requiredDevices);

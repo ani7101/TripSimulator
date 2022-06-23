@@ -1,5 +1,6 @@
 package trip;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import trip.subclasses.TripDriverInfoModel;
 import trip.subclasses.TripStopRecord;
 import trip.subclasses.TripVehicleInfoModel;
@@ -82,12 +83,15 @@ public class Trip {
     @JsonProperty(TRIP_STATUS)
     private String tripStatus;
 
+    @JsonIgnore
     private ArrayList<String> route;            // Required for simulation
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops) {
         this.destination = destination;
         this.source = source;
         this.stops = stops;
+
+        tripStatus = "NOT_STARTED";
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle, TripDriverInfoModel driver) {
@@ -96,6 +100,8 @@ public class Trip {
         this.source = source;
         this.stops = stops;
         this.vehicle = vehicle;
+
+        tripStatus = "NOT_STARTED";
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle) {
@@ -103,13 +109,16 @@ public class Trip {
         this.source = source;
         this.stops = stops;
         this.vehicle = vehicle;
+
+        tripStatus = "NOT_STARTED";
     }
 
     public Trip() {}
 
-
+    @JsonIgnore
     public ArrayList<String> getRoute() { return route; }
 
+    @JsonIgnore
     public void setRoute(ArrayList<String> route) { this.route = route; }
 
     public TripStopRecord getDestination() {

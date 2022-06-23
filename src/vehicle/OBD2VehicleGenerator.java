@@ -22,24 +22,15 @@ public class OBD2VehicleGenerator {
             String baseUrl,
             String username,
             String password,
-            String deviceId
+            String deviceId,
+            String uniqueId
     ) {
         // Creating a new vehicle type and posting it to the IoT server
         VehicleTypeAPIClient typeClient = new VehicleTypeAPIClient(baseUrl, username, password);
         VehicleType vehicleType = OBD2VehicleTypeGenerator.randomizedType(baseUrl, username, password);
         typeClient.create(vehicleType);
 
-        return randomizedVehicle(baseUrl, username, password, vehicleType.getId(), deviceId, "defaultModel","defaultMake");
-    }
-
-    public static Vehicle randomizedVehicle(
-            String baseUrl,
-            String username,
-            String password,
-            String vehicleTypeId,
-            String deviceId
-    ) {
-        return randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId, "defaultModel","defaultMake");
+        return randomizedVehicle(baseUrl, username, password, vehicleType.getId(), deviceId, uniqueId, "defaultModel","defaultMake");
     }
 
     public static Vehicle randomizedVehicle(
@@ -48,11 +39,23 @@ public class OBD2VehicleGenerator {
             String password,
             String vehicleTypeId,
             String deviceId,
+            String uniqueId
+    ) {
+        return randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId, uniqueId, "defaultModel","defaultMake");
+    }
+
+    public static Vehicle randomizedVehicle(
+            String baseUrl,
+            String username,
+            String password,
+            String vehicleTypeId,
+            String deviceId,
+            String uniqueId,
             String make,
             String model
     ) {
         Vehicle vehicle = new Vehicle(
-                "simulator-vehicle-" + deviceId,         // name
+                "simulator-vehicle-" + uniqueId,         // name
                 model,                                         // Vehicle model
                 make,                                          // Vehicle make
                 vehicleTypeId,                                 // ID of the vehicle type
@@ -61,7 +64,7 @@ public class OBD2VehicleGenerator {
                 LocalDateTime.now().getYear()                  // Vehicle launch year
         );
 
-        vehicle.setDescription("Trip simulation vehicle linked with device " + deviceId);
+        vehicle.setDescription("Trip simulation vehicle linked with device " + uniqueId);
         vehicle.setAttributes(getOBD2Attributes(deviceId));
 
         return vehicle;

@@ -3,6 +3,9 @@ package utils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * General class model for deserializing the links' response from the IoT server
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IoTDeserializerLinks {
     public static final String HREF = "href";

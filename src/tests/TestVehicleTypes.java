@@ -35,7 +35,7 @@ public class TestVehicleTypes {
     @Test(priority = 3)
     @Parameters({"vehicleType"})
     public void testFetchOne(String typeId) {
-        client.getOne(typeId);
+        VehicleType type = client.getOne(typeId);
     }
 
     @Test(priority = 3)

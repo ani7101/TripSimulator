@@ -101,10 +101,7 @@ public class VehicleAPIClient extends APIClient {
         Vehicle response = null;
 
         try {
-            String form = POJOToJson(vehicle);
-            System.out.println(form);
-            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader, form);
-            System.out.println(json);
+            String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader, POJOToJson(vehicle));
             response = ParseJson.deserializeResponse(json, Vehicle.class);
         } catch (Exception e) {
             e.printStackTrace();

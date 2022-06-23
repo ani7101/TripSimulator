@@ -13,7 +13,7 @@ public class ConnectorAPIClient extends APIClient {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public ConnectorAPIClient(String connectorUrl, String username, String password) {
-        this.connectorUrl = connectorUrl; // https://aniragha-lite.device.internal.iot.ocs.oraclecloud.com/cgw/TripSimulatorController
+        this.connectorUrl = connectorUrl;
         this.authHeader = generateAuthenticationHeader(username, password);
     }
 
@@ -23,6 +23,7 @@ public class ConnectorAPIClient extends APIClient {
         try {
             response = AsyncPOST(connectorUrl, authHeader, POJOToJson(payload));
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.warning("Exception @ConnectorAPIClient: " + e);
         }
 

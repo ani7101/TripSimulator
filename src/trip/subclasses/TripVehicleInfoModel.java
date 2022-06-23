@@ -13,9 +13,6 @@ public class TripVehicleInfoModel {
     @JsonProperty(NAME)
     private String name;
 
-    @JsonIgnore
-    private String deviceId;
-
     public TripVehicleInfoModel(String name) {
         this.name = name;
     }
@@ -28,8 +25,4 @@ public class TripVehicleInfoModel {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getDeviceId() { return deviceId; }
-
-    public void setDeviceId(String deviceId) { this.deviceId = deviceId; }
 }

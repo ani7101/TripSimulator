@@ -6,6 +6,9 @@ import utils.IoTDeserializerList;
 
 import java.util.ArrayList;
 
+/**
+ * List using Organization as items and based on the IoTDeserializerList class to deserialize a list response from the IoT API
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganizationList extends IoTDeserializerList {
     public static final String ITEMS = "items";

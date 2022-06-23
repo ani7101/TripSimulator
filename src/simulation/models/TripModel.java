@@ -63,8 +63,10 @@ public class TripModel {
 
         payload = DeviceConnectorBulkGenerator.populatePayload(deviceId, deviceName);
 
-        for (String sectionPolyline : polyline) {
-            route.add(PolylineEncoderDecoder.decode(sectionPolyline));
+        if (polyline != null) {
+            for (String sectionPolyline : polyline) {
+                route.add(PolylineEncoderDecoder.decode(sectionPolyline));
+            }
         }
     }
 

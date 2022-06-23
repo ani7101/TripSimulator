@@ -14,7 +14,7 @@ public class TestVehicles {
     @Parameters({"baseUrl", "username", "password", "deviceId"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password, String deviceId) {
         client = new VehicleAPIClient(baseUrl, username, password);
-        vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, deviceId);
+        vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, deviceId, "-Test-");
     }
 
     @Test(priority = 2)

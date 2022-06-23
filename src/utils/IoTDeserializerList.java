@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
-
+/**
+ * General class model for deserializing the list responses from the IoT server
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IoTDeserializerList {
 

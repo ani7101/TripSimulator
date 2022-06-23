@@ -8,6 +8,11 @@ import payload.Payload;
 import payload.subclasses.PayloadData;
 import utils.Generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static bulkGenerators.DeviceConnectorBulkGenerator.bulkCreateDevice;
+
 public class TestDeviceConnector {
     DeviceAPIClient deviceClient;
     ConnectorAPIClient connectorClient;
@@ -49,6 +54,14 @@ public class TestDeviceConnector {
 
         payload.setData(payloadData);
 
-        connectorClient.postPayload(payload);
+        System.out.println(connectorClient.postPayload(payload));
+    }
+
+    @Test(priority = 4)
+    @Parameters({"baseUrl", "connectorUrl", "username", "password"})
+    public void createDevicesUsingConnectors(String baseUrl, String connectorUrl, String username, String password) {
+        ArrayList<Device> devices = bulkCreateDevice(baseUrl, connectorUrl, username, password, 3, new ArrayList<String>(List.of("Test1", "Test2", "Test3")));
+
+        assert devices.size() == 3;
     }
 }

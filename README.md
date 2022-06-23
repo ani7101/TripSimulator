@@ -1,8 +1,51 @@
 # Trip Simulator
 
-Trip simulator, as part of the Oracle SCM - IoT division creates instances in the server instance and simulates a given number of trips with random sources, destinations and stops for a real UX. 
+Trip simulator, as part of the Oracle SCM - IoT division creates instances in the server instance and simulates a given number of trips with random sources, destinations and stops for a real UX.
 
 ## Getting started
+
+1. In the IoT server instance, head to the `Devices -> Connectors` section in the dashboard drawer.
+2. Click on the icon to add a new connector and set the type to `Http server`. While creating, add the following grammar by copying and pasting the below text into the Telemetry->envelope property. Finally, click on validate and add a map between hardwareId and the deviceIdentifier as shown in the images below before creating the connector.
+
+![alt text](./images/createConnector.png "Connector section")
+
+```json
+{
+  "deviceName": "simulator-vehicle-a9f5c0fc-88fd-46d9-af49-e43e5c209336-sensor",
+  "deviceDescription": "Follows OBD2 device model",
+  "deviceType": "OBD2 Modular Vehicle sensor",
+  "deviceIdentifier": "obd2-sensor-4a6caf83-dade-438a-8195-f3cb836112a0",
+  "measurementTime": "2022-06-14T21:45:00.844Z",
+  "data": {
+    "latitude": 12.972442,
+    "longitude": 77.580643,
+    "vehicle_speed": 0,
+    "engine_rpm": 0,
+    "number_of_dtcs": 0,
+    "engine_coolant_temperature": 26.8,
+    "true_odometer": 0,
+    "throttle_position": 0,
+    "total_fuel_used": 0,
+    "runtime_since_engine_start": 0,
+    "mass_air_flow": 187,
+    "average_fuel_economy": 21,
+    "distance_since_dtcs_cleared": 0
+  }
+}
+```
+
+![alt text](./images/connectorGrammar.png "Connector grammar section")
+
+3. Now head into the `Devices -> Interpreters` to create a data interpreter for the given connector. Set the selection criteria to `Connector name = {connectorName, in our case TripSimulator}` and select the **ora_obd2_device_model** device model. Lastly, in the add grammar section, paste the above payload example for the data and add maps to the corresponding obd2 data properties similar to the image attached below.
+
+![alt text](./images/createInterpreter.png "Interpreter section")
+
+![alt text](./images/interpreterGrammar.png "Interpreter grammar section")
+
+4. Set the proxy settings to the following while connecting the oracle VPN. 
+```
+-Dhttp.proxyHost=www-proxy.us.oracle.com -Dhttps.proxyHost=www-proxy.us.oracle.com -Dhttp.proxyPort=80 -Dhttps.proxyPort=80 -Dhttp.nonProxyHosts="localhost|127.0.0.1|*.oraclecorp.com|*.us.oracle.com|*.internal.iot.ocs.oraclecloud.com" 
+```
 
 ### Dependencies
 
@@ -18,7 +61,7 @@ Trip simulator, as part of the Oracle SCM - IoT division creates instances in th
 10. Slf4j-api (v1.7.36)
 11. Slf4j-simple (v1.7.36)
 
-All dependencies can be installed manually from [maven repository](https://mvnrepository.com/) or using the following xml file for 
+All dependencies can be installed manually from [maven repository](https://mvnrepository.com/) or using the following xml (pom) file  
 
 ```xml
 <dependencies>
@@ -103,7 +146,7 @@ All dependencies can be installed manually from [maven repository](https://mvnre
 </dependencies>
 ```
 
-## Data simulation.models
+## Data models
 
 ### 1. Trip
 
@@ -119,11 +162,19 @@ All dependencies can be installed manually from [maven repository](https://mvnre
 
 ### 6. Organizations
 
+## Simulation
+
+### Instance
+
+### Physics
+
+Randomized property values - 
+
 ## API Clients
 
 1. IoT server instance
 
-API calls are made to the configured server instance to setup and start the trip simulations with the given number of instances
+API calls are made to the IoT server instance to create trip instances for the simulation. It is again used to create 
 
 2. HERE Maps
 

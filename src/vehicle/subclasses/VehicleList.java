@@ -7,6 +7,9 @@ import vehicle.Vehicle;
 
 import java.util.ArrayList;
 
+/**
+ * List using Vehicle as items and based on the IoTDeserializerList class to deserialize a list response from the IoT API
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VehicleList extends IoTDeserializerList {
     public static final String ITEMS = "items";
