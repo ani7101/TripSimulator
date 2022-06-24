@@ -10,7 +10,9 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Vehicle {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String NAME = "name";
@@ -30,6 +32,11 @@ public class Vehicle {
     public static final String DESCRIPTION = "description";
 
     public static final String ATTRIBUTES = "attributes";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(ID)
     private String id;
@@ -70,7 +77,10 @@ public class Vehicle {
     private String deviceName;
 
 
-    // Constructor
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public Vehicle(String name, String model, String make, String type, String registrationNumber, String vin, int year) {
         this.name = name;
         this.model = model;
@@ -104,7 +114,13 @@ public class Vehicle {
         this.attributes = attributes;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public Vehicle() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() { return id; }
 
@@ -187,4 +203,7 @@ public class Vehicle {
     public String getDeviceName() { return deviceName; }
 
     public void setDeviceName(String deviceName) { this.deviceName = deviceName; }
+
+    //endregion
+
 }

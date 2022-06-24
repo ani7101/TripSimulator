@@ -7,16 +7,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TripVehicleInfoModel {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String NAME = "name";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(NAME)
     private String name;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public TripVehicleInfoModel(String name) {
         this.name = name;
     }
+
+    // Empty constructor for jackson to serialize/deserialize
     public TripVehicleInfoModel() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getName() {
         return name;
@@ -25,4 +44,7 @@ public class TripVehicleInfoModel {
     public void setName(String name) {
         this.name = name;
     }
+
+    //endregion
+
 }

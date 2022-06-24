@@ -5,6 +5,7 @@ import payload.Payload;
 import utils.DateTime;
 import utils.PolylineEncoderDecoder;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,8 +13,10 @@ import java.util.List;
 
 import static payload.PayloadDataGenerator.getRandomPayloadData;
 
-
-public class TripModel {
+/**
+ * Stores the minimal information required for simulation of one trip
+ */
+public class TripModel implements Serializable {
 
     private final String id;
 

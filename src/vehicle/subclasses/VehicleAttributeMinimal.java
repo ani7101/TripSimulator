@@ -5,12 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VehicleAttributeMinimal {
-    // Defining the mapping structure for the response parser
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String NAME = "name";
     public static final String TYPE = "type";
 
     public static final String VALUE = "value";
 
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(NAME)
     private String name;
@@ -20,6 +27,11 @@ public class VehicleAttributeMinimal {
 
     @JsonProperty(VALUE)
     private VehicleAttributeValue value;
+
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
 
     public VehicleAttributeMinimal(String name, String type) {
         this.name = name;
@@ -34,7 +46,13 @@ public class VehicleAttributeMinimal {
         this.value = new VehicleAttributeValue(deviceId, deviceModel, messageFormatField);
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public VehicleAttributeMinimal() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getName() {
         return name;
@@ -59,4 +77,7 @@ public class VehicleAttributeMinimal {
     public void setValue(VehicleAttributeValue value) {
         this.value = value;
     }
+
+    //endregion
+
 }

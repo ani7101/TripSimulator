@@ -3,6 +3,7 @@
  */
 package utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -405,7 +406,7 @@ public class PolylineEncoderDecoder {
     /**
      * Coordinate triple
      */
-    public static class LatLngZ {
+    public static class LatLngZ implements Serializable {
         public final double lat;
         public final double lng;
         public final double z;

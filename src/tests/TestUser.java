@@ -15,7 +15,7 @@ public class TestUser {
     @Parameters({"baseUrl", "username", "password"})
     public void testConfigAndRandomizer(String baseUrl, String username, String password) {
         client = new UserAPIClient(baseUrl, username, password);
-        User newUser = UserGenerator.randomizedDefaultDriverUser(baseUrl, username, password);
+        User newUser = UserGenerator.randomizedDefaultDriverUser();
 
     }
 

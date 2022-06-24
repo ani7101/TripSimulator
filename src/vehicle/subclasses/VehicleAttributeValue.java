@@ -5,11 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VehicleAttributeValue {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String DEVICE_ID = "deviceId";
 
     public static final String DEVICE_MODEL = "deviceModel";
 
     public static final String MESSAGE_FORMAT_FIELD = "messageFormatField";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(DEVICE_ID)
     private String deviceId;
@@ -20,13 +29,24 @@ public class VehicleAttributeValue {
     @JsonProperty(MESSAGE_FORMAT_FIELD)
     private String messageFormatField;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public VehicleAttributeValue(String deviceId, String deviceModel, String messageFormatField) {
         this.deviceId = deviceId;
         this.deviceModel = deviceModel;
         this.messageFormatField = messageFormatField;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public VehicleAttributeValue() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getDeviceId() {
         return deviceId;
@@ -51,4 +71,7 @@ public class VehicleAttributeValue {
     public void setMessageFormatField(String messageFormatField) {
         this.messageFormatField = messageFormatField;
     }
+
+    //endregion
+
 }

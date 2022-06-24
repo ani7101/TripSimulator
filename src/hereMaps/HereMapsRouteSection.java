@@ -7,7 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This is the template of the response sent from the HERE maps routing API in the routes -> 1st element (only one route is asked at a time) -> sections field
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HEREMapsRouteSection {
+public class HereMapsRouteSection {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
 
     public final static String ID = "id";
     
@@ -15,16 +18,24 @@ public class HEREMapsRouteSection {
 
     public final static String POLYLINE = "polyline";
 
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
+
     @JsonProperty(ID)
     private String id;
 
     @JsonProperty(SUMMARY)
-    private HEREMapsRouteSummary summary;
+    private HereMapsRouteSummary summary;
 
     @JsonProperty(POLYLINE)
     private String polyline;
 
-    public HEREMapsRouteSection() {}
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() { return id; }
 
@@ -35,4 +46,7 @@ public class HEREMapsRouteSection {
     public long getLength() { return summary.getLength(); }
 
     public String getPolyline() { return polyline; }
+
+    //endregion
+
 }

@@ -3,8 +3,13 @@ package payload.subclasses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PayloadData {
+public class PayloadData implements Serializable {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
 
     public static final String LATITUDE = "latitude";
 
@@ -31,6 +36,11 @@ public class PayloadData {
     public static final String AVERAGE_FUEL_ECONOMY= "average_fuel_economy";
 
     public static final String DISTANCE_SINCE_DTCS_CLEARED = "distance_since_dtcs_cleared";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(LATITUDE)
     private double latitude;
@@ -71,6 +81,11 @@ public class PayloadData {
     @JsonProperty(DISTANCE_SINCE_DTCS_CLEARED)
     private int distanceSinceDTCsCleared;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public PayloadData(double latitude, double longitude, int vehicleSpeed, int engineRPM, double numberOfDTCs, double engineCoolantTemperature, double trueOdometer, double throttlePosition, int totalFuelUsed, long runtimeSinceEngineStart, double massAirFlow, double averageFuelEconomy, int distanceSinceDTCsCleared) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -87,7 +102,13 @@ public class PayloadData {
         this.distanceSinceDTCsCleared = distanceSinceDTCsCleared;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public PayloadData() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public double getLatitude() {
         return latitude;
@@ -192,4 +213,7 @@ public class PayloadData {
     public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
         this.distanceSinceDTCsCleared = distanceSinceDTCsCleared;
     }
+
+    //endregion
+
 }

@@ -3,14 +3,29 @@ package user.subclasses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * User email address format as per the IoT server.
+ * Contains the following fields - <br>
+ * <ol>
+ *    <li>type (String) - PRIMARY/RECOVERY</li>
+ *    <li>value (String)</li>
+ *    <li>primary (Boolean)</li>
+ * </ol>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEmailAddress {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
     public static final String TYPE = "type";
 
     public static final String VALUE = "value";
 
     public static final String PRIMARY = "primary";
 
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(TYPE)
     private String type;
@@ -22,6 +37,10 @@ public class UserEmailAddress {
     private boolean primary;
 
 
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public UserEmailAddress(String type, String value, boolean primary) {
         this.type = type;
         this.value = value;
@@ -32,8 +51,13 @@ public class UserEmailAddress {
         this(type, value, false);
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public UserEmailAddress() {}
 
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getType() { return type; }
 
@@ -46,5 +70,7 @@ public class UserEmailAddress {
     public boolean isPrimary() { return primary; }
 
     public void setPrimary(boolean primary) { this.primary = primary; }
+
+    //endregion
 
 }

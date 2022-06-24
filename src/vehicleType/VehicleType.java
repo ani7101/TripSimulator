@@ -9,7 +9,9 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VehicleType {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String YEARS = "years";
@@ -17,6 +19,11 @@ public class VehicleType {
     public static final String DESCRIPTION = "description";
     public static final String MAKE = "make";
     public static final String MODEL = "model";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     // Mandatory fields
     @JsonProperty(ID)
@@ -41,12 +48,23 @@ public class VehicleType {
     @JsonProperty(MODEL)
     private String model;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public VehicleType(String name, ArrayList<Integer> years) {
         this.name = name;
         this.years = years;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public VehicleType() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() { return id; }
 
@@ -116,4 +134,7 @@ public class VehicleType {
     public void setModel(String model) {
         this.model = model;
     }
+
+    //endregion
+
 }

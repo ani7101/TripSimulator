@@ -1,0 +1,51 @@
+{
+  "_request": "https://router.hereapi.com/v8/routes?transportMode=truck&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary,polyline",
+  "routes": [
+    {
+      "id": "8d64a533-daa9-48d3-bdfc-a220478a6b9f",
+      "sections": [
+        {
+          "id": "5f719cf9-0229-41b2-be7c-c5e65c234fd6",
+          "type": "vehicle",
+          "departure": {
+            "time": "2022-06-24T08:21:06+02:00",
+            "place": {
+              "type": "place",
+              "location": {
+                "lat": 52.5309838,
+                "lng": 13.3845671
+              },
+              "originalLocation": {
+                "lat": 52.5307999,
+                "lng": 13.3847
+              }
+            }
+          },
+          "arrival": {
+            "time": "2022-06-24T08:25:26+02:00",
+            "place": {
+              "type": "place",
+              "location": {
+                "lat": 52.5323264,
+                "lng": 13.378874
+              },
+              "originalLocation": {
+                "lat": 52.5323,
+                "lng": 13.3789
+              }
+            }
+          },
+          "summary": {
+            "duration": 260,
+            "length": 1052,
+            "baseDuration": 258
+          },
+          "polyline": "BGwynmkDu39wZvBtF3InfvHrdvHvbvCrJzF3S_EnQ_JriBnB_ErEnQ_Ov0BzF3SzKnkB_E3NnB3D7BrEnB3IrE_OrEzPzFrT3N3wBkIjIkDvC0e3csJrJkD3DsxB7uBsdvbsEkNsOkmBkDkI8agrC4YkjC",
+          "transport": {
+            "mode": "truck"
+          }
+        }
+      ]
+    }
+  ]
+}

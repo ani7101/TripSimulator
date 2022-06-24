@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Contains static methods to generate randomized vehicleTypes with the valid years being the [current_year, current_year + 2]
+ */
 public class OBD2VehicleTypeGenerator {
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
@@ -13,21 +16,18 @@ public class OBD2VehicleTypeGenerator {
         throw new AssertionError();
     }
 
-    public static VehicleType randomizedType(
-            String baseUrl,
-            String username,
-            String password
-    ) {
+    //region Randomized Generator
+
+    /**
+     * Generates a random vehicle type based on the OBD2 device model
+     * @return VehicleType: randonly generated vehicle type
+     */
+    public static VehicleType randomizedType() {
         // Random value for the name field
         String name = "TestOBD2VehicleType" + ThreadLocalRandom.current().nextInt(0, 100 + 1);
 
         // Values for year field
-        ArrayList<Integer> years = new ArrayList<Integer>();
-
-        int currYear = LocalDateTime.now().getYear();
-        years.add(currYear);
-        years.add(currYear + 1);
-        years.add(currYear + 2);
+        ArrayList<Integer> years = getYears(2);
 
         VehicleType type = new VehicleType(name, years);
 
@@ -39,6 +39,14 @@ public class OBD2VehicleTypeGenerator {
         return type;
     }
 
+
+    //endregion
+    //region Utils
+
+    /**
+     * Creates a list of all the required OBD2 attributes to be included in the vehicle type
+     * @return ArrayList(VehicleAttribute): List of all OBD2 parameter attributes
+     */
     private static ArrayList<VehicleAttribute> getOBD2Attributes() {
         ArrayList<VehicleAttribute> attributes = new ArrayList<VehicleAttribute>();
 
@@ -191,4 +199,25 @@ public class OBD2VehicleTypeGenerator {
 
         return attributes;
     }
+
+    /**
+     * Generates a list of years from the current year unto current year + limit
+     * @param limit Number of years that should be included
+     * @return ArrayList(Integer): years
+     */
+    private static ArrayList<Integer> getYears(int limit) {
+        ArrayList<Integer> years = new ArrayList<>(limit);
+
+        int currYear = LocalDateTime.now().getYear();
+        years.add(currYear);
+
+        for (int i = 0; i < limit; i++) {
+            years.add(currYear + i);
+        }
+
+        return years;
+    }
+
+    //endregion
+
 }

@@ -5,13 +5,27 @@ import payload.subclasses.PayloadData;
 import java.util.Random;
 
 /**
- * Random values between ranges - engine RPM, engine coolant temperature, mass air flow (as of now), throttle position
- *
- * Mass air flow linearly varies with engine rpm above 1000 RPM (<a href="https://www.researchgate.net/figure/Flow-rate-vs-rpm-in-higher-rpms-for-a-normal-sensor_fig5_280884222">Reference</a>)
- *
- * Throttle position approximately varies linearly with rpm with a slope of 634. (<a href="https://www.researchgate.net/figure/Position-of-the-throttle-valve-versus-engine-speed-at-idle-From-Figure-7-we-can-deduct_fig1_317158492">reference</a>)
+ * Generates randomized values for the payload as per the below-mentioned scheme.
+ * <br>
+ * <b>Random values between ranges</b> - engine RPM, engine coolant temperature, mass air flow (as of now), throttle position
+ * <br>
+ * <b>Values dependent on the simulation</b> - Speed, Odometer, Runtime since engine start, total fuel used, average fuel economy
+ * <br>
+ * <br>
+ * <b>References</b>
+ * <ul>
+ *     <li>
+ *         Mass air flow linearly varies with engine rpm above 1000 RPM (<a href="https://www.researchgate.net/figure/Flow-rate-vs-rpm-in-higher-rpms-for-a-normal-sensor_fig5_280884222">Reference</a>)
+ *     </li>
+ *     <li>
+ *         Throttle position approximately varies linearly with rpm with a slope of 634. (<a href="https://www.researchgate.net/figure/Position-of-the-throttle-valve-versus-engine-speed-at-idle-From-Figure-7-we-can-deduct_fig1_317158492">reference</a>)
+ *     </li>
+ * </ul>
  */
 public class PayloadDataGenerator {
+
+    //region Constant values
+
     public static int minEngineRPM = 1000;
     public static int maxEngineRPM = 6000;
 
@@ -24,6 +38,9 @@ public class PayloadDataGenerator {
 
     public static double DTCsProbability = 0.02;
 
+
+    //endregion
+    //region Randomized generators
 
     public static int generateEngineRPM() {
         return (int) generateRandomNumber(minEngineRPM, maxEngineRPM);
@@ -50,7 +67,7 @@ public class PayloadDataGenerator {
     }
 
     public static double generateThrottlePosition(int engineRPM) {
-        return engineRPM / 640; //
+        return engineRPM / 640.0; //
     }
 
     public static double generateThrottlePosition() {
@@ -66,10 +83,7 @@ public class PayloadDataGenerator {
         // We can use (1 - negative exponential function) with a constant to check the probability that the DTC is resolved on that day
         // Although this is hard, it's quite hard to compute and considering it's done at every iteration, it's quite a bad thing
 
-        if (distanceTravelled > 5) {
-            return true;
-        }
-        return false;
+        return distanceTravelled > 3;
     }
 
     public static PayloadData getRandomPayloadData() {
@@ -105,7 +119,13 @@ public class PayloadDataGenerator {
         return payload;
     }
 
+    //endregion
+    //region Utils
+
     private static double generateRandomNumber(double max, double min) {
         return min + (max - min) * new Random().nextDouble();
     }
+
+    //endregion
+
 }

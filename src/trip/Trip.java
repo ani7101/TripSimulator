@@ -12,7 +12,9 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Trip {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String DESTINATION = "destination";
@@ -40,6 +42,11 @@ public class Trip {
     public static final String VEHICLE = "vehicle";
 
     public static final String TRIP_STATUS = "tripStatus";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(ID)
     private String id;
@@ -86,6 +93,11 @@ public class Trip {
     @JsonIgnore
     private ArrayList<String> route;            // Required for simulation
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops) {
         this.destination = destination;
         this.source = source;
@@ -113,7 +125,13 @@ public class Trip {
         tripStatus = "NOT_STARTED";
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public Trip() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     @JsonIgnore
     public ArrayList<String> getRoute() { return route; }
@@ -226,4 +244,7 @@ public class Trip {
     public void setTripStatus(String tripStatus) {
         this.tripStatus = tripStatus;
     }
+
+    //endregion
+
 }

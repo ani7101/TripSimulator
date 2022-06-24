@@ -8,7 +8,9 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VehicleAttribute {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String DATA_TYPE = "dataType";
@@ -31,6 +33,10 @@ public class VehicleAttribute {
 
     public static final String UNIQUE = "unique";
 
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     // Mandatory fields
     @JsonProperty(ID)
@@ -67,6 +73,11 @@ public class VehicleAttribute {
     @JsonProperty(UNIQUE)
     private boolean unique;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public VehicleAttribute(String dataType, String name, boolean required, String type) {
         this.dataType = dataType;
         this.name = name;
@@ -84,7 +95,13 @@ public class VehicleAttribute {
         this.unique = unique;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public VehicleAttribute() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() { return id; }
 
@@ -167,4 +184,7 @@ public class VehicleAttribute {
     public void setUnique(boolean unique) {
         this.unique = unique;
     }
+
+    //endregion
+    
 }

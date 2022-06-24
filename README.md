@@ -42,6 +42,8 @@ Trip simulator, as part of the Oracle SCM - IoT division creates instances in th
 
 ![alt text](./images/interpreterGrammar.png "Interpreter grammar section")
 
+> ℹ️ Please refer to the [official documentation](https://docs.oracle.com/en/cloud/paas/iot-cloud/iotgs/create-and-manage-connectors.html) for additional assistance.
+
 4. Set the proxy settings to the following while connecting the oracle VPN. 
 ```
 -Dhttp.proxyHost=www-proxy.us.oracle.com -Dhttps.proxyHost=www-proxy.us.oracle.com -Dhttp.proxyPort=80 -Dhttps.proxyPort=80 -Dhttp.nonProxyHosts="localhost|127.0.0.1|*.oraclecorp.com|*.us.oracle.com|*.internal.iot.ocs.oraclecloud.com" 

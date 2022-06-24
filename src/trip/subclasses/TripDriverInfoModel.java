@@ -6,12 +6,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TripDriverInfoModel {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String LOGIN_ID = "loginId";
 
     public static final String NAME = "name";
 
     public static final String EXTERNAL_ID = "externalId";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(LOGIN_ID)
     private String loginId;     // Optional
@@ -21,6 +28,11 @@ public class TripDriverInfoModel {
 
     @JsonProperty(EXTERNAL_ID)
     private String externalId;  // Optional
+
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
 
     public TripDriverInfoModel(String externalId, String loginId, String name) {
         this.externalId = externalId;
@@ -36,14 +48,20 @@ public class TripDriverInfoModel {
         this.loginId = loginId;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public TripDriverInfoModel() {}
 
-    // Getters
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
+
     public String getExternalId() { return externalId; }
     public String getLoginId() { return loginId; }
     public String getName() { return name; }
 
-    // Setters
+
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }
@@ -53,4 +71,7 @@ public class TripDriverInfoModel {
     public void setName(String name) {
         this.name = name;
     }
+
+    //endregion
+
 }

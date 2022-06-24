@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Device {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String HARDWARE_ID = "hardwareId";
@@ -16,6 +20,11 @@ public class Device {
     public static final String ENABLED = "enabled";
 
     public static final String CONNECTIVITY_STATUS = "connectivityStatus";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(ID)
     private String id;
@@ -34,6 +43,10 @@ public class Device {
 
     @JsonProperty(CONNECTIVITY_STATUS)
     private String connectivityStatus;
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() {
         return id;
@@ -82,4 +95,7 @@ public class Device {
     public void setConnectivityStatus(String connectivityStatus) {
         this.connectivityStatus = connectivityStatus;
     }
+
+    //endregion
+
 }

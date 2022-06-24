@@ -9,6 +9,9 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization {
 
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String NAME = "name";
@@ -20,6 +23,11 @@ public class Organization {
     public static final String SYSTEM = "system";
 
     public static final String LINKS = "links";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(ID)
     private String id;
@@ -38,6 +46,11 @@ public class Organization {
 
     @JsonProperty(LINKS)
     protected ArrayList<IoTDeserializerLinks> links;
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() {
         return id;
@@ -62,4 +75,7 @@ public class Organization {
     public ArrayList<IoTDeserializerLinks> getLinks() {
         return links;
     }
+
+    //endregion
+
 }

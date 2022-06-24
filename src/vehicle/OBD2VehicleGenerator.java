@@ -9,6 +9,18 @@ import vehicleType.VehicleTypeAPIClient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * Contains static methods to generate randomized vehicles linked to a device.
+ * Vehicles can be linked to a vehicle type directly or can create a new vehicle type and link the vehicle to it.
+ * <br>
+ * <br>
+ * Static methods:
+ * <ul>
+ *     <li><b>randomizedVehicle</b> - Generates a randomized vehicle with a freshly created vehicle type</li>
+ *     <li><b>randomizedVehicleFromVehicleType</b> - Generates a randomized vehicle with input vehicle type</li>
+ *     <li><b>randomizedVehicleFromVehicleType (with make & model)</b> - Generates a randomized vehicle with input vehicle type along with input make and input model</li>
+ * </ul>
+ */
 public class OBD2VehicleGenerator {
     public static final String deviceModel = "urn:com:oracle:iot:device:obd2";
 
@@ -18,6 +30,17 @@ public class OBD2VehicleGenerator {
         throw new AssertionError();
     }
 
+    //region Randomized generators
+
+    /**
+     * Generates a vehicle with a completely new vehicleType and linked to the input device.
+     * @param baseUrl URL (top level domain) to the IoT server instance without the path
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param deviceId ID of the device to be linked to the vehicle
+     * @param uniqueId unique UUID as per the naming convention followed (refer to NamingConvention.MD)
+     * @return Vehicle: randomly generated vehicle
+     */
     public static Vehicle randomizedVehicle(
             String baseUrl,
             String username,
@@ -27,27 +50,37 @@ public class OBD2VehicleGenerator {
     ) {
         // Creating a new vehicle type and posting it to the IoT server
         VehicleTypeAPIClient typeClient = new VehicleTypeAPIClient(baseUrl, username, password);
-        VehicleType vehicleType = OBD2VehicleTypeGenerator.randomizedType(baseUrl, username, password);
+        VehicleType vehicleType = OBD2VehicleTypeGenerator.randomizedType();
         typeClient.create(vehicleType);
 
-        return randomizedVehicle(baseUrl, username, password, vehicleType.getId(), deviceId, uniqueId, "defaultModel","defaultMake");
+        return randomizedVehicleFromVehicleType(vehicleType.getId(), deviceId, uniqueId, "defaultModel","defaultMake");
     }
 
-    public static Vehicle randomizedVehicle(
-            String baseUrl,
-            String username,
-            String password,
+    /**
+     * Generates a vehicle of the inputted vehicleType and linked to the input device.
+     * @param vehicleTypeId vehicle type to create a vehicle in
+     * @param deviceId ID of the device to be linked to the vehicle
+     * @param uniqueId unique UUID as per the naming convention followed (refer to NamingConvention.MD)
+     * @return Vehicle: randomly generated vehicle
+     */
+    public static Vehicle randomizedVehicleFromVehicleType(
             String vehicleTypeId,
             String deviceId,
             String uniqueId
     ) {
-        return randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId, uniqueId, "defaultModel","defaultMake");
+        return randomizedVehicleFromVehicleType(vehicleTypeId, deviceId, uniqueId, "defaultModel","defaultMake");
     }
 
-    public static Vehicle randomizedVehicle(
-            String baseUrl,
-            String username,
-            String password,
+    /**
+     * Generates a vehicle of the inputted vehicleType and linked to the input device.
+     * @param vehicleTypeId vehicle type to create a vehicle in
+     * @param deviceId ID of the device to be linked to the vehicle
+     * @param uniqueId unique UUID as per the naming convention followed (refer to NamingConvention.MD)
+     * @param make Vehicle make
+     * @param model Vehicle model
+     * @return Vehicle: randomly generated vehicle
+     */
+    public static Vehicle randomizedVehicleFromVehicleType(
             String vehicleTypeId,
             String deviceId,
             String uniqueId,
@@ -70,6 +103,15 @@ public class OBD2VehicleGenerator {
         return vehicle;
     }
 
+
+    //endregion
+    //region Utils
+
+    /**
+     * Generates the vehicle attribute for OBD2 parameters with the input device ID
+     * @param deviceId device ID to be linked to the vehicle attribute
+     * @return ArrayList(VehicleAttributeMinimal): List of OBD2 vehicle attributes
+     */
     private static ArrayList<VehicleAttributeMinimal> getOBD2Attributes(String deviceId) {
         ArrayList<VehicleAttributeMinimal> attributes = new ArrayList<VehicleAttributeMinimal>();
 
@@ -183,4 +225,7 @@ public class OBD2VehicleGenerator {
 
         return attributes;
     }
+
+    //endregion
+
 }

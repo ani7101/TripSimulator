@@ -8,6 +8,10 @@ import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public static final String ID = "id";
 
     public static final String NAME = "name";
@@ -22,11 +26,16 @@ public class User {
 
     public static final String ROLES = "roles";
 
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
+
     @JsonProperty(ID)
     private String id;
 
     @JsonProperty(NAME)
-    private String name; // Most probably mapped to username
+    private String name;
 
     @JsonProperty(EMAIL_ADDRESSES)
     private ArrayList<UserEmailAddress> emailAddresses;
@@ -43,6 +52,10 @@ public class User {
     @JsonProperty(ROLES)
     private ArrayList<String> roles;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
 
     public User(String name,
                 String firstName, String lastName) {
@@ -69,7 +82,13 @@ public class User {
         phoneNumbers = new ArrayList<>();
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public User() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() {
         return id;
@@ -131,6 +150,11 @@ public class User {
         this.roles = roles;
     }
 
+
+    //endregion
+    //region Utils
+    //---------------------------------------------------------------------------------------
+
     public void addDriverRole() {
         if (!roles.contains("IoTDriver")) {
             roles.add("IoTDriver");
@@ -171,4 +195,7 @@ public class User {
         }
         roles.add("IoTOrganization$ORA_DEFAULT_ORG");
     }
+
+    //endregion
+
 }

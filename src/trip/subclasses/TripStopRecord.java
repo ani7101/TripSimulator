@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TripStopRecord {
 
-    // Defining the mapping structure for the response parser
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
+
     public final static String GEO_LOCATION = "geoLocation";
 
     public final static String ADDRESS = "address";
@@ -33,6 +35,10 @@ public class TripStopRecord {
 
     public final static String TIME_ZONE = "timeZone";
 
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(GEO_LOCATION)
     private ArrayList<Double> geoLocation;        // Mandatory
@@ -67,6 +73,11 @@ public class TripStopRecord {
     @JsonProperty(TIME_ZONE)
     private String timeZone;                // Optional
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public TripStopRecord(double latitude, double longitude, ArrayList<Double> additionalElements) {
         geoLocation = new ArrayList<>();
         geoLocation.add(latitude);  // At index 0
@@ -84,6 +95,7 @@ public class TripStopRecord {
         this.geoLocation = geoLocation;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public TripStopRecord() {}
 
     public String getGeoLocation() {
@@ -93,6 +105,11 @@ public class TripStopRecord {
         }
         return joiner.toString();
     }
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     @JsonIgnore
     public double getLatitude() {
@@ -196,4 +213,7 @@ public class TripStopRecord {
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
     }
+
+    //endregion
+
 }

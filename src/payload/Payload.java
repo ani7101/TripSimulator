@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import payload.subclasses.PayloadData;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Payload {
+public class Payload implements Serializable {
+
+    //region Jackson References
+    //---------------------------------------------------------------------------------------
 
     public static final String DEVICE_NAME = "deviceName";
 
@@ -19,6 +24,11 @@ public class Payload {
     public static final String DATA = "data";
 
     public static final String MEASUREMENT_TIME = "measurementTime";
+
+
+    //endregion
+    //region Class variables
+    //---------------------------------------------------------------------------------------
 
     @JsonProperty(DEVICE_NAME)
     private String deviceName;
@@ -38,6 +48,11 @@ public class Payload {
     @JsonProperty(DATA)
     private PayloadData data;
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
     public Payload(String deviceName, String deviceIdentifier, String measurementTime, PayloadData data) {
         this.deviceName = deviceName;
         this.deviceIdentifier = deviceIdentifier;
@@ -45,7 +60,13 @@ public class Payload {
         this.data = data;
     }
 
+    // Empty constructor for jackson to serialize/deserialize
     public Payload() {}
+
+
+    //endregion
+    //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getDeviceName() {
         return deviceName;
@@ -222,4 +243,7 @@ public class Payload {
     public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
         data.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
     }
+
+    //endregion
+
 }

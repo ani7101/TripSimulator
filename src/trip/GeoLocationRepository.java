@@ -12,6 +12,12 @@ public class GeoLocationRepository {
     private ArrayList<ArrayList<Double>> destinations = new ArrayList<>();
     private ArrayList<ArrayList<Double>> stops = new ArrayList<>();
 
+
+    //endregion
+    //region Constructors
+    //---------------------------------------------------------------------------------------
+
+
     public GeoLocationRepository(ArrayList<ArrayList<Double>> sources, ArrayList<ArrayList<Double>> destinations, ArrayList<ArrayList<Double>> stops) {
         this.sources = sources;
         this.destinations = destinations;
@@ -19,6 +25,13 @@ public class GeoLocationRepository {
     }
 
     public GeoLocationRepository() {}
+
+
+
+    //endregion
+    //region Randomized getters
+    //---------------------------------------------------------------------------------------
+
 
     /**
      * Generates a randomized source from the list of source locations
@@ -71,7 +84,12 @@ public class GeoLocationRepository {
         return getRandomShuffle(sources, count);
     }
 
-    // Setters
+
+
+    //endregion
+    //region Setters
+    //---------------------------------------------------------------------------------------
+
 
     public void addSource(ArrayList<Double> source) { sources.add(source); }
 
@@ -112,7 +130,10 @@ public class GeoLocationRepository {
         return stops;
     }
 
-    // Utils
+
+    //endregion
+    //region Utils
+    //---------------------------------------------------------------------------------------
 
     /**
      * Shuffles the whole array and returns the required number of elements
@@ -130,4 +151,7 @@ public class GeoLocationRepository {
     private int getRandomNumber(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
+
+    //endregion
+
 }
