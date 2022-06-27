@@ -17,6 +17,9 @@ import static payload.PayloadDataGenerator.getRandomPayloadData;
  * Stores the minimal information required for simulation of one trip
  */
 public class TripModel implements Serializable {
+    private static final long serialVersionUID = -7757427056997345493L;
+
+    //region Class variables
 
     private final String id;
 
@@ -42,7 +45,11 @@ public class TripModel implements Serializable {
 
     private int routePosition = 0; // This is the current position in the route ArrayList
 
-    private double excessDistance = 0; // This is the excess distance the vehicle travels per route leg beyond the starting point of the leg
+    private double distanceFromStart = 0; // This is the excess distance the vehicle travels per route leg beyond the starting point of the leg
+
+
+    //endregion
+    //region Constructors
 
     public TripModel(
             String id,
@@ -101,6 +108,10 @@ public class TripModel implements Serializable {
         }
     }
 
+
+    //endregion
+    //region Getters/Setters
+
     public String getId() {
         return id;
     }
@@ -147,12 +158,12 @@ public class TripModel implements Serializable {
         this.routePosition = routePosition;
     }
 
-    public double getExcessDistance() {
-        return excessDistance;
+    public double getDistanceFromStart() {
+        return distanceFromStart;
     }
 
-    public void setExcessDistance(double excessDistance) {
-        this.excessDistance = excessDistance;
+    public void setDistanceFromStart(double distanceFromStart) {
+        this.distanceFromStart = distanceFromStart;
     }
 
     public LocalDateTime getEngineStartTime() {
@@ -273,7 +284,9 @@ public class TripModel implements Serializable {
         payload.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
     }
 
-    // Utils
+
+    //endregion
+    //region Utils
     public void preparePayload() {
         payload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
 
@@ -289,4 +302,7 @@ public class TripModel implements Serializable {
         );
         setPayload(getRandomPayloadData(payload));
     }
+
+    //endregion
+
 }

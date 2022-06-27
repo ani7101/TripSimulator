@@ -14,11 +14,19 @@ public class Navigation {
 
     private static final double EARTH_RADIUS_IN_METERS = 6371008.7714;
 
+    private static final double KMS_IN_METERS = 1000.0;
+
+    private static final double MILES_IN_METERS = 1609.344;
+
+    private static final double KMPH_IN_MPS = 3.6;
+
+    //region Distance
+
     /**
-     * Gives distance between initial and final point with elevation playing a factor
+     * Gives distance between initial and final point (in meters) factoring elevation.
      * @param pt1 Initial point
      * @param pt2 Final point
-     * @return double: Distance
+     * @return double: Distance in meters
      */
     public static double getDistanceWithEle(LatLngZ pt1, LatLngZ pt2) {
 
@@ -39,10 +47,10 @@ public class Navigation {
     }
 
     /**
-     * Gives distance between the initial and final point without taking elevation into consideration
+     * Gives distance between the initial and final point (in meters) without taking elevation into consideration.
      * @param p1 Initial point
      * @param p2 Final point
-     * @return double: Distance
+     * @return double: Distance in meters
      */
     public static double getDistance(LatLngZ p1, LatLngZ p2) {
         double theta = p1.lat - p2.lng;
@@ -53,11 +61,15 @@ public class Navigation {
         return dist;
     }
 
+
+    //endregion
+    //region Position & bearing
+
     /**
      * Interpolates point between initial point, pt1 and final point, pt2 with distance d from pt1
      * @param pt1 Initial point
      * @param pt2 Final point
-     * @param d Distance of the point from the pt1
+     * @param d Distance of the point from the pt1 (in meters)
      * @return LatLngZ: Point between pt1 and pt2 with the given distance
      */
     public static LatLngZ getPosition(LatLngZ pt1, LatLngZ pt2, double d) {
@@ -92,10 +104,14 @@ public class Navigation {
         double latitude1 = Math.toRadians(pt1.lat);
         double latitude2 = Math.toRadians(pt2.lng);
         double longDiff= Math.toRadians(longitude2-longitude1);
-        double y= Math.sin(longDiff)*Math.cos(latitude2);
-        double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
+        double y = Math.sin(longDiff)*Math.cos(latitude2);
+        double x = Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
         return (Math.toDegrees(Math.atan2(y, x))+360)%360;
     }
+
+
+    //endregion
+    //region Utils
 
     /**
      * Converts degrees to radians
@@ -114,5 +130,17 @@ public class Navigation {
     private static double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
+
+    public static double metersToKms(double meters) { return meters / KMS_IN_METERS; }
+
+    public static double kmsToMeters(double kms) { return kms * KMS_IN_METERS; }
+
+    public static double metersToMiles(double meters) { return meters / MILES_IN_METERS; }
+
+    public static double milesToMeters(double miles) { return miles * MILES_IN_METERS; }
+
+    public static double kmphToMps(double kmph) { return kmph * KMPH_IN_MPS; }
+
+    //endregion
 
 }

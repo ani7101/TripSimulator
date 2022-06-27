@@ -56,7 +56,7 @@ public class DeviceConnectorBulkGenerator {
         // Getting the list of devices created (to obtain their deviceId)
         for (Device device : allDevices) {
             for (String uniqueId : uniqueIds) {
-                if (device.getHardwareId().equals(generateDeviceIdentifier(uniqueId))) {
+                if (device.getDeviceIdentifier().equals(generateDeviceIdentifier(uniqueId))) {
                     devices.add(device);
                 }
             }

@@ -1,10 +1,7 @@
-import bulkGenerators.TripBulkGenerator;
 import simulation.models.TripInstance;
 import simulation.models.TripModel;
-import utils.CredentialManager;
-import utils.LocalStorage;
+import utils.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
@@ -19,25 +16,33 @@ public class Main {
         credentials.put("username", CredentialManager.get("username"));
         credentials.put("password", CredentialManager.get("password"));
 
-        System.out.println(credentials.get("accessTokenUrl"));
-        System.out.println(credentials.get("accessTokenUsername"));
-        System.out.println(credentials.get("accessTokenPassword"));
-        System.out.println(credentials.get("baseUrl"));
-        System.out.println(credentials.get("connectorUrl"));
-        System.out.println(credentials.get("username"));
-        System.out.println(credentials.get("password"));
-
         // For creating and storing trip models locally (remove the comments)
         /*
-        ArrayList<TripModel> tripModels = TripBulkGenerator.bulkCreateTrips(accessTokenUrl, username, password, baseUrl, connectorUrl, username, password, 20, 1);
+        ArrayList<TripModel> tripModels = TripBulkGenerator.bulkCreateTrips(
+                credentials.get("accessTokenUrl"),
+                credentials.get("accessTokenUsername"),
+                credentials.get("accessTokenPassword"),
+                credentials.get("baseUrl"),
+                credentials.get("connectorUrl"),
+                credentials.get("username"),
+                credentials.get("password"),
+                1,
+                1
+        );
 
         // Storing it for later use
         LocalStorage.writeTripModels(tripModels, "tripModels.ser");
          */
 
-        TripModel tripModel = (TripModel) LocalStorage.read("tripModels.ser").get(0);
-        int reportInterval = 30;
 
-        TripInstance tripInstance = new TripInstance(tripModel, reportInterval);
+        // Sample simulation
+        TripModel tripModel = (TripModel) LocalStorage.read("tripModels.ser").get(0);
+
+        TripInstance tripInstance = new TripInstance(tripModel, 100, 120, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password"));
+
+        tripInstance.run();
+
+
+        System.out.println("Trip completed!!");
     }
 }

@@ -5,6 +5,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
+/**
+ * Data included with their units
+ * <ul>
+ *     <li>Latitude (in degrees)</li>
+ *     <li>Longitude (in degrees)</li>
+ *     <li>Vehicle speed (in kmph)</li>
+ *     <li>Engine RPM</li>
+ *     <li>Number of DTCs</li>
+ *     <li>Engine coolant temperature (in Celsius)</li>
+ *     <li>True odometer (in km)</li>
+ *     <li>Throttle position</li>
+ *     <li>Total fuel used (in liters)</li>
+ *     <li>Runtime since engine start (in seconds)</li>
+ *     <li>Mass air flow (in g/s)</li>
+ *     <li>Average fuel economy (in km/liter)</li>
+ *     <li>Distance since DTCs cleared (in km)</li>
+ * </ul>
+ * <br>
+ * <i>NOTE - Diagnostic Trouble Code is a code used to diagnose malfunctions in a vehicle or heavy equipment</i>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PayloadData implements Serializable {
 

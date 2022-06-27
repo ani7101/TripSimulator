@@ -64,4 +64,26 @@ public class LocalStorage {
 
         return tList;
     }
+
+    public static ArrayList<TripModel> readTripModels(String filename) {
+        ArrayList<TripModel> tripModels;
+
+        try {
+            File tripModelsFile = new File(filename);
+
+            FileInputStream readData = new FileInputStream(tripModelsFile);
+            ObjectInputStream readStream = new ObjectInputStream(readData);
+
+            tripModels = (ArrayList<TripModel>) readStream.readObject();
+            readStream.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return tripModels;
+    }
 }

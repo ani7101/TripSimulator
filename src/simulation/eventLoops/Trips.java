@@ -1,7 +1,6 @@
 package simulation.eventLoops;
 
 import bulkGenerators.TripBulkGenerator;
-import connector.ConnectorAPIClient;
 
 import simulation.models.TripInstance;
 import simulation.models.TripModel;
@@ -12,14 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Overhead class to simulate multiple trip instances on multiple threads
+ */
 public class Trips {
 
-    private ArrayList<TripInstance> instances;
+    //region Class variables
+
+    private final ArrayList<TripInstance> instances;
 
     Map<String, String> credentials = new HashMap<>();
-
-    private final ConnectorAPIClient connectorAPIClient;
 
     private final String organizationId;
 
@@ -29,11 +30,18 @@ public class Trips {
 
     private final int stopTime;
 
+    // Constant value as of now
+    private int VEHICLE_SPEED = 75;
+
+
+    //endregion
+    //region Constructors
+
     public Trips(ArrayList<TripModel> tripModels, int reportInterval, String organizationId) {
         this(tripModels.size(), reportInterval, "ORA_DEFAULT_ORG");
 
         for (TripModel tripModel : tripModels) {
-            instances.add(new TripInstance(tripModel, reportInterval));
+            instances.add(new TripInstance(tripModel, reportInterval, VEHICLE_SPEED, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
         }
     }
 
@@ -52,12 +60,6 @@ public class Trips {
         // Loading the credentials for the IoT server instance
         getCredentials();
 
-        connectorAPIClient = new ConnectorAPIClient(
-                credentials.get("connectorUrl"),
-                credentials.get("username"),
-                credentials.get("password")
-        );
-
         initializeTrips();
     }
 
@@ -65,12 +67,23 @@ public class Trips {
         this(requiredInstances, reportInterval, "ORA_DEFAULT_ORG");
     }
 
+
+    //endregion
+    //region Simulation
+
     public void simulation() {
         for (TripInstance instance : instances) {
             instance.start();
         }
     }
 
+
+    //endregion
+    //region Utils
+
+    /**
+     * Obtains the credentials stored in the credentials.properties file required for the API access.
+     */
     private void getCredentials() {
         credentials.put("baseUrl", CredentialManager.get("baseUrl"));
 
@@ -87,6 +100,9 @@ public class Trips {
         credentials.put("accessTokenPassword", CredentialManager.get("accessTokenPassword"));
     }
 
+    /**
+     * Creates trip instances.
+     */
     private void initializeTrips() {
         ArrayList<TripModel> tripModels = TripBulkGenerator.bulkCreateTrips(
                 credentials.get("accessTokenUrl"),
@@ -101,7 +117,20 @@ public class Trips {
         );
 
         for (TripModel tripModel : tripModels) {
-            instances.add(new TripInstance(tripModel, reportInterval));
+            instances.add(new TripInstance(tripModel, reportInterval, VEHICLE_SPEED, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
         }
     }
+
+
+    //endregion
+    //region Getters/Setters
+
+    public int getVEHICLE_SPEED() { return VEHICLE_SPEED; }
+
+    public void setVEHICLE_SPEED(int VEHICLE_SPEED) {
+        this.VEHICLE_SPEED = VEHICLE_SPEED;
+    }
+
+    //endregion
+
 }

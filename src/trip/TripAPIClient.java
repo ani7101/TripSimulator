@@ -118,7 +118,6 @@ public class TripAPIClient extends APIClient {
         try {
             String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, POJOToJson(trip));
             response = ParseJson.deserializeResponse(json, Trip.class);
-            System.out.println("Created trip!");
 
         } catch (Exception e) {
             LOGGER.warning("Exception @TripAPIClient: " + e);
