@@ -10,24 +10,29 @@ import java.util.concurrent.ThreadLocalRandom;
  * Contains static methods to generate randomized vehicleTypes with the valid years being the [current_year, current_year + 2]
  */
 public class OBD2VehicleTypeGenerator {
+
+    private static final int YEARS_SUPPORTED = 2;
+
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
     private OBD2VehicleTypeGenerator() {
         throw new AssertionError();
     }
 
+
     //region Randomized Generator
+    //---------------------------------------------------------------------------------------
 
     /**
      * Generates a random vehicle type based on the OBD2 device model
-     * @return VehicleType: randonly generated vehicle type
+     * @return VehicleType: randomly generated vehicle type
      */
     public static VehicleType randomizedType() {
         // Random value for the name field
         String name = "TestOBD2VehicleType" + ThreadLocalRandom.current().nextInt(0, 100 + 1);
 
         // Values for year field
-        ArrayList<Integer> years = getYears(2);
+        ArrayList<Integer> years = getYears(YEARS_SUPPORTED);
 
         VehicleType type = new VehicleType(name, years);
 
@@ -42,13 +47,14 @@ public class OBD2VehicleTypeGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     /**
      * Creates a list of all the required OBD2 attributes to be included in the vehicle type
      * @return ArrayList(VehicleAttribute): List of all OBD2 parameter attributes
      */
     private static ArrayList<VehicleAttribute> getOBD2Attributes() {
-        ArrayList<VehicleAttribute> attributes = new ArrayList<VehicleAttribute>();
+        ArrayList<VehicleAttribute> attributes = new ArrayList<>();
 
         /* Location Parameter definition */
 
@@ -199,6 +205,7 @@ public class OBD2VehicleTypeGenerator {
 
         return attributes;
     }
+
 
     /**
      * Generates a list of years from the current year unto current year + limit

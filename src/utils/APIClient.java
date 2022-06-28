@@ -21,11 +21,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIClient {
 
-    private static final int TIMEOUT = 15;
+    private static final int TIMEOUT = 15; // maximum time to wait for the request response
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
+
 
     /**
      * Sends an asynchronous GET API requests to the url argument with the Content-Type set to 'application/json'
@@ -48,6 +49,7 @@ public class APIClient {
         return response.thenApply(HttpResponse::body).get(TIMEOUT, TimeUnit.SECONDS);
     }
 
+
     /**
      * Sends an asynchronous DELETE API requests to the url argument with the Content-Type set to 'application/json'
      * @param url Absolute url to the request API settings
@@ -67,6 +69,7 @@ public class APIClient {
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         response.thenApply(HttpResponse::body).get(TIMEOUT, TimeUnit.SECONDS);
     }
+
 
     /**
      * Sends an asynchronous UPDATE API requests to the url argument with the Content-Type set to 'application/json' using the POST format.
@@ -93,6 +96,7 @@ public class APIClient {
         return response.thenApply(HttpResponse::body).get(TIMEOUT, TimeUnit.SECONDS);
     }
 
+
     /**
      * Sends an asynchronous POST API requests to the url argument using the Content-Type set to 'application/json and gives back the response
      * @param url Absolute url to the request API settings
@@ -116,6 +120,7 @@ public class APIClient {
         return response.thenApply(HttpResponse::body).get(TIMEOUT, TimeUnit.SECONDS);
     }
 
+
     /**
      * Sends an asynchronous POST API requests to the url argument using the Content-Type set to 'application/json and does not contain a body. It returns the response from the API
      * @param url Absolute url to the request API settings
@@ -138,6 +143,7 @@ public class APIClient {
         return response.thenApply(HttpResponse::body).get(2 * TIMEOUT, TimeUnit.SECONDS);
     }
 
+
     /**
      * Converts a set of credentials into authentication header based on the Base64 format. This converts into the standard string format for the Basic authorization.
      * @param username Username for the basic auth
@@ -149,24 +155,17 @@ public class APIClient {
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
 
+
     /**
      * Serializes the data into a json string using the jackson module.
      * @param data Data of parametrized class to serialize into json string
      * @return String: Serialized json as per the data class
      * @param <T> Class literal of the data class
      */
-    public static <T> String POJOToJson(T data) {
-        String jsonString = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
-            ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-            jsonString = ow.writeValueAsString(data);
-        } catch (JsonProcessingException jpe) {
-            jpe.printStackTrace();
-            // Add to logger
-        }
-
-        return jsonString;
+    public static <T> String POJOToJson(T data) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(data);
     }
 }

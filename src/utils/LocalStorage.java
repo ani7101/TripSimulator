@@ -1,6 +1,7 @@
 package utils;
 
-import simulation.models.TripModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
  * Contains methods to store and retrieve objects from local storage
  */
 public class LocalStorage {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
 
     /**
      * Writes the objects into the file. <br>
@@ -33,7 +36,7 @@ public class LocalStorage {
             writeStream.close();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("File not found:", e);
         }
     }
 
@@ -44,7 +47,7 @@ public class LocalStorage {
      * @param <T> Class of which objects are stored
      */
     public static <T> ArrayList<T> read(String filename) {
-        ArrayList<T> tList;
+        ArrayList<T> tList = null;
 
         try {
             File tripModelsFile = new File(filename);
@@ -55,35 +58,13 @@ public class LocalStorage {
             tList = (ArrayList<T>) readStream.readObject();
             readStream.close();
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("File not found:", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Failed or interrupted I/O:", e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Parametrized class not found:", e);
         }
 
         return tList;
-    }
-
-    public static ArrayList<TripModel> readTripModels(String filename) {
-        ArrayList<TripModel> tripModels;
-
-        try {
-            File tripModelsFile = new File(filename);
-
-            FileInputStream readData = new FileInputStream(tripModelsFile);
-            ObjectInputStream readStream = new ObjectInputStream(readData);
-
-            tripModels = (ArrayList<TripModel>) readStream.readObject();
-            readStream.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return tripModels;
     }
 }

@@ -1,11 +1,15 @@
 package user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import user.subclasses.UserList;
 import utils.APIClient;
 import utils.ParseJson;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Accesses the users API of the IoT server instance.
@@ -17,7 +21,7 @@ public class UserAPIClient extends APIClient {
 
     private final String baseUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -49,8 +53,10 @@ public class UserAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/privateclientapi/v2/users", authHeader);
             list = ParseJson.deserializeResponse(json, UserList.class).getItems();
-        } catch (Exception e) {
-            LOGGER.warning("Exception @UserAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all users:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all users:", e);
         }
 
         return list;
@@ -67,8 +73,10 @@ public class UserAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/privateclientapi/v2/users?q=" + query, authHeader);
             list = ParseJson.deserializeResponse(json, UserList.class).getItems();
-        } catch (Exception e) {
-            LOGGER.warning("Exception @UserAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all users:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all users:", e);
         }
 
         return list;
@@ -85,8 +93,10 @@ public class UserAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/privateclientapi/v2/users/" + userId, authHeader);
             response = ParseJson.deserializeResponse(json, User.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @UserAPIClientL: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting one user:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting one user:", e);
         }
 
         return response;
@@ -103,11 +113,34 @@ public class UserAPIClient extends APIClient {
         try {
             String json = AsyncPOST(baseUrl + "/iot/privateclientapi/v2/users", authHeader, POJOToJson(user));
             response = ParseJson.deserializeResponse(json, User.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @UserAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while creating a user:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while creating a user:", e);
         }
 
         return response;
+    }
+
+    public void delete(String userId) {
+        try {
+            AsyncDELETE(baseUrl + "/iot/privateclientapi/v2/users/" + userId, authHeader);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while deleting vehicle type:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while deleting vehicle type:", e);
+        }
+    }
+
+    //endregion
+    //region Utils
+
+    public void cleanUp() {
+        for (User user : getAll()) {
+            if (user.getName().contains("simulation-driver")) {
+                delete(user.getId());
+            }
+        }
     }
 
     //endregion

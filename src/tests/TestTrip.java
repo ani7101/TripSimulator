@@ -3,12 +3,24 @@ package tests;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import trip.*;
+import utils.CSVParser;
 
 public class TestTrip {
 
     private TripAPIClient client;
 
     private Trip trip;
+
+    private static final GeoLocationRepository geoLocationRepository;
+
+    static {
+        geoLocationRepository = new GeoLocationRepository(
+                CSVParser.parseGeoLocation("locationRepository/sources.csv"),
+                CSVParser.parseGeoLocation("locationRepository/destinations.csv"),
+                CSVParser.parseGeoLocation("locationRepository/stops.csv")
+        );
+    }
+
 
     private final String accessTokenUrl = "https://gdhanani2-dev.internal.iot.ocs.oraclecloud.com/iotapps/privateclientapi/v2/oauth/hereMapToken";
 
@@ -19,7 +31,7 @@ public class TestTrip {
 
         trip = TripGenerator.randomizedTripFromVehicle(
                 accessTokenUrl, username, password,
-                baseUrl, username, password, vehicleName, "TestTrip",  1);
+                baseUrl, username, password, vehicleName, "TestTrip", geoLocationRepository,  1);
     }
 
     @Test(priority = 2)

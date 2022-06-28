@@ -3,13 +3,20 @@ package hereMaps.accessToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.APIClient;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 
 public class AccessTokenAPIClient extends APIClient {
     private final String authHeader;
 
     private final String url;
+
+    private static final Logger HERE_MAPS_LOGGER = LoggerFactory.getLogger("here-maps");
 
 
     //region Constructors
@@ -41,8 +48,10 @@ public class AccessTokenAPIClient extends APIClient {
         try {
             String json = AsyncPostWithoutData(url, authHeader);
             accessToken = deserializeAccessToken(json);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ExecutionException | InterruptedException e) {
+            HERE_MAPS_LOGGER.error("Exception while getting the access token from internal site:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            HERE_MAPS_LOGGER.warn("Exception while getting the access token from internal site:", e);
         }
 
         return accessToken;
@@ -58,18 +67,13 @@ public class AccessTokenAPIClient extends APIClient {
      * @param jsonString Json response from the API
      * @return String: deserialized access token
      */
-    public String deserializeAccessToken(String jsonString) {
+    public String deserializeAccessToken(String jsonString) throws JsonProcessingException {
         String result = null;
 
-        try {
-            final ObjectNode node = new ObjectMapper().readValue(jsonString, ObjectNode.class);
+        final ObjectNode node = new ObjectMapper().readValue(jsonString, ObjectNode.class);
 
-            if (node.has("accessToken")) {
-                result = node.get("accessToken").asText();
-            }
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        if (node.has("accessToken")) {
+            result = node.get("accessToken").asText();
         }
 
         return result;

@@ -8,6 +8,9 @@ import java.util.Collections;
  * Stores geolocations suitable for the source, stops and the destinations which can be retrieved easily for the simulation
  */
 public class GeoLocationRepository {
+
+    //region Local variables
+
     private ArrayList<ArrayList<Double>> sources = new ArrayList<>();
     private ArrayList<ArrayList<Double>> destinations = new ArrayList<>();
     private ArrayList<ArrayList<Double>> stops = new ArrayList<>();

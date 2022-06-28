@@ -71,10 +71,10 @@ public class Vehicle {
 
     // Unaccounted json properties
     @JsonIgnore
-    private String deviceId;
+    private String deviceName;
 
     @JsonIgnore
-    private String deviceName;
+    private String deviceIdentifier;
 
 
     //endregion
@@ -196,13 +196,13 @@ public class Vehicle {
         this.description = description;
     }
 
-    public String getDeviceId() { return deviceId; }
-
-    public void setDeviceId(String deviceId) { this.deviceId = deviceId; }
-
     public String getDeviceName() { return deviceName; }
 
     public void setDeviceName(String deviceName) { this.deviceName = deviceName; }
+
+    public String getDeviceIdentifier() { return deviceIdentifier; }
+
+    public void setDeviceIdentifier(String deviceIdentifier) { this.deviceIdentifier = deviceIdentifier; }
 
     //endregion
 

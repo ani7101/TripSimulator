@@ -134,10 +134,10 @@ public class Payload implements Serializable {
 
     // Data: Vehicle speed
     @JsonIgnore
-    public int getVehicleSpeed() { return data.getVehicleSpeed(); }
+    public double getVehicleSpeed() { return data.getVehicleSpeed(); }
 
     @JsonIgnore
-    public void setVehicleSpeed(int vehicleSpeed) { data.setVehicleSpeed(vehicleSpeed); }
+    public void setVehicleSpeed(double vehicleSpeed) { data.setVehicleSpeed(vehicleSpeed); }
 
 
     // Data: Engine RPM

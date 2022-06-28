@@ -3,6 +3,8 @@ package bulkGenerators;
 import connector.ConnectorAPIClient;
 import device.Device;
 import device.DeviceAPIClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import payload.Payload;
 import payload.subclasses.PayloadData;
 import utils.DateTime;
@@ -19,8 +21,11 @@ public class DeviceConnectorBulkGenerator {
 
     public static int LIMIT = 250;
 
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
+
 
     //region bulk generators
+    //---------------------------------------------------------------------------------------
 
     /**
      * Creates devices through the connector and sends them back as
@@ -46,8 +51,12 @@ public class DeviceConnectorBulkGenerator {
 
         // Create devices
         for (int i = 0; i < requiredDevices; i++) {
-            String response = connectorClient.postPayload(populatePayload(uniqueIds.get(i)));
-            // TODO: 21/06/2022 Handle exceptions while creating connectors
+            Payload payload = populatePayload(uniqueIds.get(i));
+            String response = connectorClient.postPayload(payload);
+
+            if (!response.equals("Request Approved")) {
+                IOT_API_LOGGER.error("Connector is not created for {}:\n{}", payload.getDeviceIdentifier(), response);
+            }
         }
 
         ArrayList<Device> devices = new ArrayList<>(requiredDevices);
@@ -56,7 +65,7 @@ public class DeviceConnectorBulkGenerator {
         // Getting the list of devices created (to obtain their deviceId)
         for (Device device : allDevices) {
             for (String uniqueId : uniqueIds) {
-                if (device.getDeviceIdentifier().equals(generateDeviceIdentifier(uniqueId))) {
+                if (device.getIdentifier().equals(generateDeviceIdentifier(uniqueId))) {
                     devices.add(device);
                 }
             }
@@ -68,6 +77,7 @@ public class DeviceConnectorBulkGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     private static String generateDeviceIdentifier(String uniqueId) {
         return "simulation-obd2-sensor-" + uniqueId;
@@ -75,6 +85,7 @@ public class DeviceConnectorBulkGenerator {
 
 
     //region Payload
+    //---------------------------------------------------------------------------------------
 
     private static final PayloadData dummyPayloadData = new PayloadData(
             12.972442,  // latitude

@@ -1,11 +1,15 @@
 package vehicle;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.APIClient;
 import utils.ParseJson;
 import vehicle.subclasses.VehicleList;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Accesses the vehicle API of the IoT server instance.
@@ -13,11 +17,11 @@ import java.util.logging.Logger;
  * <a href="https://docs.oracle.com/en/cloud/saas/iot-fleet-cloud/rest-api/api-vehicle-management.html">link</a>
  */
 public class VehicleAPIClient extends APIClient {
-    private String authHeader;
+    private final String authHeader;
 
-    private String baseUrl;
+    private final String baseUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -49,12 +53,15 @@ public class VehicleAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader);
             list = ParseJson.deserializeResponse(json, VehicleList.class).getItems();
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all vehicles:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all vehicles:", e);
         }
 
         return list;
     }
+
 
     /**
      * Sends a request to the IoT server instance FM API to get the vehicle with the corresponding ID.
@@ -67,12 +74,15 @@ public class VehicleAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes/" + vehicleId, authHeader);
             response = ParseJson.deserializeResponse(json, Vehicle.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting one vehicle:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting one vehicle:", e);
         }
 
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance FM API to get the vehicle count.
@@ -84,16 +94,19 @@ public class VehicleAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/count", authHeader);
             count = ParseJson.deserializeCountResponse(json);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting the vehicles count:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting the vehicles count:", e);
         }
 
         return count;
     }
 
+
     /**
      * Sends a request to the IoT server instance FM API to get the metrics of a vehicle.
-     * @param vehicleId
+     * @param vehicleId ID to the vehicle whose metrics are to be retrieved
      * @return String: metrics json body
      */
     public String getMetrics(String vehicleId) {
@@ -101,11 +114,15 @@ public class VehicleAPIClient extends APIClient {
 
         try {
             response = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId + "/metrics", authHeader);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting vehicle metrics:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while getting vehicle metrics:", e);
         }
+
         return response;
     }
+
 
     /**
      * Sends a request to retrieve the OBD2 parameter payload for the vehicle
@@ -117,11 +134,15 @@ public class VehicleAPIClient extends APIClient {
 
         try {
             response = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId + "/parameters/devices", authHeader);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting vehicle OBD2 parameters:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while getting vehicle OBD2 parameters:", e);
         }
+
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance FM API to create a vehicle.
@@ -134,12 +155,15 @@ public class VehicleAPIClient extends APIClient {
         try {
             String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/", authHeader, POJOToJson(vehicle));
             response = ParseJson.deserializeResponse(json, Vehicle.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while creating a vehicle:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while creating a vehicle:", e);
         }
+
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance FM API to update vehicle with input ID.
@@ -154,9 +178,12 @@ public class VehicleAPIClient extends APIClient {
             String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId, authHeader, POJOToJson(updatedVehicle));
 
             response = ParseJson.deserializeResponse(json, Vehicle.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while updating a vehicle:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while updating a vehicle:", e);
         }
+
         return response;
     }
 
@@ -167,8 +194,21 @@ public class VehicleAPIClient extends APIClient {
     public void delete(String vehicleId) {
         try {
             AsyncDELETE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId, authHeader);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @VehicleAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while deleting a vehicle:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while deleting a vehicle:", e);
+        }
+    }
+
+    //endregion
+    //region Utils
+
+    public void cleanUp() {
+        for (Vehicle vehicle : getAll()) {
+            if (vehicle.getName().contains("simulation-vehicle")) {
+                delete(vehicle.getId());
+            }
         }
     }
 

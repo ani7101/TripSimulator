@@ -61,7 +61,7 @@ public class UserGenerator {
         String lastName = Generator.generateRandomString(5);
 
         User user = new User(
-                "Driver-" + Generator.generateRandomUUID(),
+                "simulation-driver-" + Generator.generateRandomUUID(),
                 firstName,
                 lastName,
                 roles
@@ -79,4 +79,5 @@ public class UserGenerator {
     }
 
     //endregion
+
 }

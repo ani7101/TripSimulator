@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * Contains two static methods to create multiple vehicles from scratch as well as use an input vehicle type to create a vehicle.
  */
 public class VehicleBulkGenerator {
+
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
     private VehicleBulkGenerator() {
@@ -22,6 +23,7 @@ public class VehicleBulkGenerator {
     }
 
     //region Bulk generators
+    //---------------------------------------------------------------------------------------
 
     /**
      * Creates multiple vehicles on the IoT server instance.
@@ -62,8 +64,8 @@ public class VehicleBulkGenerator {
             );
 
             // Adding the device details to the vehicle
-            vehicle.setDeviceId(device.getId());
             vehicle.setDeviceName(device.getName());
+            vehicle.setDeviceIdentifier(device.getIdentifier());
 
             vehicles.add(vehicle);
         }
@@ -110,8 +112,8 @@ public class VehicleBulkGenerator {
                     OBD2VehicleGenerator.randomizedVehicleFromVehicleType(vehicleTypeId, device.getId(), uniqueIds.get(i))
             );
             // Adding the device details to the vehicle
-            vehicle.setDeviceId(device.getId());
             vehicle.setDeviceName(device.getName());
+            vehicle.setDeviceIdentifier(device.getIdentifier());
 
             vehicles.add(vehicle);
         }

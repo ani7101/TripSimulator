@@ -12,7 +12,6 @@ import user.UserGenerator;
 import vehicle.Vehicle;
 import vehicle.OBD2VehicleGenerator;
 
-import utils.CSVParser;
 import vehicle.VehicleAPIClient;
 
 import java.util.ArrayList;
@@ -35,19 +34,9 @@ import static hereMaps.HereMapsParsers.parseHEREMapsSummary;
  * </ul>
  */
 public class TripGenerator {
-    private static final GeoLocationRepository geoLocationRepository;
-
-
-    // Loading the geolocations for the source, destinations and the stops CSV files (located in the HOME_DIRECTORY)
-    static {
-        geoLocationRepository = new GeoLocationRepository(
-                CSVParser.parseGeoLocation("sources.csv"),
-                CSVParser.parseGeoLocation("destinations.csv"),
-                CSVParser.parseGeoLocation("stops.csv")
-        );
-    }
 
     //region Randomized generators
+    //---------------------------------------------------------------------------------------
 
     /**
      * Generates a trip and links it to the input vehicle & input driver
@@ -67,6 +56,7 @@ public class TripGenerator {
             String vehicleName,
             String driverLoginId,
             String uniqueId,
+            GeoLocationRepository geoLocationRepository,
             int noStops
     ) {
 
@@ -77,6 +67,7 @@ public class TripGenerator {
                 vehicleName,
                 driverLoginId,
                 uniqueId,
+                geoLocationRepository,
                 noStops
         );
     }
@@ -104,6 +95,7 @@ public class TripGenerator {
             String password,
             String vehicleName,
             String uniqueId,
+            GeoLocationRepository geoLocationRepository,
             int noStops
     ) {
 
@@ -120,6 +112,7 @@ public class TripGenerator {
                 vehicleName,
                 user.getName(),
                 uniqueId,
+                geoLocationRepository,
                 noStops
                 );
     }
@@ -148,6 +141,7 @@ public class TripGenerator {
             String vehicleTypeId,
             String deviceId, // It's better to create and access deviceIds by bulk instead of creating one at a time so better to take it as an argument
             String uniqueId,
+            GeoLocationRepository geoLocationRepository,
             int noStops
     ) {
 
@@ -169,6 +163,7 @@ public class TripGenerator {
                 vehicle.getName(),
                 user.getId(),
                 uniqueId,
+                geoLocationRepository,
                 noStops
         );
 
@@ -197,6 +192,7 @@ public class TripGenerator {
             String password,
             String deviceId,
             String uniqueId,
+            GeoLocationRepository geoLocationRepository,
             int noStops
     ) {
 
@@ -218,6 +214,7 @@ public class TripGenerator {
                 vehicle.getName(),
                 user.getId(),
                 uniqueId,
+                geoLocationRepository,
                 noStops
         );
     }
@@ -225,6 +222,7 @@ public class TripGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     /**
      * Helper function to create the Trip instance with the route taken from HERE maps and other required information.
@@ -245,6 +243,7 @@ public class TripGenerator {
             String vehicleName,
             String driverId,
             String uniqueId,
+            GeoLocationRepository geoLocationRepository,
             int noStops
     ) {
         // Generating access token
@@ -270,7 +269,7 @@ public class TripGenerator {
                 new TripDriverInfoModel(driverId)
                 );
 
-        trip.setName("Trip simulator-" + uniqueId);
+        trip.setName("simulation-trip-" + uniqueId);
 
         ArrayList<HereMapsRouteSection> routeSections = getRoute(
                 accessToken.get(),

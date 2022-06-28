@@ -1,12 +1,16 @@
 package organization;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
 import utils.APIClient;
 import utils.ParseJson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Accesses the organization API pertaining to users
@@ -16,7 +20,7 @@ public class OrganizationAPIClient extends APIClient {
 
     private final String baseUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -47,27 +51,7 @@ public class OrganizationAPIClient extends APIClient {
         return addUsersToOrganization("ORA_DEFAULT_ORG", userIds);
     }
 
-    /**
-     * Sends a request to the IoT server instance API to add the following user to the organization.
-     * @param organizationId ID (identifier) to access the organization
-     * @param userIds ID of the user to be added to the organization
-     * @return String: Response status
-     */
-    public String addUsersToOrganization(String organizationId, ArrayList<String> userIds) {
-        Map<String, Object> form = new HashMap<String, Object>();
-        form.put("operation", "INSERT");
-        form.put("userIds", userIds);
 
-        String response = null;
-
-        try {
-            response = AsyncPOST(baseUrl + "/iotapps/privateclientapi/v2/orgs/" + organizationId +"/users", authHeader, POJOToJson(form));
-        } catch (Exception e) {
-            LOGGER.warning("Exception @OrganizationAPIClient: " + e);
-        }
-
-        return response;
-    }
 
     /**
      * Sends a request to the IoT server instance API to get all organizations.
@@ -88,8 +72,34 @@ public class OrganizationAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iotapps/privateclientapi/v2/orgs?limit=" + limit, authHeader);
             response = ParseJson.deserializeResponse(json, OrganizationList.class).getItems();
-        } catch (Exception e) {
-            LOGGER.warning("Exception @OrganizationAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all organizations:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all organizations:", e);
+        }
+
+        return response;
+    }
+
+    /**
+     * Sends a request to the IoT server instance API to add the following user to the organization.
+     * @param organizationId ID (identifier) to access the organization
+     * @param userIds ID of the user to be added to the organization
+     * @return String: Response status
+     */
+    public String addUsersToOrganization(String organizationId, ArrayList<String> userIds) {
+        Map<String, Object> form = new HashMap<>();
+        form.put("operation", "INSERT");
+        form.put("userIds", userIds);
+
+        String response = null;
+
+        try {
+            response = AsyncPOST(baseUrl + "/iotapps/privateclientapi/v2/orgs/" + organizationId +"/users", authHeader, POJOToJson(form));
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while adding an user to organization:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while adding an user to organization:", e);
         }
 
         return response;

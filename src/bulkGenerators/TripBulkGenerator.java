@@ -1,10 +1,12 @@
 package bulkGenerators;
 
 import simulation.models.TripModel;
+import trip.GeoLocationRepository;
 import trip.Trip;
 import trip.TripAPIClient;
 import trip.TripGenerator;
 import trip.subclasses.TripStopRecord;
+import utils.CSVParser;
 import utils.Generator;
 import utils.PolylineEncoderDecoder.LatLngZ;
 import vehicle.Vehicle;
@@ -16,6 +18,19 @@ import java.util.ArrayList;
  * Contains two static methods to create multiple trips from scratch as well as use an input vehicle type to create a vehicle and later proceed to link it to the trip.
  */
 public class TripBulkGenerator {
+
+    private static final GeoLocationRepository geoLocationRepository;
+
+    // Loading the sources, destinations and stops to run the simulation
+    static {
+        geoLocationRepository = new GeoLocationRepository(
+                CSVParser.parseGeoLocation("locationRepository/sources.csv"),
+                CSVParser.parseGeoLocation("locationRepository/destinations.csv"),
+                CSVParser.parseGeoLocation("locationRepository/stops.csv")
+        );
+    }
+
+
     /** Private Constructor.
      *  Suppress default constructor for non-instantiability */
     private TripBulkGenerator() {
@@ -23,6 +38,7 @@ public class TripBulkGenerator {
     }
 
     //region Bulk generators
+    //---------------------------------------------------------------------------------------
 
     /**
      * Creates multiple trips and parses them into the data model required for the trip simulation.
@@ -72,17 +88,14 @@ public class TripBulkGenerator {
             long tripStartTime = System.nanoTime();
 
             Trip trip = TripGenerator.randomizedTripFromVehicle(
-                    accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), noStops);
+                    accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, noStops);
 
 
             // Getting and updating the trip ID from the server response
-            Trip responseTrip = tripClient.create(
-                    TripGenerator.randomizedTripFromVehicle(
-                            accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), noStops)
-            );
+            Trip responseTrip = tripClient.create(trip);
             trip.setId(responseTrip.getId());
 
-            tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceId(), vehicles.get(i).getDeviceName()));
+            tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceName(), vehicles.get(i).getDeviceIdentifier()));
 
             long tripEndTime = System.nanoTime();
             System.out.println("Time taken to create trip: " + (tripEndTime - tripStartTime) / 1000000000.0);
@@ -134,17 +147,15 @@ public class TripBulkGenerator {
 
         // Creating trips
         for (int i = 0; i < requiredTrips; i++) {
-            Trip trip = TripGenerator.randomizedTripFromVehicle(accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), noStops);
+            Trip trip = TripGenerator.randomizedTripFromVehicle(accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, noStops);
 
 
             // Getting and updating the trip ID from the server response
-            Trip responseTrip = tripClient.create(
-                    TripGenerator.randomizedTripFromVehicle(accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), noStops)
-            );
+            Trip responseTrip = tripClient.create(trip);
 
             trip.setId(responseTrip.getId());
 
-            tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceId(), vehicles.get(i).getDeviceName()));
+            tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceName(), vehicles.get(i).getDeviceIdentifier()));
         }
 
         return tripModels;
@@ -153,15 +164,16 @@ public class TripBulkGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     /**
      * Parses trip and device information into the model for the simulation
      * @param trip Randomly generated trip
-     * @param deviceId Device ID associated with the vehicle linked to the trip
-     * @param deviceName Device name associated with the vehicle linked to the trip
+     * @param deviceName Device ID associated with the vehicle linked to the trip
+     * @param deviceIdentifier Device identifier associated with the vehicle linked to the trip
      * @return TripModel: model for the simulation based on the trip
      */
-    private static TripModel parseTripToTripModel(Trip trip, String deviceId, String deviceName) {
+    private static TripModel parseTripToTripModel(Trip trip, String deviceName, String deviceIdentifier) {
         LatLngZ source = new LatLngZ(trip.getSource().getLatitude(), trip.getSource().getLongitude());
         LatLngZ destination = new LatLngZ(trip.getDestination().getLatitude(), trip.getDestination().getLongitude());
 
@@ -175,8 +187,8 @@ public class TripBulkGenerator {
                 trip.getId(),
                 trip.getDriver().getLoginId(),
                 trip.getVehicle().getName(),
-                deviceId,
                 deviceName,
+                deviceIdentifier,
                 source,
                 destination,
                 stops,

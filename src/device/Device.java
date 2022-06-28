@@ -11,7 +11,7 @@ public class Device {
 
     public static final String ID = "id";
 
-    public static final String DEVICE_IDENTIFIER = "hardwareId";
+    public static final String IDENTIFIER = "hardwareId";
 
     public static final String NAME = "name";
 
@@ -29,8 +29,8 @@ public class Device {
     @JsonProperty(ID)
     private String id;
 
-    @JsonProperty(DEVICE_IDENTIFIER)
-    private String deviceIdentifier;
+    @JsonProperty(IDENTIFIER)
+    private String identifier;
 
     @JsonProperty(NAME)
     private String name;
@@ -56,12 +56,12 @@ public class Device {
         this.id = id;
     }
 
-    public String getDeviceIdentifier() {
-        return deviceIdentifier;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setDeviceIdentifier(String deviceIdentifier) {
-        this.deviceIdentifier = deviceIdentifier;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getName() {

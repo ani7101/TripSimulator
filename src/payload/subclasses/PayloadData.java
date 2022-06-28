@@ -10,7 +10,7 @@ import java.io.Serializable;
  * <ul>
  *     <li>Latitude (in degrees)</li>
  *     <li>Longitude (in degrees)</li>
- *     <li>Vehicle speed (in kmph)</li>
+ *     <li>Vehicle speed (in mph)</li>
  *     <li>Engine RPM</li>
  *     <li>Number of DTCs</li>
  *     <li>Engine coolant temperature (in Celsius)</li>
@@ -69,7 +69,7 @@ public class PayloadData implements Serializable {
     private double longitude;
 
     @JsonProperty(VEHICLE_SPEED)
-    private int vehicleSpeed;
+    private double vehicleSpeed;
 
     @JsonProperty(ENGINE_RPM)
     private int engineRPM;
@@ -146,11 +146,11 @@ public class PayloadData implements Serializable {
         this.longitude = longitude;
     }
 
-    public int getVehicleSpeed() {
+    public double getVehicleSpeed() {
         return vehicleSpeed;
     }
 
-    public void setVehicleSpeed(int vehicleSpeed) {
+    public void setVehicleSpeed(double vehicleSpeed) {
         this.vehicleSpeed = vehicleSpeed;
     }
 

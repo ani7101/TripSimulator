@@ -1,11 +1,15 @@
 package trip;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import trip.subclasses.TripList;
 import utils.APIClient;
 import utils.ParseJson;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Accesses the trip API of the IoT server instance.
@@ -16,7 +20,7 @@ public class TripAPIClient extends APIClient {
     private final String authHeader;
     private final String baseUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -48,8 +52,10 @@ public class TripAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader);
             list = ParseJson.deserializeResponse(json, TripList.class).getItems();
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all trips:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all trips:", e);
         }
 
         return list;
@@ -66,8 +72,10 @@ public class TripAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/" + tripId, authHeader);
             response = ParseJson.deserializeResponse(json, Trip.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting one trip:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting one trip:", e);
         }
 
         return response;
@@ -83,8 +91,10 @@ public class TripAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/count", authHeader);
             count = ParseJson.deserializeCountResponse(json);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting the trips count:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting the trips count:", e);
         }
 
         return count;
@@ -92,7 +102,7 @@ public class TripAPIClient extends APIClient {
 
     /**
      * Sends a request to the IoT server instance FM API to get the metrics of a trip.
-     * @param tripId
+     * @param tripId Identifier to the trip whose metrics are to be retrieved
      * @return String: metrics json body
      */
     public String getMetrics(String tripId) {
@@ -100,8 +110,10 @@ public class TripAPIClient extends APIClient {
 
         try {
             response = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/trips/" + tripId + "/metrics", authHeader);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting trip metrics:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while getting trip metrics:", e);
         }
 
         return response;
@@ -119,8 +131,10 @@ public class TripAPIClient extends APIClient {
             String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, POJOToJson(trip));
             response = ParseJson.deserializeResponse(json, Trip.class);
 
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while creating a trip:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while creating a trip:", e);
         }
 
         return response;
@@ -139,8 +153,10 @@ public class TripAPIClient extends APIClient {
             String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/trips/" + tripId, authHeader, POJOToJson(updatedTrip));
             response = ParseJson.deserializeResponse(json, Trip.class);
 
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while updating a trip:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while updating a trip:", e);
         }
 
         return response;
@@ -153,8 +169,21 @@ public class TripAPIClient extends APIClient {
     public void delete(String tripId) {
         try {
             AsyncDELETE(baseUrl + "/fleetMonitoring/clientapi/v2/trips/" + tripId, authHeader);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @TripAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while deleting a trip:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while deleting a trip:", e);
+        }
+    }
+
+    //endregion
+    //region Utils
+
+    public void cleanUp() {
+        for (Trip trip : getAll()) {
+            if (trip.getName().contains("Trip simulator")) {
+                delete(trip.getId());
+            }
         }
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +17,7 @@ public class ParseJson {
         throw new AssertionError();
     }
 
+
     /**
      * Deserializes a json string to a specified class instance
      * @param serverResponse Json string to be deserialized
@@ -25,48 +25,34 @@ public class ParseJson {
      * @return (T): Deserialized class having the data of the json string
      * @param <T> Class model of the response
      */
-    public static <T> T deserializeResponse(String serverResponse, Class<T> modelType) {
-        T modelObject = null;
-        try {
-            modelObject = new ObjectMapper().readValue(serverResponse, modelType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return modelObject;
+    public static <T> T deserializeResponse(String serverResponse, Class<T> modelType) throws JsonProcessingException {
+        return new ObjectMapper().readValue(serverResponse, modelType);
     }
 
+
     /**
-     * eserializes a json string to get the count (Based on the IoT server response format)
+     * Deserializes a json string to get the count (Based on the IoT server response format)
      * @param serverResponse Json string to be deserialized
      * @return int: count value in the json response
      */
-    public static int deserializeCountResponse(String serverResponse) {
+    public static int deserializeCountResponse(String serverResponse) throws JsonProcessingException {
         int count = 0;
-        try {
-            ObjectNode node = new ObjectMapper().readValue(serverResponse, ObjectNode.class);
-            if (node.has("count")) {
-                count = node.get("count").asInt();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        ObjectNode node = new ObjectMapper().readValue(serverResponse, ObjectNode.class);
+        if (node.has("count")) {
+            count = node.get("count").asInt();
         }
-
         return count;
     }
+
 
     /**
      * Deserializes the json string to a map
      * @param serverResponse Json string to be deserialized
      * @return Map(String, Object): Map containing the deserialized json
      */
-    public static Map<String, Object> deserializeResponse(String serverResponse){
-        Map<String, Object> result = null;
-        try {
-            result = new ObjectMapper().readValue(serverResponse, HashMap.class);
-        } catch (JsonProcessingException jpe) {
-            jpe.printStackTrace();
-        }
+    public static Map<String, Object> deserializeResponse(String serverResponse) throws JsonProcessingException {
 
-        return result;
+        return (Map<String, Object>) new ObjectMapper().readValue(serverResponse, HashMap.class);
     }
+
 }

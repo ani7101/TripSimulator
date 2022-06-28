@@ -24,6 +24,7 @@ public class HereMapsParsers {
         return List.of(totalDuration, totalLength, totalBaseDuration);
     }
 
+
     /**
      * Parses and retrieves the route as a polyline from HereMapsRouteSection
      * @see HereMapsRouteSection

@@ -25,29 +25,32 @@ import java.util.Random;
 public class PayloadDataGenerator {
 
     //region Constant values
+    //---------------------------------------------------------------------------------------
 
-    public static int minEngineRPM = 1000;
-    public static int maxEngineRPM = 6000;
+    public static int MIN_ENGINE_RPM = 1000;
+    public static int MAX_ENGINE_RPM = 10000;
 
-    public static double minCoolantTemp = 30; // In celsius
-    public static double maxCoolantTemp = 45;
+    public static double MIN_COOLANT_TEMP = 30; // In celsius
+    public static double MAX_COOLANT_TEMP = 45;
 
 
-    public static double minThrottlePosition = 12;
-    public static double maxThrottlePosition = 17;
+    // Indicated in percentages
+    public static double MIN_THROTTLE_POSITION = 25;
+    public static double MAX_THROTTLE_POSITION = 100;
 
-    public static double DTCsProbability = 0.02;
+    public static double DTC_PROBABILITY = 0.02;
 
 
     //endregion
     //region Randomized generators
+    //---------------------------------------------------------------------------------------
 
     public static int generateEngineRPM() {
-        return (int) generateRandomNumber(minEngineRPM, maxEngineRPM);
+        return (int) generateRandomNumber(MIN_ENGINE_RPM, MAX_ENGINE_RPM);
     }
 
     public static double generateEngineCoolantTemp() {
-        return generateRandomNumber(minCoolantTemp, maxCoolantTemp);
+        return generateRandomNumber(MIN_COOLANT_TEMP, MAX_COOLANT_TEMP);
     }
 
     public static double generateMassAirFlow(int engineRPM) {
@@ -67,15 +70,15 @@ public class PayloadDataGenerator {
     }
 
     public static double generateThrottlePosition(int engineRPM) {
-        return engineRPM / 640.0; //
+        return engineRPM / MAX_ENGINE_RPM;
     }
 
     public static double generateThrottlePosition() {
-        return generateRandomNumber(minThrottlePosition, maxThrottlePosition);
+        return generateRandomNumber(MIN_THROTTLE_POSITION, MAX_THROTTLE_POSITION);
     }
 
     public static boolean isDTC() {
-        return new Random().nextDouble() < DTCsProbability;
+        return new Random().nextDouble() < DTC_PROBABILITY;
     }
 
 
@@ -121,6 +124,7 @@ public class PayloadDataGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     private static double generateRandomNumber(double max, double min) {
         return min + (max - min) * new Random().nextDouble();

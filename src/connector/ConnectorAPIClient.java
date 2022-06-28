@@ -1,9 +1,13 @@
 package connector;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import payload.Payload;
 import utils.APIClient;
 
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 
 /**
@@ -16,7 +20,7 @@ public class ConnectorAPIClient extends APIClient {
 
     private final String connectorUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -49,9 +53,10 @@ public class ConnectorAPIClient extends APIClient {
 
         try {
             response = AsyncPOST(connectorUrl, authHeader, POJOToJson(payload));
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.warning("Exception @ConnectorAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while posting payload:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while posting payload:", e);
         }
 
         return response;

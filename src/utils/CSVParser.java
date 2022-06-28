@@ -1,5 +1,8 @@
 package utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,6 +20,10 @@ public class CSVParser {
 
     public static final String COMMA_DELIMITER = ",";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
+
+
+
     /**
      * Returns an ArrayList of the geoLocations in the format ArrayList(ArrayList(Double))
      * @param filePath Absolute path to the CSV file
@@ -29,15 +36,17 @@ public class CSVParser {
                 records.add(getGeoLocationFromLine(scanner.nextLine()));
             }
         } catch (FileNotFoundException fnfe) {
+            LOGGER.error("CSV File does not exist:", fnfe);
             fnfe.printStackTrace();
         }
 
         return records;
     }
 
+
     /**
      * Converts the String containing a comma separated geolocation into an ArrayList of Doubles
-     * @param line Input linein the 'comma separated' format
+     * @param line Input line in the 'comma separated' format
      * @return Parsed ArrayList format of geoLocation
      */
     private static ArrayList<Double> getGeoLocationFromLine(String line) {

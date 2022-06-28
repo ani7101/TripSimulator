@@ -1,18 +1,22 @@
 package device;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import device.subclasses.DeviceList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.APIClient;
 import utils.ParseJson;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class DeviceAPIClient extends APIClient {
     private final String authHeader;
 
     private final String baseUrl;
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
     //region Constructors
@@ -53,13 +57,15 @@ public class DeviceAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/api/v2/devices?limit=" + limit, authHeader);
             response = ParseJson.deserializeResponse(json, DeviceList.class).getItems();
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.warning("Exception @DeviceAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting all devices:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting all devices:", e);
         }
 
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance API to get the all the devices and then returns the device with given ID. We cannot call for only one device at a time, so instead all devices are queried at once.
@@ -72,12 +78,15 @@ public class DeviceAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/api/v2/devices/" + deviceId, authHeader);
             response = ParseJson.deserializeResponse(json, Device.class);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @DeviceAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting one device:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting one device:", e);
         }
 
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance API to get the devices count.
@@ -89,11 +98,40 @@ public class DeviceAPIClient extends APIClient {
         try {
             String json = AsyncGET(baseUrl + "/iot/api/v2/devices/count", authHeader);
             count = ParseJson.deserializeCountResponse(json);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @DeviceAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting the devices count:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting the devices count:", e);
         }
 
         return count;
+    }
+
+
+    /**
+     * Sends a request to the IoT server instance FM API to delete a device.
+     * @param deviceId ID (identifier) to access the device to be deleted
+     */
+    public void delete(String deviceId) {
+        try {
+            AsyncDELETE(baseUrl + "/iot/api/v2/devices/" + deviceId, authHeader);
+        }  catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while deleting a device:", e);
+        } catch (TimeoutException e) {
+            IOT_API_LOGGER.warn("Exception while deleting a device:", e);
+        }
+    }
+
+
+    //endregion
+    //region Utils
+
+    public void cleanUp() {
+        for (Device device : getAll(200)) {
+            if (device.getIdentifier().contains("simulation-obd2-sensor")) {
+                delete(device.getId());
+            }
+        }
     }
 
     //endregion

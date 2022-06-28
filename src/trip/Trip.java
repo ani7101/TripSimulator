@@ -103,7 +103,7 @@ public class Trip {
         this.source = source;
         this.stops = stops;
 
-        tripStatus = "NOT_STARTED";
+        tripStatus = "IN_PROGRESS";
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle, TripDriverInfoModel driver) {
@@ -113,7 +113,7 @@ public class Trip {
         this.stops = stops;
         this.vehicle = vehicle;
 
-        tripStatus = "NOT_STARTED";
+        tripStatus = "IN_PROGRESS";
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle) {
@@ -122,7 +122,7 @@ public class Trip {
         this.stops = stops;
         this.vehicle = vehicle;
 
-        tripStatus = "NOT_STARTED";
+        tripStatus = "IN_PROGRESS";
     }
 
     // Empty constructor for jackson to serialize/deserialize

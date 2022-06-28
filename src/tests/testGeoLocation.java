@@ -15,9 +15,9 @@ public class testGeoLocation {
         System.out.println("LOADING GEO-LOCATION");
 
         geoLocationRepository = new GeoLocationRepository(
-                CSVParser.parseGeoLocation("sources.csv"),
-                CSVParser.parseGeoLocation("destinations.csv"),
-                CSVParser.parseGeoLocation("stops.csv")
+                CSVParser.parseGeoLocation("locationRepository/sources.csv"),
+                CSVParser.parseGeoLocation("locationRepository/destinations.csv"),
+                CSVParser.parseGeoLocation("locationRepository/stops.csv")
         );
 
         System.out.println(geoLocationRepository.getSources());

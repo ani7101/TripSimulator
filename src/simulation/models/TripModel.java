@@ -17,17 +17,17 @@ import static payload.PayloadDataGenerator.getRandomPayloadData;
  * Stores the minimal information required for simulation of one trip
  */
 public class TripModel implements Serializable {
-    private static final long serialVersionUID = -7757427056997345493L;
 
     //region Class variables
+    //---------------------------------------------------------------------------------------
 
     private final String id;
 
     private final String driverId;
 
-    private final String deviceId;
-
     private final String deviceName;
+
+    private final String deviceIdentifier;
 
     private final String vehicleName;
 
@@ -50,13 +50,14 @@ public class TripModel implements Serializable {
 
     //endregion
     //region Constructors
+    //---------------------------------------------------------------------------------------
 
     public TripModel(
             String id,
             String driverId,
             String vehicleName,
-            String deviceId,
             String deviceName,
+            String deviceIdentifier,
             PolylineEncoderDecoder.LatLngZ source,
             PolylineEncoderDecoder.LatLngZ destination,
             ArrayList<PolylineEncoderDecoder.LatLngZ> stops,
@@ -65,13 +66,13 @@ public class TripModel implements Serializable {
         this.id = id;
         this.driverId = driverId;
         this.vehicleName = vehicleName;
-        this.deviceId = deviceId;
         this.deviceName = deviceName;
+        this.deviceIdentifier = deviceIdentifier;
         this.source = source;
         this.destination = destination;
         this.stops = stops;
 
-        payload = DeviceConnectorBulkGenerator.populatePayload(deviceId, deviceName);
+        payload = DeviceConnectorBulkGenerator.populatePayload(deviceName, deviceIdentifier);
 
         if (polyline != null) {
             for (String sectionPolyline : polyline) {
@@ -84,8 +85,8 @@ public class TripModel implements Serializable {
             String id,
             String driverId,
             String vehicleName,
-            String deviceId,
             String deviceName,
+            String deviceIdentifier,
             PolylineEncoderDecoder.LatLngZ source,
             PolylineEncoderDecoder.LatLngZ destination,
             ArrayList<PolylineEncoderDecoder.LatLngZ> stops,
@@ -95,8 +96,8 @@ public class TripModel implements Serializable {
         this.id = id;
         this.driverId = driverId;
         this.vehicleName = vehicleName;
-        this.deviceId = deviceId;
         this.deviceName = deviceName;
+        this.deviceIdentifier = deviceIdentifier;
 
         this.source = source;
         this.destination = destination;
@@ -111,6 +112,7 @@ public class TripModel implements Serializable {
 
     //endregion
     //region Getters/Setters
+    //---------------------------------------------------------------------------------------
 
     public String getId() {
         return id;
@@ -120,11 +122,11 @@ public class TripModel implements Serializable {
         return driverId;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getDeviceName() {
+        return deviceName;
     }
 
-    public String getDeviceName() { return deviceName; }
+    public String getDeviceIdentifier() { return deviceIdentifier; }
 
     public String getVehicleName() {
         return vehicleName;
@@ -195,9 +197,9 @@ public class TripModel implements Serializable {
 
 
     // payload: Vehicle speed
-    public int getVehicleSpeed() { return payload.getVehicleSpeed(); }
+    public double getVehicleSpeed() { return payload.getVehicleSpeed(); }
 
-    public void setVehicleSpeed(int vehicleSpeed) { payload.setVehicleSpeed(vehicleSpeed); }
+    public void setVehicleSpeed(double vehicleSpeed) { payload.setVehicleSpeed(vehicleSpeed); }
 
 
     // payload: Engine RPM
@@ -287,6 +289,8 @@ public class TripModel implements Serializable {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
+
     public void preparePayload() {
         payload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
 
@@ -296,6 +300,7 @@ public class TripModel implements Serializable {
     public void preparePayload(LocalDateTime measurementTime) {
         payload.setMeasurementTime(DateTime.localDateTimeToIso8601(measurementTime));
         setRuntimeSinceEngineStart(
+                getRuntimeSinceEngineStart() +
                 Duration.between(
                         getEngineStartTime(),
                         LocalDateTime.now()).toSeconds()

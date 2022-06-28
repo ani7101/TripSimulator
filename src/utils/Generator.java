@@ -16,11 +16,13 @@ public class Generator {
 
     private static String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
+
     /**
      * Generates a random UUID (128 bit value) which has a very, very small probability of collision
      * @return String: Randomly generated UUID
      */
     public static String generateRandomUUID() { return randomUUID().toString(); }
+
 
     /**
      * Generates a random alphanumerical String of required length
@@ -36,6 +38,7 @@ public class Generator {
         }
         return salt.toString();
     }
+
 
     /**
      * Generates a list of random UUIDs

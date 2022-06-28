@@ -31,6 +31,8 @@ public class OBD2VehicleGenerator {
     }
 
     //region Randomized generators
+    //---------------------------------------------------------------------------------------
+
 
     /**
      * Generates a vehicle with a completely new vehicleType and linked to the input device.
@@ -56,6 +58,7 @@ public class OBD2VehicleGenerator {
         return randomizedVehicleFromVehicleType(vehicleType.getId(), deviceId, uniqueId, "defaultModel","defaultMake");
     }
 
+
     /**
      * Generates a vehicle of the inputted vehicleType and linked to the input device.
      * @param vehicleTypeId vehicle type to create a vehicle in
@@ -70,6 +73,7 @@ public class OBD2VehicleGenerator {
     ) {
         return randomizedVehicleFromVehicleType(vehicleTypeId, deviceId, uniqueId, "defaultModel","defaultMake");
     }
+
 
     /**
      * Generates a vehicle of the inputted vehicleType and linked to the input device.
@@ -106,6 +110,7 @@ public class OBD2VehicleGenerator {
 
     //endregion
     //region Utils
+    //---------------------------------------------------------------------------------------
 
     /**
      * Generates the vehicle attribute for OBD2 parameters with the input device ID
@@ -113,7 +118,7 @@ public class OBD2VehicleGenerator {
      * @return ArrayList(VehicleAttributeMinimal): List of OBD2 vehicle attributes
      */
     private static ArrayList<VehicleAttributeMinimal> getOBD2Attributes(String deviceId) {
-        ArrayList<VehicleAttributeMinimal> attributes = new ArrayList<VehicleAttributeMinimal>();
+        ArrayList<VehicleAttributeMinimal> attributes = new ArrayList<>();
 
         /* Location Parameter definition */
 

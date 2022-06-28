@@ -1,17 +1,21 @@
 package hereMaps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import hereMaps.deserializerClasses.hereMapsRoutes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.APIClient;
 import utils.ParseJson;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class HereMapsAPIClient extends APIClient {
 
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger HERE_MAPS_LOGGER = LoggerFactory.getLogger("here-maps");
 
-    //region geo-location
+    //region Geolocation
 
     /**
      * Retrieves the information (address, pin code, etc.) of the location given by latitude and longitude.
@@ -27,9 +31,12 @@ public class HereMapsAPIClient extends APIClient {
 
         try {
             response = AsyncGET(url, "Bearer " + accessToken);
-        } catch (Exception e) {
-            LOGGER.warning("Exception @HereMapsAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            HERE_MAPS_LOGGER.error("Exception while getting geolocation:", e);
+        } catch (TimeoutException te) {
+            HERE_MAPS_LOGGER.warn("Exception while getting geolocation:", te);
         }
+
         return response;
     }
 
@@ -57,11 +64,11 @@ public class HereMapsAPIClient extends APIClient {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append("https://router.hereapi.com/v8/routes?transportMode=truck&lang=en-US&return=summary,elevation,polyline");
 
-        urlBuilder.append("&origin=" + sourceLat + "," + sourceLong);
-        urlBuilder.append("&destination=" + destinationLat + "," + destinationLong);
+        urlBuilder.append("&origin=").append(sourceLat).append(",").append(sourceLong);
+        urlBuilder.append("&destination=").append(destinationLat).append(",").append(destinationLong);
 
         for (int i = 0; i < stopsLat.size(); i++) {
-            urlBuilder.append("&via=" + stopsLat.get(i) + "," + stopsLong.get(i));
+            urlBuilder.append("&via=").append(stopsLat.get(i)).append(",").append(stopsLong.get(i));
         }
 
         ArrayList<HereMapsRouteSection> response = null;
@@ -71,8 +78,10 @@ public class HereMapsAPIClient extends APIClient {
 
             hereMapsRoutes temp = ParseJson.deserializeResponse(json, hereMapsRoutes.class);
             response = temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
-        } catch (Exception e) {
-            LOGGER.warning("Exception @HereMapsAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            HERE_MAPS_LOGGER.error("Exception while getting route:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            HERE_MAPS_LOGGER.warn("Exception while getting route:", e);
         }
 
         return response;
@@ -97,8 +106,8 @@ public class HereMapsAPIClient extends APIClient {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append("https://router.hereapi.com/v8/routes?transportMode=truck&lang=en-US&return=summary,elevation,polyline");
 
-        urlBuilder.append("&origin=" + sourceLat + "," + sourceLong);
-        urlBuilder.append("&destination=" + destinationLat + "," + destinationLong);
+        urlBuilder.append("&origin=").append(sourceLat).append(",").append(sourceLong);
+        urlBuilder.append("&destination=").append(destinationLat).append(",").append(destinationLong);
 
         ArrayList<HereMapsRouteSection> response = null;
 
@@ -107,9 +116,10 @@ public class HereMapsAPIClient extends APIClient {
 
             hereMapsRoutes temp = ParseJson.deserializeResponse(json, hereMapsRoutes.class);
             response = temp.getRoutes().get(0).getSections(); // We take the first element in the routes array as only one call is being made at a time
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.warning("Exception @HereMapsAPIClient: " + e);
+        } catch (ExecutionException | InterruptedException e) {
+            HERE_MAPS_LOGGER.error("Exception while getting route:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            HERE_MAPS_LOGGER.warn("Exception while getting route:", e);
         }
 
         return response;

@@ -1,5 +1,8 @@
 package utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 import java.util.Properties;
@@ -18,6 +21,10 @@ public class CredentialManager {
 
     private static final Properties credentials;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
+
+
+    // Loading the credentials from the credentials.properties file
     static
     {
         targetFile = new File("credentials.properties");
@@ -26,9 +33,10 @@ public class CredentialManager {
         try {
             credentials.load(new FileInputStream(targetFile.getAbsolutePath()));
         } catch (IOException ioe) {
-            System.err.println("Properties file does not exists in " + targetFile.getAbsolutePath());
+            LOGGER.error("Properties file does not exist in " + targetFile.getAbsolutePath(), ioe);
         }
     }
+
 
     /**
      * Retrieves values from the credentials.properties files using the key argument
@@ -38,6 +46,7 @@ public class CredentialManager {
     public static String get(String key) {
         return credentials.getProperty(key);
     }
+
 
     /**
      * Adds a key value pair to the credentials
@@ -63,10 +72,11 @@ public class CredentialManager {
             // Sets the key-value pair in the local properties storage
             credentials.setProperty(key, value);
         } catch (IOException ioe) {
-            System.err.println("Properties file does not exist in " + targetFile.getAbsolutePath());
-            ioe.printStackTrace();
+            LOGGER.error("Properties file does not exist in " + targetFile.getAbsolutePath(), ioe);
+
         }
     }
+
 
     /**
      * Checks if the key-value pair exists in the credentials
@@ -81,6 +91,7 @@ public class CredentialManager {
         }
         return false;
     }
+
 
     /**
      * Checks if the key exists in the credentials
