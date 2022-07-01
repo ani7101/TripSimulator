@@ -1,0 +1,20 @@
+{
+  "deviceName": "simulator-equipment-a9f5c0fc-88fd-46d9-af49-e43e5c209336-sensor",
+  "deviceDescription": "Follows ORA Equipment model",
+  "deviceType": "Modular Equipment sensor",
+  "deviceIdentifier": "equipment-sensor-4a6caf83-dade-438a-8195-f3cb836112a0",
+  "measurementTime": "2022-06-14T21:45:00.844Z",
+  "data": {
+    "latitude": 13.123,
+    "longitude": 70.123,
+    "altitude": 247,
+    "tilt": 12.3,
+    "light": 23.4,
+    "temperature": 34.5,
+    "pressure": 1.2,
+    "humidity": 86,
+    "shock": 10.1,
+    "ambient_temperature": 25.6,
+    "tamper_detection": 14.3
+  }
+}

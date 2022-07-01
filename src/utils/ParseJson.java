@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +56,10 @@ public class ParseJson {
     public static Map<String, Object> deserializeResponse(String serverResponse) throws JsonProcessingException {
 
         return (Map<String, Object>) new ObjectMapper().readValue(serverResponse, HashMap.class);
+    }
+
+    public static String readJsonFile(String file) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(file)));
     }
 
 }

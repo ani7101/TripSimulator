@@ -4,8 +4,8 @@ import connector.ConnectorAPIClient;
 import device.*;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import payload.Payload;
-import payload.subclasses.PayloadData;
+import payload.vehicle.Payload;
+import payload.vehicle.subclasses.PayloadData;
 import utils.Generator;
 
 import java.util.ArrayList;

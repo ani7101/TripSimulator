@@ -14,14 +14,14 @@ public class Generator {
         throw new AssertionError();
     }
 
-    private static String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    private static final String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
 
     /**
      * Generates a random UUID (128 bit value) which has a very, very small probability of collision
      * @return String: Randomly generated UUID
      */
-    public static String generateRandomUUID() { return randomUUID().toString(); }
+    public static String generateRandomUUID() { return randomUUID().toString().toUpperCase(); }
 
 
     /**

@@ -18,7 +18,7 @@
             <class name="tests.TestUser"></class>
             <class name="tests.TestOrganization"></class>
             <class name="tests.TestDeviceConnector"></class>
-            <class name="tests.testGeoLocation"></class>
+            <class name="tests.TestGeoLocation"></class>
             <class name="tests.TestTrip"/>
         </classes>
 

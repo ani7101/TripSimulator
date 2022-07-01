@@ -3,10 +3,8 @@ package utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 /**
  * Converts the contents of a csv file into an ArrayList
@@ -20,7 +18,7 @@ public class CSVParser {
 
     public static final String COMMA_DELIMITER = ",";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVParser.class);
 
 
 
@@ -60,4 +58,5 @@ public class CSVParser {
         }
         return values;
     }
+
 }

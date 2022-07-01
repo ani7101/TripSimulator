@@ -16,6 +16,8 @@ public class DeviceAPIClient extends APIClient {
 
     private final String baseUrl;
 
+    private final int LIMIT = 500;
+
     private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
@@ -23,7 +25,7 @@ public class DeviceAPIClient extends APIClient {
     //---------------------------------------------------------------------------------------
 
     /**
-     * Initializes the user API client with the input baseUrl and basic authentication username and password.
+     * Initializes the device API client with the input baseUrl and basic authentication username and password.
      * @param baseUrl URL (top level domain) to the IoT server instance without the path
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
@@ -43,7 +45,7 @@ public class DeviceAPIClient extends APIClient {
      * @return ArrayList(Device): List of all devices
      */
     public ArrayList<Device> getAll() {
-        return getAll(100);
+        return getAll(LIMIT);
     }
 
     /**
@@ -82,6 +84,32 @@ public class DeviceAPIClient extends APIClient {
             IOT_API_LOGGER.error("Exception while getting one device:", e);
         } catch (TimeoutException | JsonProcessingException e) {
             IOT_API_LOGGER.warn("Exception while getting one device:", e);
+        }
+
+        return response;
+    }
+
+    public Device getOneByIdentifier(String deviceIdentifier) {
+        Device response = null;
+
+        /*
+         * URI encoding reference
+         * Refer to https://www.eso.org/~ndelmott/url_encode.html for more information
+         * %7B - {
+         * %7C - }
+         * %22 - "
+         * %3A - :
+         */
+
+        String query = "?q=%7B%22hardwareId%22%3A%22" + deviceIdentifier + "%22%7D";
+
+        try {
+            String json = AsyncGET(baseUrl + "/iot/api/v2/devices" + query, authHeader);
+            response = ParseJson.deserializeResponse(json, DeviceList.class).getItems().get(0);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting device using name:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting device using name:", e);
         }
 
         return response;
@@ -127,7 +155,7 @@ public class DeviceAPIClient extends APIClient {
     //region Utils
 
     public void cleanUp() {
-        for (Device device : getAll(200)) {
+        for (Device device : getAll(LIMIT)) {
             if (device.getIdentifier().contains("simulation-obd2-sensor")) {
                 delete(device.getId());
             }

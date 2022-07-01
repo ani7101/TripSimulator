@@ -1,7 +1,7 @@
 package simulation.models;
 
 import bulkGenerators.DeviceConnectorBulkGenerator;
-import payload.Payload;
+import payload.vehicle.Payload;
 import utils.DateTime;
 import utils.PolylineEncoderDecoder;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static payload.PayloadDataGenerator.getRandomPayloadData;
+import static payload.vehicle.PayloadDataGenerator.getRandomPayloadData;
 
 /**
  * Stores the minimal information required for simulation of one trip
@@ -73,6 +73,9 @@ public class TripModel implements Serializable {
         this.stops = stops;
 
         payload = DeviceConnectorBulkGenerator.populatePayload(deviceName, deviceIdentifier);
+
+        payload.setLatitude(source.lat);
+        payload.setLongitude(source.lng);
 
         if (polyline != null) {
             for (String sectionPolyline : polyline) {

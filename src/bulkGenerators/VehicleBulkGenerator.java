@@ -2,6 +2,8 @@ package bulkGenerators;
 
 import device.Device;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vehicle.OBD2VehicleGenerator;
 import vehicle.Vehicle;
 import vehicle.VehicleAPIClient;
@@ -21,6 +23,9 @@ public class VehicleBulkGenerator {
     private VehicleBulkGenerator() {
         throw new AssertionError();
     }
+
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
+
 
     //region Bulk generators
     //---------------------------------------------------------------------------------------
@@ -57,17 +62,22 @@ public class VehicleBulkGenerator {
 
         // Creating the vehicles
         for (int i = 0; i < requiredVehicles; i++) {
-            Device device = devices.get(i);
+            try {
+                Device device = devices.get(i);
 
-            Vehicle vehicle = vehicleClient.create(
-              OBD2VehicleGenerator.randomizedVehicleFromVehicleType(type.getId(), device.getId(), uniqueIds.get(i))
-            );
+                Vehicle vehicle = vehicleClient.create(
+                        OBD2VehicleGenerator.randomizedVehicleFromVehicleType(type.getId(), device.getId(), uniqueIds.get(i))
+                );
 
-            // Adding the device details to the vehicle
-            vehicle.setDeviceName(device.getName());
-            vehicle.setDeviceIdentifier(device.getIdentifier());
+                // Adding the device details to the vehicle
+                vehicle.setDeviceName(device.getName());
+                vehicle.setDeviceIdentifier(device.getIdentifier());
 
-            vehicles.add(vehicle);
+                vehicles.add(vehicle);
+            } catch (Exception e) {
+                i--;
+                IOT_API_LOGGER.warn("Trip is not created", e);
+            }
         }
 
         return vehicles;
@@ -105,17 +115,22 @@ public class VehicleBulkGenerator {
 
         // Creating the vehicles
         for (int i = 0; i < requiredVehicles; i++) {
-            Device device = devices.get(i);
+            try {
+                Device device = devices.get(i);
 
 
-            Vehicle vehicle = vehicleClient.create(
-                    OBD2VehicleGenerator.randomizedVehicleFromVehicleType(vehicleTypeId, device.getId(), uniqueIds.get(i))
-            );
-            // Adding the device details to the vehicle
-            vehicle.setDeviceName(device.getName());
-            vehicle.setDeviceIdentifier(device.getIdentifier());
+                Vehicle vehicle = vehicleClient.create(
+                        OBD2VehicleGenerator.randomizedVehicleFromVehicleType(vehicleTypeId, device.getId(), uniqueIds.get(i))
+                );
+                // Adding the device details to the vehicle
+                vehicle.setDeviceName(device.getName());
+                vehicle.setDeviceIdentifier(device.getIdentifier());
 
-            vehicles.add(vehicle);
+                vehicles.add(vehicle);
+            } catch (Exception e) {
+                i--;
+                IOT_API_LOGGER.warn("Trip is not created", e);
+            }
         }
 
         return vehicles;

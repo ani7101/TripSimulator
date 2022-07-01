@@ -96,12 +96,13 @@ public class TripGenerator {
             String vehicleName,
             String uniqueId,
             GeoLocationRepository geoLocationRepository,
+            String organizationId,
             int noStops
     ) {
 
         UserAPIClient userClient = new UserAPIClient(baseUrl, username, password);
 
-        User user = UserGenerator.randomizedDefaultDriverUser();
+        User user = UserGenerator.randomizedDriverUser(organizationId);
 
         user = userClient.create(user); // Creates the user in the IoT server
 
@@ -142,6 +143,7 @@ public class TripGenerator {
             String deviceId, // It's better to create and access deviceIds by bulk instead of creating one at a time so better to take it as an argument
             String uniqueId,
             GeoLocationRepository geoLocationRepository,
+            String organizationId,
             int noStops
     ) {
 
@@ -151,7 +153,7 @@ public class TripGenerator {
         Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId);
         vehicleClient.create(vehicle);
 
-        User user = UserGenerator.randomizedDefaultDriverUser();
+        User user = UserGenerator.randomizedDriverUser(organizationId);
 
         User responseUser = userClient.create(user); // Creates the user in the IoT server
         user.setId(responseUser.getId());
@@ -193,6 +195,7 @@ public class TripGenerator {
             String deviceId,
             String uniqueId,
             GeoLocationRepository geoLocationRepository,
+            String organizationId,
             int noStops
     ) {
 
@@ -202,7 +205,7 @@ public class TripGenerator {
         Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, deviceId, uniqueId);
         vehicleClient.create(vehicle);
 
-        User user = UserGenerator.randomizedDefaultDriverUser();
+        User user = UserGenerator.randomizedDriverUser(organizationId);
 
         User responseUser = userClient.create(user); // Creates the user in the IoT server
         user.setId(responseUser.getId());

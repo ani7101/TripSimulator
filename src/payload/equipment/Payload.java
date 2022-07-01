@@ -1,9 +1,9 @@
-package payload;
+package payload.equipment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import payload.subclasses.PayloadData;
+import payload.equipment.subclasses.PayloadData;
 
 import java.io.Serializable;
 
@@ -34,10 +34,10 @@ public class Payload implements Serializable {
     private String deviceName;
 
     @JsonProperty(DEVICE_DESCRIPTION)
-    private String deviceDescription = "Trip simulator following OBD2 device model";
+    private String deviceDescription = "Follows ORA Equipment model";
 
     @JsonProperty(DEVICE_TYPE)
-    private String deviceType = "OBD2 Modular Vehicle sensor";
+    private String deviceType = "Modular Equipment sensor";
 
     @JsonProperty(DEVICE_IDENTIFIER)
     private String deviceIdentifier;
@@ -116,132 +116,118 @@ public class Payload implements Serializable {
         this.data = data;
     }
 
+
+    //endregion
+    //region Data Getters/Setters
+
     // Data: Latitude
     @JsonIgnore
-    public double getLatitude() { return data.getLatitude(); }
+    public double getLatitude() {
+        return data.getLatitude();
+    }
 
     @JsonIgnore
-    public void setLatitude(double latitude) { data.setLatitude(latitude); }
-
+    public void setLatitude(double latitude) {
+        data.setLatitude(latitude);
+    }
 
     // Data: Longitude
     @JsonIgnore
-    public double getLongitude() { return data.getLongitude(); }
-
-    @JsonIgnore
-    public void setLongitude(double longitude) { data.setLongitude(longitude); }
-
-
-    // Data: Vehicle speed
-    @JsonIgnore
-    public double getVehicleSpeed() { return data.getVehicleSpeed(); }
-
-    @JsonIgnore
-    public void setVehicleSpeed(double vehicleSpeed) { data.setVehicleSpeed(vehicleSpeed); }
-
-
-    // Data: Engine RPM
-    @JsonIgnore
-    public double getEngineRPM() { return data.getEngineRPM(); }
-
-    @JsonIgnore
-    public void setEngineRPM(int engineRPM) { data.setEngineRPM(engineRPM); }
-
-
-    // Data: Number of DTCs
-    @JsonIgnore
-    public double getNumberOfDTCs() { return data.getNumberOfDTCs(); }
-
-    @JsonIgnore
-    public void setNumberOfDTCs(double numberOfDTCs) {
-        data.setNumberOfDTCs(numberOfDTCs);
-    }
-
-    // Data: Engine coolant temperature
-
-    @JsonIgnore
-    public double getEngineCoolantTemperature() { return data.getEngineCoolantTemperature(); }
-
-    @JsonIgnore
-    public void setEngineCoolantTemperature(double engineCoolantTemperature) {
-        data.setEngineCoolantTemperature(engineCoolantTemperature);
-    }
-
-
-    // Data: True odometer
-    @JsonIgnore
-    public double getTrueOdometer() { return data.getTrueOdometer(); }
-
-    @JsonIgnore
-    public void setTrueOdometer(double trueOdometer) { data.setTrueOdometer(trueOdometer); }
-
-
-    // Data: Throttle position
-    @JsonIgnore
-    public double getThrottlePosition() { return data.getThrottlePosition(); }
-
-    @JsonIgnore
-    public void setThrottlePosition(double throttlePosition) {
-        data.setThrottlePosition(throttlePosition);
-    }
-
-
-    // Data: Total fuel used
-    @JsonIgnore
-    public double getTotalFuelUsed() {
-        return data.getTotalFuelUsed();
+    public double getLongitude() {
+        return data.getLongitude();
     }
 
     @JsonIgnore
-    public void setTotalFuelUsed(double totalFuelUsed) {
-        data.setTotalFuelUsed(totalFuelUsed);
+    public void setLongitude(double longitude) {
+        data.setLongitude(longitude);
     }
 
-
-    // Data: Runtime since engine start
+    // Data: Tilt
     @JsonIgnore
-    public long getRuntimeSinceEngineStart() {
-        return data.getRuntimeSinceEngineStart();
-    }
-
-    @JsonIgnore
-    public void setRuntimeSinceEngineStart(long runtimeSinceEngineStart) {
-        data.setRuntimeSinceEngineStart(runtimeSinceEngineStart);
-    }
-
-
-    // Data: mass air flow
-    @JsonIgnore
-    public double getMassAirFlow() {
-        return data.getMassAirFlow();
+    public double getTilt() {
+        return data.getTilt();
     }
 
     @JsonIgnore
-    public void setMassAirFlow(double massAirFlow) {
-        data.setMassAirFlow(massAirFlow);
+    public void setTilt(double tilt) {
+        data.setTilt(tilt);
     }
 
-    // Data: Average fuel economy
+    // Data: Light
     @JsonIgnore
-    public double getAverageFuelEconomy() {
-        return data.getAverageFuelEconomy();
-    }
-
-    @JsonIgnore
-    public void setAverageFuelEconomy(double averageFuelEconomy) {
-        data.setAverageFuelEconomy(averageFuelEconomy);
-    }
-
-
-    // Data: Distance since DTCs cleared
-    @JsonIgnore
-    public int getDistanceSinceDTCsCleared() {
-        return data.getDistanceSinceDTCsCleared();
+    public double getLight() {
+        return data.getLight();
     }
 
     @JsonIgnore
-    public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
-        data.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
+    public void setLight(double light) {
+        data.setLight(light);
+    }
+
+    // Data: Temperature
+    @JsonIgnore
+    public double getTemperature() {
+        return data.getTemperature();
+    }
+
+    @JsonIgnore
+    public void setTemperature(double temperature) {
+        data.setTemperature(temperature);
+    }
+
+    // Data: Pressure
+    @JsonIgnore
+    public double getPressure() {
+        return data.getPressure();
+    }
+
+    @JsonIgnore
+    public void setPressure(double pressure) {
+        data.setPressure(pressure);
+    }
+
+    // Data: Humidity
+    @JsonIgnore
+    public double getHumidity() {
+        return data.getHumidity();
+    }
+
+    @JsonIgnore
+    public void setHumidity(double humidity) {
+        data.setHumidity(humidity);
+    }
+
+    // Data: Shock
+    @JsonIgnore
+    public double getShock() {
+        return data.getShock();
+    }
+
+    @JsonIgnore
+    public void setShock(double shock) {
+        data.setShock(shock);
+    }
+
+    // Data: Ambient Temperature
+    @JsonIgnore
+    public double getAmbientTemperature() {
+        return data.getAmbientTemperature();
+    }
+
+    @JsonIgnore
+    public void setAmbientTemperature(double ambientTemperature) {
+        data.setAmbientTemperature(ambientTemperature);
+    }
+
+    // Data: Tamper Detection
+    @JsonIgnore
+    public double getTamperDetection() {
+        return data.getTamperDetection();
+    }
+
+    @JsonIgnore
+    public void setTamperDetection(double tamperDetection) {
+        data.setTamperDetection(tamperDetection);
     }
 
     //endregion

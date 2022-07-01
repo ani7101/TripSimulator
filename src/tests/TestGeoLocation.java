@@ -7,7 +7,7 @@ import utils.CSVParser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class testGeoLocation {
+public class TestGeoLocation {
     private GeoLocationRepository geoLocationRepository;
 
     @Test(priority = 1)

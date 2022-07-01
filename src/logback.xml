@@ -16,7 +16,7 @@
             <pattern>%date{HH:mm:ss.SSS} %-5p %logger{36} %X{akkaSource} [%file:%line] - %m%n</pattern>
         </encoder>
     </appender>
-    <logger name="iot-apiÏ" LEVEL="DEBUG" additivity="false">
+    <logger name="iot-api" LEVEL="DEBUG" additivity="false">
         <appender-ref ref="IOT-API"/>
     </logger>
 

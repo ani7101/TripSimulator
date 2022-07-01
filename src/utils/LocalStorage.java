@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class LocalStorage {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalStorage.class);
 
     /**
      * Writes the objects into the file. <br>

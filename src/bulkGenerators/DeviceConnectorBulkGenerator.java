@@ -5,8 +5,8 @@ import device.Device;
 import device.DeviceAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import payload.Payload;
-import payload.subclasses.PayloadData;
+import payload.vehicle.Payload;
+import payload.vehicle.subclasses.PayloadData;
 import utils.DateTime;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class DeviceConnectorBulkGenerator {
         throw new AssertionError();
     }
 
-    public static int LIMIT = 250;
+    public static int LIMIT = 500;
 
     private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
@@ -49,25 +49,23 @@ public class DeviceConnectorBulkGenerator {
         ConnectorAPIClient connectorClient = new ConnectorAPIClient(connectorUrl, username, password);
         DeviceAPIClient deviceClient = new DeviceAPIClient(baseUrl, username, password);
 
-        // Create devices
-        for (int i = 0; i < requiredDevices; i++) {
-            Payload payload = populatePayload(uniqueIds.get(i));
-            String response = connectorClient.postPayload(payload);
-
-            if (!response.equals("Request Approved")) {
-                IOT_API_LOGGER.error("Connector is not created for {}:\n{}", payload.getDeviceIdentifier(), response);
-            }
-        }
-
         ArrayList<Device> devices = new ArrayList<>(requiredDevices);
 
-        ArrayList<Device> allDevices = deviceClient.getAll(LIMIT);
-        // Getting the list of devices created (to obtain their deviceId)
-        for (Device device : allDevices) {
-            for (String uniqueId : uniqueIds) {
-                if (device.getIdentifier().equals(generateDeviceIdentifier(uniqueId))) {
-                    devices.add(device);
+        // Create devices
+        for (int i = 0; i < requiredDevices; i++) {
+            try {
+                Payload payload = populatePayload(uniqueIds.get(i));
+                String response = connectorClient.postPayload(payload);
+
+                if (!response.equals("Request Approved")) {
+                    // IOT_API_LOGGER.error("Connector is not created for {}:\n{}", payload.getDeviceIdentifier(), response);
                 }
+
+                Device device = deviceClient.getOneByIdentifier(payload.getDeviceIdentifier());
+                devices.add(device);
+            } catch (Exception e) {
+                i--;
+                IOT_API_LOGGER.warn("Trip is not created", e);
             }
         }
 

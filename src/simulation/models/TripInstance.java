@@ -43,6 +43,10 @@ public class TripInstance extends Thread {
         this.reportInterval = reportInterval;
         this.tripModel.setVehicleSpeed(vehicleSpeed);
 
+        // Just to make sure the source is set
+        this.tripModel.setLatitude(this.tripModel.getSource().lat);
+        this.tripModel.setLatitude(this.tripModel.getSource().lng);
+
         // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
         stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
     }
@@ -58,14 +62,15 @@ public class TripInstance extends Thread {
     @Override
     public void run() {
         SIMULATION_LOGGER.info("vehicle for trip {} started moving", tripModel.getId());
-        System.out.println("Number of sections in route: " + tripModel.getRoute().size());
+        System.out.println("Vehicle for trip " + tripModel.getId() + " started moving");
         for (int i = 0; i < tripModel.getRoute().size(); i++) {
             simulateTrip(i);
-            SIMULATION_LOGGER.info("vehicle for trip {} finished section {}", tripModel.getId(), i);
-            sleep(LocalDateTime.now(), stopTime);
+            SIMULATION_LOGGER.info("vehicle for trip {} finished section {} and is waiting for {}", tripModel.getId(), i, stopTime);
+            System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime);
         }
 
         SIMULATION_LOGGER.info("vehicle for trip {} finished it's trip", tripModel.getId());
+        System.out.println("Vehicle for trip " + tripModel.getId() + " finished it's trip");
     }
 
 
@@ -81,24 +86,44 @@ public class TripInstance extends Thread {
     private void simulateTrip(int routeSection) {
         try {
 
-            while (!interrupted()) {
+            // Generating randomized payload data for other fields and posting the initial message at source location
+            tripModel.preparePayload();
+            connectorClient.postPayload(tripModel.getPayload());
 
+            while (!interrupted()) {
                 LocalDateTime startTime = LocalDateTime.now();
+
+                if (stoppingCondition(routeSection)) {
+                    System.out.println("Vehicle stopped");
+                    if (routeSection == tripModel.getRoute().size() - 1) {
+                        this.tripModel.setLatitude(this.tripModel.getDestination().lat);
+                        this.tripModel.setLatitude(this.tripModel.getDestination().lng);
+                    }
+                    else {
+                        this.tripModel.setLatitude(this.tripModel.getStops().get(routeSection).lat);
+                        this.tripModel.setLatitude(this.tripModel.getStops().get(routeSection).lng);
+                    }
+
+                    sleep(startTime, stopTime);
+
+                    tripModel.preparePayload();
+                    connectorClient.postPayload(tripModel.getPayload());
+                    return;
+                }
 
                 // Moving the vehicle unless specified
                 updateVehicle(routeSection);
 
-
-                if (stoppingCondition(routeSection)) {
-                    return;
-                }
-
-                // System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + "and route position: " + tripModel.getRoutePosition());
+                System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + "and route position: " + tripModel.getRoutePosition());
 
                 // Send the updated message to the connector
                 connectorClient.postPayload(tripModel.getPayload());
 
+                long start = System.nanoTime();
                 sleep(startTime, reportInterval);
+                long end = System.nanoTime();
+
+                System.out.println("Sensor for vehicle " + tripModel.getVehicleName() + " slept for " + (end - start) / 1000000000.0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -127,12 +152,13 @@ public class TripInstance extends Thread {
         double excessDistance; // in meters
 
         List<LatLngZ> route = tripModel.getRoute().get(routeSection);
-
+        System.out.println("Total number of route positions: " + tripModel.getRoute().get(routeSection).size());
         for (
                 int i = tripModel.getRoutePosition();
                 i < tripModel.getRoute().get(routeSection).size() - 1;
                 i++
         ) {
+            System.out.println("Vehicle is at route position: " + i);
             LatLngZ pt1 = route.get(i);
             LatLngZ pt2 = route.get(i + 1);
             double routeDistance = Navigation.getDistance(pt1, pt2); // in meters
@@ -165,6 +191,8 @@ public class TripInstance extends Thread {
             }
             distanceFromStart = excessDistance;
             tripModel.setRoutePosition(i);
+
+            // If the vehicle moves towards the ending of the route to turn we can slow down the vehicle in the last
         }
     }
 
@@ -172,13 +200,13 @@ public class TripInstance extends Thread {
     /**
      * Makes the thread sleep for a variable time to ensure reports are made consistently at the given interval.
      * @param startTime Starting time when the iteration was started.
-     * @param interval time interval to sleep
+     * @param interval time interval to sleep in seconds
      */
     private static void sleep(LocalDateTime startTime, int interval) {
         try {
             long elapsedTime = Duration.between(startTime, LocalDateTime.now()).toMillis();
-            long sleepTime = interval - elapsedTime > 0 ? interval - elapsedTime : 0;
-            Thread.sleep(sleepTime);
+            long sleepTime = 1000 * interval - elapsedTime > 0 ? 1000 * interval - elapsedTime : 0;
+            sleep(sleepTime);
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
@@ -192,17 +220,17 @@ public class TripInstance extends Thread {
      */
     private boolean stoppingCondition(int routeSection) {
         if (routeSection == tripModel.getRoute().size() - 1) {
-            return tripModel.getRoutePosition() >= tripModel.getRoute().get(routeSection).size() ||
+            return tripModel.getRoutePosition() >= tripModel.getRoute().get(routeSection).size() - 2 ||
                     equal(tripModel.getLatitude(), tripModel.getDestination().lat) && equal(tripModel.getLongitude(), tripModel.getDestination().lng);
         }
         LatLngZ stop = tripModel.getStops().get(routeSection);
 
-        return tripModel.getRoutePosition() >= tripModel.getRoute().get(routeSection).size() ||
+        return tripModel.getRoutePosition() >= tripModel.getRoute().get(routeSection).size() - 2 ||
                 equal(tripModel.getLatitude(), stop.lat) && equal(tripModel.getLongitude(), stop.lng);
     }
 
 
-    private static final double DISTANCE_THRESHOLD = 1e-6;
+    private static final double DISTANCE_THRESHOLD = 1e-4;
 
     /**
      * Checks if a value is within the proximity of another value. This radius if given bt DISTANCE_THRESHOLD global variable.
@@ -212,6 +240,17 @@ public class TripInstance extends Thread {
         return Math.abs(val2 - val1) <= DISTANCE_THRESHOLD;
     }
 
+
+    //endregion
+    //region Getters/Setters
+
+    public void setVehicleSpeed(double vehicleSpeed) {
+        tripModel.setVehicleSpeed(vehicleSpeed);
+    }
+
+    public double getVehicleSpeed() {
+        return tripModel.getVehicleSpeed();
+    }
 
     //endregion
 

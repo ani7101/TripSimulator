@@ -61,7 +61,9 @@ Trip simulator, as part of the Oracle SCM - IoT division creates instances in th
 8. Testng (v7.6.0)
 9. Jcommander (v1.48)
 10. Slf4j-api (v1.7.36)
-11. Slf4j-simple (v1.7.36)
+11. Logback-classic (v1.2.11)
+12. Logback-core (v1.2.11)
+13. Univocity-parsers (v2.9.1)
 
 All dependencies can be installed manually from [maven repository](https://mvnrepository.com/) or using the following xml (pom) file  
 
@@ -138,13 +140,30 @@ All dependencies can be installed manually from [maven repository](https://mvnre
         <version>1.7.36</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.36</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.11</version>
         <scope>test</scope>
     </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>1.2.11</version>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/com.univocity/univocity-parsers -->
+    <dependency>
+        <groupId>com.univocity</groupId>
+        <artifactId>univocity-parsers</artifactId>
+        <version>2.9.1</version>
+    </dependency>
+
 </dependencies>
 ```
 

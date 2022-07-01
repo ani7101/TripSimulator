@@ -12,11 +12,14 @@ import utils.CredentialManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Overhead class to simulate multiple trip instances on multiple threads
  */
 public class TripSimulator {
+
+    private static Scanner sc = new Scanner(System.in);
 
     //region Class variables
     //---------------------------------------------------------------------------------------
@@ -31,10 +34,8 @@ public class TripSimulator {
 
     private final int reportInterval;
 
-    private final int stopTime;
+    private double defaultVehicleSpeed;
 
-    // Constant value as of now
-    private int VEHICLE_SPEED = 75;
 
     private static final Logger SIMULATION_LOGGER = LoggerFactory.getLogger("simulation");
 
@@ -43,41 +44,39 @@ public class TripSimulator {
     //region Constructors
     //---------------------------------------------------------------------------------------
 
-    public TripSimulator(ArrayList<TripModel> tripModels, int reportInterval) {
-        this(tripModels, reportInterval, "ORA_DEFAULT_ORG");
+    public TripSimulator(ArrayList<TripModel> tripModels, int reportInterval, double defaultVehicleSpeed) {
+        this(tripModels, reportInterval, defaultVehicleSpeed, "ORA_DEFAULT_ORG");
     }
 
-    public TripSimulator(ArrayList<TripModel> tripModels, int reportInterval, String organizationId) {
+    public TripSimulator(ArrayList<TripModel> tripModels, int reportInterval, double defaultVehicleSpeed, String organizationId) {
         this.requiredInstances = tripModels.size();
+        this.defaultVehicleSpeed = defaultVehicleSpeed;
         this.reportInterval = reportInterval;
         this.organizationId = organizationId;
 
         instances = new ArrayList<>(requiredInstances);
 
-        // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
-        stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
+        // Loading the credentials for the IoT server instance
+        getCredentials();
 
         for (TripModel tripModel : tripModels) {
-            instances.add(new TripInstance(tripModel, reportInterval, VEHICLE_SPEED, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
+            instances.add(new TripInstance(tripModel, reportInterval, defaultVehicleSpeed, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
         }
     }
 
-
-    public TripSimulator(int requiredInstances, int reportInterval) {
-        this(requiredInstances, reportInterval, "ORA_DEFAULT_ORG");
+    public TripSimulator(int requiredInstances, int reportInterval, double defaultVehicleSpeed) {
+        this(requiredInstances, reportInterval, defaultVehicleSpeed, "ORA_DEFAULT_ORG");
     }
 
-    public TripSimulator(int requiredInstances, int reportInterval, String organizationId) {
+    public TripSimulator(int requiredInstances, int reportInterval, double defaultVehicleSpeed, String organizationId) {
 
         // Initialization of class variables
         this.requiredInstances = requiredInstances;
+        this.defaultVehicleSpeed = defaultVehicleSpeed;
         this.reportInterval = reportInterval;
         this.organizationId = organizationId;
 
         instances = new ArrayList<>(requiredInstances);
-
-        // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
-        stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
 
         // Loading the credentials for the IoT server instance
         getCredentials();
@@ -98,7 +97,10 @@ public class TripSimulator {
         for (TripInstance instance : instances) {
             instance.start();
         }
-        SIMULATION_LOGGER.info("Finished simulation");
+
+        // TODO: 29/06/2022 Need to include vehicle speed changes (either using CLI or GUI)
+        // updateVehicleSpeed();
+
     }
 
 
@@ -138,15 +140,37 @@ public class TripSimulator {
                 credentials.get("connectorUrl"),
                 credentials.get("username"),
                 credentials.get("password"),
+                organizationId,
                 requiredInstances,
                 1
         );
 
         for (TripModel tripModel : tripModels) {
-            instances.add(new TripInstance(tripModel, reportInterval, VEHICLE_SPEED, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
+            instances.add(new TripInstance(tripModel, reportInterval, defaultVehicleSpeed, credentials.get("connectorUrl"), credentials.get("username"), credentials.get("password")));
         }
 
         SIMULATION_LOGGER.info("Created {} trips for simulation", requiredInstances);
+    }
+
+    private void updateVehicleSpeed() {
+        System.out.print("Enter the instance whose speed you wish to change:");
+        int instanceIndex = sc.nextInt();
+        System.out.print("Enter the updated speed value:");
+        double vehicleSpeed = sc.nextDouble();
+
+        changeVehicleSpeed(instanceIndex, vehicleSpeed);
+    }
+
+    private void changeVehicleSpeed(int instanceIndex, double vehicleSpeed) {
+        instances.get(instanceIndex).setVehicleSpeed(vehicleSpeed);
+    }
+
+    private void getVehicleSpeed(int instanceIndex) {
+        instances.get(instanceIndex).getVehicleSpeed();
+    }
+
+    private void generateVehicleSpeedFile() {
+
     }
 
 
@@ -154,10 +178,10 @@ public class TripSimulator {
     //region Getters/Setters
     //---------------------------------------------------------------------------------------
 
-    public int getVEHICLE_SPEED() { return VEHICLE_SPEED; }
+    public double getDefaultVehicleSpeed() { return defaultVehicleSpeed; }
 
-    public void setVEHICLE_SPEED(int VEHICLE_SPEED) {
-        this.VEHICLE_SPEED = VEHICLE_SPEED;
+    public void setDefaultVehicleSpeed(double defaultVehicleSpeed) {
+        this.defaultVehicleSpeed = defaultVehicleSpeed;
     }
 
     //endregion

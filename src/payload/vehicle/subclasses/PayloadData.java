@@ -1,4 +1,4 @@
-package payload.subclasses;
+package payload.vehicle.subclasses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

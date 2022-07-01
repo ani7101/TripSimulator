@@ -1,6 +1,6 @@
-package payload;
+package payload.vehicle;
 
-import payload.subclasses.PayloadData;
+import payload.vehicle.subclasses.PayloadData;
 
 import java.util.Random;
 

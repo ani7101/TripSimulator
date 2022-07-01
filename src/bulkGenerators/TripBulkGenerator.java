@@ -1,5 +1,7 @@
 package bulkGenerators;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simulation.models.TripModel;
 import trip.GeoLocationRepository;
 import trip.Trip;
@@ -20,6 +22,9 @@ import java.util.ArrayList;
 public class TripBulkGenerator {
 
     private static final GeoLocationRepository geoLocationRepository;
+
+    private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
+
 
     // Loading the sources, destinations and stops to run the simulation
     static {
@@ -49,6 +54,7 @@ public class TripBulkGenerator {
      * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
+     * @param organizationId organization in which the trip is to be created
      * @param requiredTrips Number of vehicles to be made
      * @param noStops Number of stops required per trip
      * @return ArrayList(TripModel): List of the randomly created models (instance) for the simulation
@@ -61,6 +67,7 @@ public class TripBulkGenerator {
             String connectorUrl,
             String username,
             String password,
+            String organizationId,
             int requiredTrips,
             int noStops
     ) {
@@ -81,28 +88,35 @@ public class TripBulkGenerator {
 
         // Timer stop 1
         long vehicleTime = System.nanoTime();
-        System.out.println("The time taken to create the vehicles, users and the type: " + (vehicleTime - startTime) / 1000000000.0);
+        IOT_API_LOGGER.info("The time taken to create {} vehicles, users and the type: {}s", requiredTrips, (vehicleTime - startTime) / 1000000000.0);
+        // System.out.println("The time taken to create the vehicles, users and the type: " + (vehicleTime - startTime) / 1000000000.0);
 
         // Creating trips
         for (int i = 0; i < requiredTrips; i++) {
             long tripStartTime = System.nanoTime();
 
-            Trip trip = TripGenerator.randomizedTripFromVehicle(
-                    accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, noStops);
+            try {
+                Trip trip = TripGenerator.randomizedTripFromVehicle(
+                        accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, organizationId, noStops);
 
+                // Getting and updating the trip ID from the server response
+                Trip responseTrip = tripClient.create(trip);
+                trip.setId(responseTrip.getId());
+                tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceName(), vehicles.get(i).getDeviceIdentifier()));
 
-            // Getting and updating the trip ID from the server response
-            Trip responseTrip = tripClient.create(trip);
-            trip.setId(responseTrip.getId());
-
-            tripModels.add(parseTripToTripModel(trip, vehicles.get(i).getDeviceName(), vehicles.get(i).getDeviceIdentifier()));
-
-            long tripEndTime = System.nanoTime();
-            System.out.println("Time taken to create trip: " + (tripEndTime - tripStartTime) / 1000000000.0);
+                // Logging the trip creation
+                long tripEndTime = System.nanoTime();
+                IOT_API_LOGGER.info("Time taken to create trip {} : {}s", trip.getId(), (tripEndTime - tripStartTime) / 1000000000.0);
+                // System.out.println("Time taken to create trip {} : " + (tripEndTime - tripStartTime) / 1000000000.0);
+            } catch (Exception e) {
+                i--;
+                IOT_API_LOGGER.warn("Trip is not created", e);
+            }
         }
 
         long endTime = System.nanoTime();
-        System.out.println("Total time to create " + requiredTrips + " trips: " + (endTime - startTime) / 1000000000.0);
+        IOT_API_LOGGER.info("Total time to create {} trips: {}s", requiredTrips, (endTime - startTime) / 1000000000.0);
+        // System.out.println("Total time to create " + requiredTrips + " trips: " + (endTime - startTime) / 1000000000.0);
 
         return tripModels;
     }
@@ -118,6 +132,7 @@ public class TripBulkGenerator {
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
      * @param vehicleType vehicle type for the creation of vehicles
+     * @param organizationId organization in which the trip is to be created
      * @param requiredTrips Number of vehicles to be made
      * @param noStops Number of stops required per trip
      * @return ArrayList(TripModel): List of the randomly created models (instance) for the simulation
@@ -131,6 +146,7 @@ public class TripBulkGenerator {
             String username,
             String password,
             String vehicleType,
+            String organizationId,
             int requiredTrips,
             int noStops
     ) {
@@ -147,7 +163,7 @@ public class TripBulkGenerator {
 
         // Creating trips
         for (int i = 0; i < requiredTrips; i++) {
-            Trip trip = TripGenerator.randomizedTripFromVehicle(accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, noStops);
+            Trip trip = TripGenerator.randomizedTripFromVehicle(accessTokenUrl, accessTokenUsername, accessTokenPassword, baseUrl, username, password, vehicles.get(i).getName(), uniqueIds.get(i), geoLocationRepository, organizationId, noStops);
 
 
             // Getting and updating the trip ID from the server response

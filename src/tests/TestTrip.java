@@ -31,7 +31,7 @@ public class TestTrip {
 
         trip = TripGenerator.randomizedTripFromVehicle(
                 accessTokenUrl, username, password,
-                baseUrl, username, password, vehicleName, "TestTrip", geoLocationRepository,  1);
+                baseUrl, username, password, vehicleName, "TestTrip", geoLocationRepository,  "ORA_DEFAULT_ORG", 1);
     }
 
     @Test(priority = 2)

@@ -10,14 +10,20 @@ import vehicle.VehicleAPIClient;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class Main {
     private static final HashMap<String, String> credentials = new HashMap<>();
 
     public static void main(String[] args) {
         loadCredentials();
 
+//        createTrips(75);
+
+        ArrayList<TripModel> tripModels = LocalStorage.read("tripModels.ser");
+
         // Sample simulation
-        TripSimulator tripSimulator = new TripSimulator(10, 100);
+        TripSimulator tripSimulator = new TripSimulator(tripModels, 10, Navigation.kmphToMilesPerHour(40));
+
         tripSimulator.run();
 
         System.out.println("Done!!");
@@ -46,6 +52,7 @@ public class Main {
                 credentials.get("connectorUrl"),
                 credentials.get("username"),
                 credentials.get("password"),
+                "ORA_DEFAULT_ORG",
                 requiredTrips,
                 1
         );
@@ -56,16 +63,15 @@ public class Main {
 
     public static void cleanUp() {
         DeviceAPIClient deviceClient = new DeviceAPIClient(credentials.get("baseUrl"), credentials.get("username"), credentials.get("password"));
-
-        VehicleAPIClient vehicleClient = new VehicleAPIClient(credentials.get("baseUrl"), credentials.get("username"), credentials.get("password"));
+        deviceClient.cleanUp();
 
         TripAPIClient tripClient = new TripAPIClient(credentials.get("baseUrl"), credentials.get("username"), credentials.get("password"));
+        tripClient.cleanUp();
 
         UserAPIClient userClient = new UserAPIClient(credentials.get("baseUrl"), credentials.get("username"), credentials.get("password"));
-
-        deviceClient.cleanUp();
-        tripClient.cleanUp();
         userClient.cleanUp();
+
+        VehicleAPIClient vehicleClient = new VehicleAPIClient(credentials.get("baseUrl"), credentials.get("username"), credentials.get("password"));
         vehicleClient.cleanUp();
     }
 }

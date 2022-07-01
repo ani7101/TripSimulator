@@ -1,0 +1,63 @@
+{
+  "name": "ora_equipment_device_model",
+  "urn": "urn:fleet:equipment",
+  "description": "Default equipment model for trip",
+  "attributes" : [ {
+    "description" : "Measures the tilt in multiple axes of a reference plane",
+    "name" : "ora_tilt",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Photodetector sensor used to detect light",
+    "name" : "ora_light",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Measures the temperature of the equipment",
+    "name" : "ora_temperature",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Measures pressure exerted by the equipment, mainly gaseous and liquid",
+    "name" : "ora_pressure",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Measures the humidity inside the equipment",
+    "name" : "ora_humidity",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Detects an impact to the equipment",
+    "name" : "ora_shock",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Measures temperature in the region around the equipment",
+    "name" : "ora_ambient_temperature",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "description" : "Detects a physical disconnect on the inside of the",
+    "name" : "ora_tamper_detection",
+    "type" : "NUMBER",
+    "writable" : true
+  }, {
+    "alias" : "ora_lat",
+    "name" : "ora_latitude",
+    "range" : "-90.0,90.0",
+    "type" : "NUMBER",
+    "writable" : false
+  }, {
+    "alias" : "ora_lon",
+    "name" : "ora_longitude",
+    "range" : "-180.0,180.0",
+    "type" : "NUMBER",
+    "writable" : false
+  }, {
+    "alias" : "ora_alt",
+    "name" : "ora_altitude",
+    "type" : "NUMBER",
+    "writable" : false
+  } ]
+}

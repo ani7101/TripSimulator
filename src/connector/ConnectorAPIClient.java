@@ -3,7 +3,7 @@ package connector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import payload.Payload;
+import payload.vehicle.Payload;
 import utils.APIClient;
 
 import java.util.concurrent.ExecutionException;
@@ -48,7 +48,7 @@ public class ConnectorAPIClient extends APIClient {
      * @param payload Payload with the device identifier (or hardware ID) to be posted
      * @return String: Request status response. It returns "<i>Request Accepted</i>" when no exceptions are called
      */
-    public String postPayload(Payload payload) {
+    public <T> String postPayload(T payload) {
         String response = null;
 
         try {

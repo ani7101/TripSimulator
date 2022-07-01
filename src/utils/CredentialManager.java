@@ -21,7 +21,7 @@ public class CredentialManager {
 
     private static final Properties credentials;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExample.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CredentialManager.class);
 
 
     // Loading the credentials from the credentials.properties file
