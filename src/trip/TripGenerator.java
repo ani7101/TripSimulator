@@ -4,6 +4,7 @@ import hereMaps.HereMapsAPIClient;
 import hereMaps.HereMapsRouteSection;
 
 import hereMaps.accessToken.AccessToken;
+import shipItemsAndEquipments.*;
 import trip.subclasses.*;
 import user.User;
 import user.UserAPIClient;
@@ -16,6 +17,7 @@ import vehicle.VehicleAPIClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static hereMaps.HereMapsParsers.parseHEREMapsPolyline;
 import static hereMaps.HereMapsParsers.parseHEREMapsSummary;
@@ -35,7 +37,12 @@ import static hereMaps.HereMapsParsers.parseHEREMapsSummary;
  */
 public class TripGenerator {
 
-    //region Randomized generators
+
+    public static final int SHIP_UNITS_PER_EQUIPMENT = 1;
+
+    public static final int SHIP_ITEMS_PER_SHIP_UNIT = 1;
+
+    //region Randomized generators (without equipment)
     //---------------------------------------------------------------------------------------
 
     /**
@@ -49,6 +56,7 @@ public class TripGenerator {
      * @param noStops Required number of stops to be randomized
      * @return Trip: randomly generated trip
      */
+    @Deprecated
     public static Trip randomizedTripFromVehicleDriver(
             String accessTokenUrl,
             String accessTokenUsername,
@@ -102,7 +110,7 @@ public class TripGenerator {
 
         UserAPIClient userClient = new UserAPIClient(baseUrl, username, password);
 
-        User user = UserGenerator.randomizedDriverUser(organizationId);
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
 
         user = userClient.create(user); // Creates the user in the IoT server
 
@@ -118,6 +126,7 @@ public class TripGenerator {
                 );
     }
 
+
     /**
      * Starts from the vehicle type given and creates a driver and vehicle before linking to the trip
      * @param accessTokenUrl HERE maps access token generation internal IoT server instance URL
@@ -132,6 +141,7 @@ public class TripGenerator {
      * @param noStops Required number of stops to be randomized
      * @return Trip: randomly generated trip
      */
+    @Deprecated
     public static Trip randomizedTripFromVehicleType(
             String accessTokenUrl,
             String accessTokenUsername,
@@ -153,7 +163,7 @@ public class TripGenerator {
         Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId);
         vehicleClient.create(vehicle);
 
-        User user = UserGenerator.randomizedDriverUser(organizationId);
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
 
         User responseUser = userClient.create(user); // Creates the user in the IoT server
         user.setId(responseUser.getId());
@@ -205,7 +215,7 @@ public class TripGenerator {
         Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, deviceId, uniqueId);
         vehicleClient.create(vehicle);
 
-        User user = UserGenerator.randomizedDriverUser(organizationId);
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
 
         User responseUser = userClient.create(user); // Creates the user in the IoT server
         user.setId(responseUser.getId());
@@ -217,6 +227,200 @@ public class TripGenerator {
                 vehicle.getName(),
                 user.getId(),
                 uniqueId,
+                geoLocationRepository,
+                noStops
+        );
+    }
+
+
+    //endregion
+    //region Randomized generators (with equipment)
+    //---------------------------------------------------------------------------------------
+
+    /**
+     * Creates a driver and finally generates a trip with the created driver & input vehicle
+     * @param accessTokenUrl HERE maps access token generation internal IoT server instance URL
+     * @param accessTokenUsername Username for the admin user of the access token generation internal IoT server
+     * @param accessTokenPassword  Password corresponding to the access token username.
+     * @param baseUrl URL (top level domain) to the IoT server instance without the path
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param vehicleName Name of the vehicle to be linked to the trip
+     * @param uniqueId Unique ID for naming the trip (as per NamingConvention.MD)
+     * @param noStops Required number of stops to be randomized
+     * @return Trip: randomly generated trip
+     */
+    public static Trip randomizedTripFromVehicleWithEquipment(
+            String accessTokenUrl,
+            String accessTokenUsername,
+            String accessTokenPassword,
+            String baseUrl,
+            String equipmentConnectorUrl,
+            String username,
+            String password,
+            String vehicleName,
+            String uniqueId,
+            GeoLocationRepository geoLocationRepository,
+            String organizationId,
+            int requiredEquipments,
+            int shipUnitsPerEquipment,
+            int shipItemsPerShipUnit,
+            int noStops
+    ) {
+
+        UserAPIClient userClient = new UserAPIClient(baseUrl, username, password);
+
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
+
+        user = userClient.create(user); // Creates the user in the IoT server
+
+        // Generating random stops for the pickup and the drop stop for the equipments
+        ArrayList<Equipment> equipments = new ArrayList<>(requiredEquipments);
+        for (int i = 0; i < requiredEquipments; i++) {
+            equipments.add(EquipmentGenerator.randomizedEquipment(equipmentConnectorUrl, username, password, 1,  2, shipUnitsPerEquipment, shipItemsPerShipUnit));
+        }
+
+        return tripCreationHelperWithEquipment(
+                accessTokenUrl,
+                accessTokenUsername,
+                accessTokenPassword,
+                vehicleName,
+                user.getName(),
+                uniqueId,
+                equipments,
+                geoLocationRepository,
+                noStops
+        );
+    }
+
+    /**
+     * Starts from the vehicle type given and creates a driver and vehicle before linking to the trip
+     * @param accessTokenUrl HERE maps access token generation internal IoT server instance URL
+     * @param accessTokenUsername Username for the admin user of the access token generation internal IoT server
+     * @param accessTokenPassword  Password corresponding to the access token username.
+     * @param baseUrl URL (top level domain) to the IoT server instance without the path
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param vehicleTypeId ID of the vehicle type in which the vehicle will be created
+     * @param deviceId ID to be linked to the vehicle
+     * @param uniqueId Unique ID for naming the trip (as per NamingConvention.MD)
+     * @param noStops Required number of stops to be randomized
+     * @return Trip: randomly generated trip
+     */
+    public static Trip randomizedTripFromVehicleTypeWithEquipment(
+            String accessTokenUrl,
+            String accessTokenUsername,
+            String accessTokenPassword,
+            String baseUrl,
+            String equipmentConnectorUrl,
+            String username,
+            String password,
+            String vehicleTypeId,
+            String deviceId, // It's better to create and access deviceIds by bulk instead of creating one at a time so better to take it as an argument
+            String uniqueId,
+            GeoLocationRepository geoLocationRepository,
+            String organizationId,
+            int requiredEquipments,
+            int shipUnitsPerEquipment,
+            int shipItemsPerShipUnit,
+            int noStops
+    ) {
+
+        VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
+        UserAPIClient userClient = new UserAPIClient(baseUrl, username, password);
+
+        Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, vehicleTypeId, deviceId);
+        vehicleClient.create(vehicle);
+
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
+
+        User responseUser = userClient.create(user); // Creates the user in the IoT server
+        user.setId(responseUser.getId());
+
+        // Creating equipments
+        ArrayList<Equipment> equipments = new ArrayList<>(requiredEquipments);
+        for (int i = 0; i < requiredEquipments; i++) {
+
+            // Generating random pickup & drop stop sequences
+            int pickupStopSequence = ThreadLocalRandom.current().nextInt(0, noStops + 1);
+            int dropStopSequence = ThreadLocalRandom.current().nextInt(pickupStopSequence + 1, noStops + 2);
+
+            equipments.add(EquipmentGenerator.randomizedEquipment(equipmentConnectorUrl, username, password, pickupStopSequence + 1, dropStopSequence + 1, shipUnitsPerEquipment, shipItemsPerShipUnit));
+        }
+
+        return tripCreationHelperWithEquipment(
+                accessTokenUrl,
+                accessTokenUsername,
+                accessTokenPassword,
+                vehicle.getName(),
+                user.getId(),
+                uniqueId,
+                equipments,
+                geoLocationRepository,
+                noStops
+        );
+
+    }
+
+
+    /**
+     * Generates a trip from scratch by creating all required components forehand
+     * @param accessTokenUrl HERE maps access token generation internal IoT server instance URL
+     * @param accessTokenUsername Username for the admin user of the access token generation internal IoT server
+     * @param accessTokenPassword  Password corresponding to the access token username.
+     * @param baseUrl URL (top level domain) to the IoT server instance without the path
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param deviceId ID to be linked to the vehicle
+     * @param uniqueId Unique ID for naming the trip (as per NamingConvention.MD)
+     * @param noStops Required number of stops to be randomized
+     * @return Trip: randomly generated trip
+     */
+    public static Trip randomizedTripWithEquipment(
+            String accessTokenUrl,
+            String accessTokenUsername,
+            String accessTokenPassword,
+            String baseUrl,
+            String equipmentConnectorUrl,
+            String username,
+            String password,
+            String deviceId,
+            String uniqueId,
+            GeoLocationRepository geoLocationRepository,
+            String organizationId,
+            int requiredEquipments,
+            int noStops
+    ) {
+
+        VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
+        UserAPIClient userClient = new UserAPIClient(baseUrl, username, password);
+
+        Vehicle vehicle = OBD2VehicleGenerator.randomizedVehicle(baseUrl, username, password, deviceId, uniqueId);
+        vehicleClient.create(vehicle);
+
+        User user = UserGenerator.randomizedDriverUser(organizationId, uniqueId);
+
+        User responseUser = userClient.create(user); // Creates the user in the IoT server
+        user.setId(responseUser.getId());
+
+        ArrayList<Equipment> equipments = new ArrayList<>(requiredEquipments);
+        for (int i = 0; i < requiredEquipments; i++) {
+
+            // Generating random pickup & drop stop sequences
+            int pickupStopSequence = ThreadLocalRandom.current().nextInt(0, noStops + 1);
+            int dropStopSequence = ThreadLocalRandom.current().nextInt(pickupStopSequence + 1, noStops + 2);
+
+            equipments.add(EquipmentGenerator.randomizedEquipment(equipmentConnectorUrl, username, password, pickupStopSequence + 1, dropStopSequence + 1, SHIP_UNITS_PER_EQUIPMENT, SHIP_ITEMS_PER_SHIP_UNIT));
+        }
+
+        return tripCreationHelperWithEquipment(
+                accessTokenUrl,
+                accessTokenUsername,
+                accessTokenPassword,
+                vehicle.getName(),
+                user.getId(),
+                uniqueId,
+                equipments,
                 geoLocationRepository,
                 noStops
         );
@@ -286,6 +490,90 @@ public class TripGenerator {
         trip.setRoute(polyline);
         trip.setPlannedDriveDistance(hereResponse.get(1));
         trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
+        return trip;
+    }
+
+
+    /**
+     * Helper function to create the Trip instance with the route taken from HERE maps and other required information.
+     * It also uses a randomizer to pick the source, destination and the stops from the repository
+     * @param accessTokenUrl HERE maps access token generation internal IoT server instance URL
+     * @param accessTokenUsername Username for the admin user of the access token generation internal IoT server
+     * @param accessTokenPassword Password corresponding to the access token username.
+     * @param vehicleName Vehicle name (identifier) to be linked to the trip
+     * @param driverId driver to be linked to the trip
+     * @param uniqueId Unique ID for naming the trip (as per NamingConvention.MD)
+     * @param noStops Required number of stops to be randomized
+     * @return Trip: randomly generated trip
+     */
+    private static Trip tripCreationHelperWithEquipment(
+            String accessTokenUrl,
+            String accessTokenUsername,
+            String accessTokenPassword,
+            String vehicleName,
+            String driverId,
+            String uniqueId,
+            ArrayList<Equipment> equipments,
+            GeoLocationRepository geoLocationRepository,
+            int noStops
+    ) {
+        // Generating access token
+        AccessToken accessToken = new AccessToken(accessTokenUrl, accessTokenUsername, accessTokenPassword);
+
+        // Picking out the source, destination and the stop geolocations
+        TripStopRecord source = new TripStopRecord(geoLocationRepository.getRandomSource());
+        TripStopRecord destination = new TripStopRecord(geoLocationRepository.getRandomDestination());
+
+        ArrayList<TripStopRecord> stopRecords = new ArrayList<>();
+        ArrayList<ArrayList<Double>> stops = geoLocationRepository.getRandomStop(noStops);
+
+        for (ArrayList<Double> stop : stops) {
+            stopRecords.add(new TripStopRecord(stop));
+        }
+
+
+        Trip trip = new Trip(
+                source,
+                destination,
+                stopRecords,
+                new TripVehicleInfoModel(vehicleName),
+                new TripDriverInfoModel(driverId)
+        );
+
+        trip.setName("simulation-trip-" + uniqueId);
+
+        ArrayList<HereMapsRouteSection> routeSections = getRoute(
+                accessToken.get(),
+                source.getLatitude(), source.getLongitude(),
+                destination.getLatitude(), destination.getLongitude(),
+                stops );
+
+        List<Long> hereResponse = parseHEREMapsSummary(routeSections);
+        ArrayList<String> polyline = parseHEREMapsPolyline(routeSections);
+
+        trip.setRoute(polyline);
+        trip.setPlannedDriveDistance(hereResponse.get(1));
+        trip.setPlannedDriveDurationSeconds(hereResponse.get(2));
+
+        // Parsing the equipments into required payload
+        ArrayList<ShipUnit> tripShipUnits = new ArrayList<>();
+        ArrayList<ShipItem> tripShipItems = new ArrayList<>();
+        ArrayList<ShipOrder> tripShipOrders = new ArrayList<>();
+        for (Equipment equipment : equipments) {
+            for (ShipUnit shipUnit : equipment.getShipUnits()) {
+                tripShipUnits.add(shipUnit);
+                for (ShipItem shipItem : shipUnit.getShipItems()) {
+                    tripShipItems.add(shipItem);
+                    tripShipOrders.add(shipItem.getShipOrder());
+                }
+            }
+        }
+        trip.setEquipments(equipments);
+        trip.setShipUnits(tripShipUnits);
+        trip.setShipItems(tripShipItems);
+        trip.setShipOrders(tripShipOrders);
+
+
         return trip;
     }
 

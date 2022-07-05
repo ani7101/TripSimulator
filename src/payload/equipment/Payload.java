@@ -48,6 +48,15 @@ public class Payload implements Serializable {
     @JsonProperty(DATA)
     private PayloadData data;
 
+    @JsonIgnore
+    private int pickupStopSequence;
+
+    @JsonIgnore
+    private int dropStopSequence;
+
+    @JsonIgnore
+    private boolean failure;
+
 
     //endregion
     //region Constructors
@@ -58,6 +67,7 @@ public class Payload implements Serializable {
         this.deviceIdentifier = deviceIdentifier;
         this.measurementTime = measurementTime;
         this.data = data;
+        this.failure = false;
     }
 
     // Empty constructor for jackson to serialize/deserialize
@@ -155,12 +165,12 @@ public class Payload implements Serializable {
 
     // Data: Light
     @JsonIgnore
-    public double getLight() {
+    public int getLight() {
         return data.getLight();
     }
 
     @JsonIgnore
-    public void setLight(double light) {
+    public void setLight(int light) {
         data.setLight(light);
     }
 
@@ -229,6 +239,24 @@ public class Payload implements Serializable {
     public void setTamperDetection(double tamperDetection) {
         data.setTamperDetection(tamperDetection);
     }
+
+    @JsonIgnore
+    public int getPickupStopSequence() { return pickupStopSequence; }
+
+    @JsonIgnore
+    public void setPickupStopSequence(int pickupStopSequence) { this.pickupStopSequence = pickupStopSequence; }
+
+    @JsonIgnore
+    public int getDropStopSequence() { return dropStopSequence; }
+
+    @JsonIgnore
+    public void setDropStopSequence(int dropStopSequence) { this.dropStopSequence = dropStopSequence; }
+
+    @JsonIgnore
+    public boolean isFailure() { return failure; }
+
+    @JsonIgnore
+    public void setFailure(boolean failure) { this.failure = failure; }
 
     //endregion
 

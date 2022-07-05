@@ -4,6 +4,8 @@ package payload.equipment.subclasses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Data included with their units
  * <ul>
@@ -20,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * </ul>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PayloadData {
+public class PayloadData implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------
@@ -60,7 +62,7 @@ public class PayloadData {
     private double tilt;
 
     @JsonProperty(LIGHT)
-    private double light;
+    private int light;
 
     @JsonProperty(TEMPERATURE)
     private double temperature;
@@ -86,7 +88,7 @@ public class PayloadData {
     //---------------------------------------------------------------------------------------
 
 
-    public PayloadData(double latitude, double longitude, double tilt, double light, double temperature, double pressure, double humidity, double shock, double ambientTemperature, double tamperDetection) {
+    public PayloadData(double latitude, double longitude, double tilt, int light, double temperature, double pressure, double humidity, double shock, double ambientTemperature, double tamperDetection) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.tilt = tilt;
@@ -131,11 +133,11 @@ public class PayloadData {
         this.tilt = tilt;
     }
 
-    public double getLight() {
+    public int getLight() {
         return light;
     }
 
-    public void setLight(double light) {
+    public void setLight(int light) {
         this.light = light;
     }
 
@@ -186,7 +188,6 @@ public class PayloadData {
     public void setTamperDetection(double tamperDetection) {
         this.tamperDetection = tamperDetection;
     }
-
 
     //endregion
 

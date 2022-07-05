@@ -53,7 +53,7 @@ public class VehicleBulkGenerator {
         VehicleTypeAPIClient typeClient = new VehicleTypeAPIClient(baseUrl, username, password);
 
         // Creating devices
-        ArrayList<Device> devices = DeviceConnectorBulkGenerator.bulkCreateDevice(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
+        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
 
         // Creating a vehicle type based on the OBD2 data model
         VehicleType type = typeClient.create(OBD2VehicleTypeGenerator.randomizedType());
@@ -76,7 +76,7 @@ public class VehicleBulkGenerator {
                 vehicles.add(vehicle);
             } catch (Exception e) {
                 i--;
-                IOT_API_LOGGER.warn("Trip is not created", e);
+                IOT_API_LOGGER.warn("Vehicle is not created", e);
             }
         }
 
@@ -108,7 +108,7 @@ public class VehicleBulkGenerator {
         VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
 
         // Creating devices
-        ArrayList<Device> devices = DeviceConnectorBulkGenerator.bulkCreateDevice(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
+        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
 
 
         ArrayList<Vehicle> vehicles = new ArrayList<>(requiredVehicles);
@@ -129,7 +129,7 @@ public class VehicleBulkGenerator {
                 vehicles.add(vehicle);
             } catch (Exception e) {
                 i--;
-                IOT_API_LOGGER.warn("Trip is not created", e);
+                IOT_API_LOGGER.warn("Vehicle is not created", e);
             }
         }
 

@@ -3,6 +3,7 @@ package simulation.models;
 import connector.ConnectorAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import payload.equipment.Payload;
 import utils.Navigation;
 import utils.PolylineEncoderDecoder.LatLngZ;
 
@@ -22,6 +23,10 @@ public class TripInstance extends Thread {
 
     private final ConnectorAPIClient connectorClient;
 
+    private final String vehicleConnectorUrl;
+
+    private final String equipmentConnectorUrl;
+
     private final TripModel tripModel;
 
     private final int reportInterval;
@@ -30,25 +35,29 @@ public class TripInstance extends Thread {
 
     private static final Logger SIMULATION_LOGGER = LoggerFactory.getLogger("simulation");
 
+    // Probability indicates that 1 in the number given below will not make it to their final destinations
+    // Instead of using a randomization for finding if there is a failure in the equipment,
+    // a system where every nth device is a failure is used.
+    private static final int FAILURE_PROBABILITY = 4;
+
 
     //endregion
     //region Constructors
     //---------------------------------------------------------------------------------------
 
     public TripInstance(TripModel tripModel, int reportInterval, double vehicleSpeed,
-                        String connectorUrl, String username, String password) {
-        connectorClient = new ConnectorAPIClient(connectorUrl, username, password);
+                        String vehicleConnectorUrl, String equipmentConnectorUrl, String username, String password) {
+        connectorClient = new ConnectorAPIClient(username, password);
 
         this.tripModel = tripModel;
         this.reportInterval = reportInterval;
         this.tripModel.setVehicleSpeed(vehicleSpeed);
-
-        // Just to make sure the source is set
-        this.tripModel.setLatitude(this.tripModel.getSource().lat);
-        this.tripModel.setLatitude(this.tripModel.getSource().lng);
+        this.vehicleConnectorUrl = vehicleConnectorUrl;
+        this.equipmentConnectorUrl = equipmentConnectorUrl;
 
         // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
-        stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
+        // stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
+        stopTime = 20;
     }
 
 
@@ -63,10 +72,23 @@ public class TripInstance extends Thread {
     public void run() {
         SIMULATION_LOGGER.info("vehicle for trip {} started moving", tripModel.getId());
         System.out.println("Vehicle for trip " + tripModel.getId() + " started moving");
+
         for (int i = 0; i < tripModel.getRoute().size(); i++) {
+
+            // Sending the initial payload at the source location
+            LocalDateTime startTime = LocalDateTime.now();
+            postInitialVehiclePayload();
+
+            // Wait until the next report interval to begin moving the vehicle.
+            sleep(startTime, reportInterval);
+
             simulateTrip(i);
+
             SIMULATION_LOGGER.info("vehicle for trip {} finished section {} and is waiting for {}", tripModel.getId(), i, stopTime);
-            System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime);
+            System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime + "s");
+
+            // Sleeping at each stop for the IoT server to finish processing
+            sleep(LocalDateTime.now(), stopTime);
         }
 
         SIMULATION_LOGGER.info("vehicle for trip {} finished it's trip", tripModel.getId());
@@ -84,17 +106,15 @@ public class TripInstance extends Thread {
      * @param routeSection id to the section of the route
      */
     private void simulateTrip(int routeSection) {
+        System.out.println("Number of positions in route section " + routeSection + " is " + tripModel.getRoute().get(routeSection).size());
         try {
-
-            // Generating randomized payload data for other fields and posting the initial message at source location
-            tripModel.preparePayload();
-            connectorClient.postPayload(tripModel.getPayload());
-
+            // Main loop for iterating over route position
             while (!interrupted()) {
+
                 LocalDateTime startTime = LocalDateTime.now();
 
+                // Checking whether to stop the vehicle or not
                 if (stoppingCondition(routeSection)) {
-                    System.out.println("Vehicle stopped");
                     if (routeSection == tripModel.getRoute().size() - 1) {
                         this.tripModel.setLatitude(this.tripModel.getDestination().lat);
                         this.tripModel.setLatitude(this.tripModel.getDestination().lng);
@@ -104,30 +124,41 @@ public class TripInstance extends Thread {
                         this.tripModel.setLatitude(this.tripModel.getStops().get(routeSection).lng);
                     }
 
-                    sleep(startTime, stopTime);
+                    tripModel.prepareVehiclePayload();
+                    connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
 
-                    tripModel.preparePayload();
-                    connectorClient.postPayload(tripModel.getPayload());
+                    // Setting route position back to start
+                    tripModel.setRoutePosition(0);
+
                     return;
                 }
 
-                // Moving the vehicle unless specified
-                updateVehicle(routeSection);
+                // Moving the vehicle and posting the payload
+                updateVehicleAndPost(routeSection);
 
-                System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + "and route position: " + tripModel.getRoutePosition());
+                System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + " and route position: " + tripModel.getRoutePosition());
 
-                // Send the updated message to the connector
-                connectorClient.postPayload(tripModel.getPayload());
-
-                long start = System.nanoTime();
                 sleep(startTime, reportInterval);
-                long end = System.nanoTime();
-
-                System.out.println("Sensor for vehicle " + tripModel.getVehicleName() + " slept for " + (end - start) / 1000000000.0);
             }
         } catch (Exception e) {
+            SIMULATION_LOGGER.warn("Error while moving the vehicle, " + e);
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Posts the payload of the vehicle with the location set to the source
+     */
+    private void postInitialVehiclePayload() {
+        // Generating randomized payload data for other fields and posting the initial message at source location
+        tripModel.prepareVehiclePayload();
+
+        // To ensure the initial point is set to the source location
+        tripModel.setLocation(tripModel.getSource());
+
+        // Posting to the connector
+        connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
+
     }
 
 
@@ -145,20 +176,18 @@ public class TripInstance extends Thread {
      * </ul>
      * @param routeSection id to the section of the route
      */
-    private void updateVehicle(int routeSection) {
+    private void updateVehicleAndPost(int routeSection) {
         double distance = reportInterval * Navigation.milesPerHourToMetersPerSecond(tripModel.getVehicleSpeed());
         double distanceInKms = Navigation.metersToKms(distance);
         double distanceFromStart = tripModel.getDistanceFromStart() + distance; // in meters
         double excessDistance; // in meters
 
         List<LatLngZ> route = tripModel.getRoute().get(routeSection);
-        System.out.println("Total number of route positions: " + tripModel.getRoute().get(routeSection).size());
         for (
                 int i = tripModel.getRoutePosition();
                 i < tripModel.getRoute().get(routeSection).size() - 1;
                 i++
         ) {
-            System.out.println("Vehicle is at route position: " + i);
             LatLngZ pt1 = route.get(i);
             LatLngZ pt2 = route.get(i + 1);
             double routeDistance = Navigation.getDistance(pt1, pt2); // in meters
@@ -171,8 +200,7 @@ public class TripInstance extends Thread {
                 LatLngZ updatedPos = Navigation.getPosition(pt1, bearing, distanceFromStart);
 
                 // Updating the latitude and longitude (position) of the vehicle
-                tripModel.setLatitude(updatedPos.lat);
-                tripModel.setLongitude(updatedPos.lng);
+                tripModel.setLocation(updatedPos);
 
                 // Updating additional parameters such as distance travelled, fuel used, distance from start and position in the route
                 tripModel.setTrueOdometer(tripModel.getTrueOdometer() + distanceInKms);
@@ -185,7 +213,15 @@ public class TripInstance extends Thread {
                 tripModel.setRoutePosition(i);
 
                 // Generating randomized payload data for other fields
-                tripModel.preparePayload();
+                tripModel.prepareVehiclePayload();
+
+                // TODO: 05/07/2022 Add vehicle speed reduction for route corners
+
+                // Send the updated vehicle payload to the connector
+                connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
+
+                // Send the updated equipment payloads to the connector
+                updateEquipmentAndPost(routeSection, updatedPos.lat, updatedPos.lng);
 
                 return;
             }
@@ -193,6 +229,86 @@ public class TripInstance extends Thread {
             tripModel.setRoutePosition(i);
 
             // If the vehicle moves towards the ending of the route to turn we can slow down the vehicle in the last
+        }
+
+        // Send the updated vehicle payload to the connector
+        connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
+
+        // Send the updated equipment payloads to the connector
+        updateEquipmentAndPost(routeSection, tripModel.getLatitude(), tripModel.getLongitude());
+    }
+
+    /**
+     * Updates the equipment and posts it to the connector.
+     * @param routeSection Section of the route in which the vehicle is traversing
+     * @param lat Latitude to the updated position
+     * @param lng Longitude of the updated position
+     */
+    public void updateEquipmentAndPost(int routeSection, double lat, double lng) {
+        int count = 1;
+
+        // Updating and posting the equipment payload
+        for (Payload equipment : tripModel.getEquipmentPayloads()) {
+            // In case the equipment falls into the route section, then we can send and update the position.
+
+            if (
+                        (routeSection >= equipment.getPickupStopSequence() - 1 && routeSection < equipment.getDropStopSequence() - 1)
+                    &&
+                        !equipment.isFailure()
+            ) {
+
+                System.out.println("Equipment is moved to " + lat + ", " + lng);
+                equipment.setLatitude(lat);
+                equipment.setLongitude(lng);
+
+                tripModel.prepareEquipmentPayload();
+                connectorClient.postPayload(equipmentConnectorUrl, equipment);
+            }
+            // Handling failures in equipments
+            if (count % FAILURE_PROBABILITY == 0) {
+                equipment.setFailure(true);
+            }
+            count++;
+        }
+
+        // Updating and posting the ship unit payload
+        for (Payload shipUnit : tripModel.getShipUnitPayloads()) {
+            if (
+                    (routeSection >= shipUnit.getPickupStopSequence() && routeSection < shipUnit.getDropStopSequence())
+                            &&
+                            !shipUnit.isFailure()
+            ) {
+                shipUnit.setLatitude(lat);
+                shipUnit.setLongitude(lng);
+
+                tripModel.prepareEquipmentPayload();
+                connectorClient.postPayload(equipmentConnectorUrl, shipUnit);
+            }
+            // Handling failures in equipments
+            if (count % FAILURE_PROBABILITY == 0) {
+                shipUnit.setFailure(true);
+            }
+            count++;
+        }
+
+        // Updating and posting the ship item payload
+        for (Payload shipItem : tripModel.getShipItemPayloads()) {
+            if (
+                    (routeSection >= shipItem.getPickupStopSequence() && routeSection < shipItem.getDropStopSequence())
+                            &&
+                            !shipItem.isFailure()
+            ) {
+                shipItem.setLatitude(lat);
+                shipItem.setLongitude(lng);
+
+                tripModel.prepareEquipmentPayload();
+                connectorClient.postPayload(equipmentConnectorUrl, shipItem);
+            }
+            // Handling failures in equipments
+            if (count % FAILURE_PROBABILITY == 0) {
+                shipItem.setFailure(true);
+            }
+            count++;
         }
     }
 
@@ -205,10 +321,20 @@ public class TripInstance extends Thread {
     private static void sleep(LocalDateTime startTime, int interval) {
         try {
             long elapsedTime = Duration.between(startTime, LocalDateTime.now()).toMillis();
-            long sleepTime = 1000 * interval - elapsedTime > 0 ? 1000 * interval - elapsedTime : 0;
+            long sleepTime = 1000L * interval - elapsedTime > 0 ? 1000L * interval - elapsedTime : 0;
             sleep(sleepTime);
         } catch (InterruptedException ie) {
-            ie.printStackTrace();
+            SIMULATION_LOGGER.warn("Exception generated while vehicle is sleeping: " + ie);
+        }
+    }
+
+    private static void sleepCorneringTime(int routePosition,int initialRoutePosition) {
+        // For every corner we reach let us sleep for 0.1s
+        try {
+            long sleepTime = (routePosition - initialRoutePosition) * 100L;
+            sleep(sleepTime);
+        } catch (InterruptedException ie) {
+            SIMULATION_LOGGER.warn("Exception generated while vehicle is sleeping: " + ie);
         }
     }
 

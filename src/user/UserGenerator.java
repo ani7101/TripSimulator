@@ -36,8 +36,8 @@ public class UserGenerator {
      * Generates a driver user in the default organization
      * @return User: randomly generated user
      */
-    public static User randomizedDefaultDriverUser() {
-        return randomizedUser(new ArrayList<>(of("IoTDriver", "IoTOrganization$ORA_DEFAULT_ORG")));
+    public static User randomizedDefaultDriverUser(String uniqueId) {
+        return randomizedUser(new ArrayList<>(of("IoTDriver", "IoTOrganization$ORA_DEFAULT_ORG")), uniqueId);
     }
 
     /**
@@ -45,8 +45,8 @@ public class UserGenerator {
      * @param organizationId ID for the organization where the user will be created
      * @return User: randomly generated user
      */
-    public static User randomizedDriverUser(String organizationId) {
-        return randomizedUser(new ArrayList<>(of("IoTDriver", "IoTOrganization$" + organizationId)));
+    public static User randomizedDriverUser(String organizationId, String uniqueId) {
+        return randomizedUser(new ArrayList<>(of("IoTDriver", "IoTOrganization$" + organizationId)), uniqueId);
     }
 
     /**
@@ -55,13 +55,13 @@ public class UserGenerator {
      * @param roles List of roles to be assigned to the user
      * @return User: randomly generated user
      */
-    public static User randomizedUser(ArrayList<String> roles) {
+    public static User randomizedUser(ArrayList<String> roles, String uniqueId) {
 
         String firstName = Generator.generateRandomString(5);
         String lastName = Generator.generateRandomString(5);
 
         User user = new User(
-                "simulation-driver-" + Generator.generateRandomUUID(),
+                "simulation-driver-" + uniqueId,
                 firstName,
                 lastName,
                 roles

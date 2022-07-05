@@ -54,4 +54,8 @@ public class Generator {
 
         return UUIDS;
     }
+
+    public static double generateRandomNumber(double max, double min) {
+        return min + (max - min) * new Random().nextDouble();
+    }
 }

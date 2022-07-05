@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIClient {
 
-    private static final int TIMEOUT = 15; // maximum time to wait for the request response
+    private static final int TIMEOUT = 90; // maximum time to wait for the request response
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)

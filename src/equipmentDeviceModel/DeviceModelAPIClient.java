@@ -1,4 +1,4 @@
-package equipment.deviceModel;
+package equipmentDeviceModel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.LoggerFactory;

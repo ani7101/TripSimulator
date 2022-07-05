@@ -1,6 +1,7 @@
 package simulation.models;
 
-import bulkGenerators.DeviceConnectorBulkGenerator;
+import bulkGenerators.DeviceBulkGenerator;
+import payload.equipment.PayloadDataGenerator;
 import payload.vehicle.Payload;
 import utils.DateTime;
 import utils.PolylineEncoderDecoder;
@@ -21,6 +22,8 @@ public class TripModel implements Serializable {
     //region Class variables
     //---------------------------------------------------------------------------------------
 
+    public static final long serialVersionUID = 1L;
+
     private final String id;
 
     private final String driverId;
@@ -39,7 +42,13 @@ public class TripModel implements Serializable {
 
     private ArrayList<List<PolylineEncoderDecoder.LatLngZ>> route = new ArrayList<>();
 
-    private Payload payload;
+    private Payload vehiclePayload;
+
+    private ArrayList<payload.equipment.Payload> equipmentPayloads;
+
+    private ArrayList<payload.equipment.Payload> shipUnitPayloads;
+
+    private ArrayList<payload.equipment.Payload> shipItemPayloads;
 
     private LocalDateTime engineStartTime;
 
@@ -61,7 +70,10 @@ public class TripModel implements Serializable {
             PolylineEncoderDecoder.LatLngZ source,
             PolylineEncoderDecoder.LatLngZ destination,
             ArrayList<PolylineEncoderDecoder.LatLngZ> stops,
-            ArrayList<String> polyline) {
+            ArrayList<String> polyline,
+            ArrayList<payload.equipment.Payload> equipmentPayloads,
+            ArrayList<payload.equipment.Payload> shipUnitPayloads,
+            ArrayList<payload.equipment.Payload> shipItemPayloads) {
 
         this.id = id;
         this.driverId = driverId;
@@ -71,11 +83,14 @@ public class TripModel implements Serializable {
         this.source = source;
         this.destination = destination;
         this.stops = stops;
+        this.equipmentPayloads = equipmentPayloads;
+        this.shipUnitPayloads = shipUnitPayloads;
+        this.shipItemPayloads = shipItemPayloads;
 
-        payload = DeviceConnectorBulkGenerator.populatePayload(deviceName, deviceIdentifier);
+        vehiclePayload = DeviceBulkGenerator.populateVehiclePayload(deviceName, deviceIdentifier);
 
-        payload.setLatitude(source.lat);
-        payload.setLongitude(source.lng);
+        vehiclePayload.setLatitude(source.lat);
+        vehiclePayload.setLongitude(source.lng);
 
         if (polyline != null) {
             for (String sectionPolyline : polyline) {
@@ -83,35 +98,6 @@ public class TripModel implements Serializable {
             }
         }
     }
-
-    public TripModel(
-            String id,
-            String driverId,
-            String vehicleName,
-            String deviceName,
-            String deviceIdentifier,
-            PolylineEncoderDecoder.LatLngZ source,
-            PolylineEncoderDecoder.LatLngZ destination,
-            ArrayList<PolylineEncoderDecoder.LatLngZ> stops,
-            ArrayList<String> polyline,
-            Payload payload) {
-
-        this.id = id;
-        this.driverId = driverId;
-        this.vehicleName = vehicleName;
-        this.deviceName = deviceName;
-        this.deviceIdentifier = deviceIdentifier;
-
-        this.source = source;
-        this.destination = destination;
-        this.stops = stops;
-        this.payload = payload;
-
-        for (String sectionPolyline : polyline) {
-            route.add(PolylineEncoderDecoder.decode(sectionPolyline));
-        }
-    }
-
 
     //endregion
     //region Getters/Setters
@@ -151,8 +137,8 @@ public class TripModel implements Serializable {
         return route;
     }
 
-    public Payload getPayload() {
-        return payload;
+    public Payload getVehiclePayload() {
+        return vehiclePayload;
     }
 
     public int getRoutePosition() {
@@ -183,132 +169,209 @@ public class TripModel implements Serializable {
         this.route = route;
     }
 
-    public void setPayload(Payload payload) {
-        this.payload = payload;
+    public void setVehiclePayload(Payload vehiclePayload) {
+        this.vehiclePayload = vehiclePayload;
     }
 
     // payload: Latitude
-    public double getLatitude() { return payload.getLatitude(); }
+    public double getLatitude() { return vehiclePayload.getLatitude(); }
 
-    public void setLatitude(double latitude) { payload.setLatitude(latitude); }
+    public void setLatitude(double latitude) { vehiclePayload.setLatitude(latitude); }
 
 
     // payload: Longitude
-    public double getLongitude() { return payload.getLongitude(); }
+    public double getLongitude() { return vehiclePayload.getLongitude(); }
 
-    public void setLongitude(double longitude) { payload.setLongitude(longitude); }
+    public void setLongitude(double longitude) { vehiclePayload.setLongitude(longitude); }
 
 
     // payload: Vehicle speed
-    public double getVehicleSpeed() { return payload.getVehicleSpeed(); }
+    public double getVehicleSpeed() { return vehiclePayload.getVehicleSpeed(); }
 
-    public void setVehicleSpeed(double vehicleSpeed) { payload.setVehicleSpeed(vehicleSpeed); }
+    public void setVehicleSpeed(double vehicleSpeed) { vehiclePayload.setVehicleSpeed(vehicleSpeed); }
 
 
     // payload: Engine RPM
-    public double getEngineRPM() { return payload.getEngineRPM(); }
+    public double getEngineRPM() { return vehiclePayload.getEngineRPM(); }
 
-    public void setEngineRPM(int engineRPM) { payload.setEngineRPM(engineRPM); }
+    public void setEngineRPM(int engineRPM) { vehiclePayload.setEngineRPM(engineRPM); }
 
 
     // payload: Number of DTCs
-    public double getNumberOfDTCs() { return payload.getNumberOfDTCs(); }
+    public double getNumberOfDTCs() { return vehiclePayload.getNumberOfDTCs(); }
 
     public void setNumberOfDTCs(double numberOfDTCs) {
-        payload.setNumberOfDTCs(numberOfDTCs);
+        vehiclePayload.setNumberOfDTCs(numberOfDTCs);
     }
 
     // payload: Engine coolant temperature
 
-    public double getEngineCoolantTemperature() { return payload.getEngineCoolantTemperature(); }
+    public double getEngineCoolantTemperature() { return vehiclePayload.getEngineCoolantTemperature(); }
 
     public void setEngineCoolantTemperature(double engineCoolantTemperature) {
-        payload.setEngineCoolantTemperature(engineCoolantTemperature);
+        vehiclePayload.setEngineCoolantTemperature(engineCoolantTemperature);
     }
 
 
     // payload: True odometer
-    public double getTrueOdometer() { return payload.getTrueOdometer(); }
+    public double getTrueOdometer() { return vehiclePayload.getTrueOdometer(); }
 
-    public void setTrueOdometer(double trueOdometer) { payload.setTrueOdometer(trueOdometer); }
+    public void setTrueOdometer(double trueOdometer) { vehiclePayload.setTrueOdometer(trueOdometer); }
 
 
     // payload: Throttle position
-    public double getThrottlePosition() { return payload.getThrottlePosition(); }
+    public double getThrottlePosition() { return vehiclePayload.getThrottlePosition(); }
 
     public void setThrottlePosition(double throttlePosition) {
-        payload.setThrottlePosition(throttlePosition);
+        vehiclePayload.setThrottlePosition(throttlePosition);
     }
 
 
     // payload: Total fuel used
     public double getTotalFuelUsed() {
-        return payload.getTotalFuelUsed();
+        return vehiclePayload.getTotalFuelUsed();
     }
 
     public void setTotalFuelUsed(double totalFuelUsed) {
-        payload.setTotalFuelUsed(totalFuelUsed);
+        vehiclePayload.setTotalFuelUsed(totalFuelUsed);
     }
 
 
     // payload: Runtime since engine start
     public long getRuntimeSinceEngineStart() {
-        return payload.getRuntimeSinceEngineStart();
+        return vehiclePayload.getRuntimeSinceEngineStart();
     }
 
     public void setRuntimeSinceEngineStart(long runtimeSinceEngineStart) {
-        payload.setRuntimeSinceEngineStart(runtimeSinceEngineStart);
+        vehiclePayload.setRuntimeSinceEngineStart(runtimeSinceEngineStart);
     }
 
 
     // payload: mass air flow
     public double getMassAirFlow() {
-        return payload.getMassAirFlow();
+        return vehiclePayload.getMassAirFlow();
     }
 
     public void setMassAirFlow(double massAirFlow) {
-        payload.setMassAirFlow(massAirFlow);
+        vehiclePayload.setMassAirFlow(massAirFlow);
     }
 
     // payload: Average fuel economy
     public double getAverageFuelEconomy() {
-        return payload.getAverageFuelEconomy();
+        return vehiclePayload.getAverageFuelEconomy();
     }
 
     public void setAverageFuelEconomy(double averageFuelEconomy) {
-        payload.setAverageFuelEconomy(averageFuelEconomy);
+        vehiclePayload.setAverageFuelEconomy(averageFuelEconomy);
     }
 
 
     // payload: Distance since DTCs cleared
     public int getDistanceSinceDTCsCleared() {
-        return payload.getDistanceSinceDTCsCleared();
+        return vehiclePayload.getDistanceSinceDTCsCleared();
     }
 
     public void setDistanceSinceDTCsCleared(int distanceSinceDTCsCleared) {
-        payload.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
+        vehiclePayload.setDistanceSinceDTCsCleared(distanceSinceDTCsCleared);
     }
 
+    public ArrayList<payload.equipment.Payload> getEquipmentPayloads() {
+        return equipmentPayloads;
+    }
+
+    public void setEquipmentPayloads(ArrayList<payload.equipment.Payload> equipmentPayloads) {
+        this.equipmentPayloads = equipmentPayloads;
+    }
+
+    public ArrayList<payload.equipment.Payload> getShipUnitPayloads() {
+        return shipUnitPayloads;
+    }
+
+    public void setShipUnitPayloads(ArrayList<payload.equipment.Payload> shipUnitPayloads) {
+        this.shipUnitPayloads = shipUnitPayloads;
+    }
+
+    public ArrayList<payload.equipment.Payload> getShipItemPayloads() {
+        return shipItemPayloads;
+    }
+
+    public void setShipItemPayloads(ArrayList<payload.equipment.Payload> shipItemPayloads) {
+        this.shipItemPayloads = shipItemPayloads;
+    }
 
     //endregion
     //region Utils
     //---------------------------------------------------------------------------------------
 
-    public void preparePayload() {
-        payload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
+    public void prepareVehiclePayload() {
+        vehiclePayload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
 
-        setPayload(getRandomPayloadData(payload));
+        setVehiclePayload(getRandomPayloadData(vehiclePayload));
     }
 
-    public void preparePayload(LocalDateTime measurementTime) {
-        payload.setMeasurementTime(DateTime.localDateTimeToIso8601(measurementTime));
+    public void prepareVehiclePayload(LocalDateTime measurementTime) {
+        vehiclePayload.setMeasurementTime(DateTime.localDateTimeToIso8601(measurementTime));
         setRuntimeSinceEngineStart(
                 getRuntimeSinceEngineStart() +
                 Duration.between(
                         getEngineStartTime(),
                         LocalDateTime.now()).toSeconds()
         );
-        setPayload(getRandomPayloadData(payload));
+        setVehiclePayload(getRandomPayloadData(vehiclePayload));
+    }
+
+    public void setLocation(PolylineEncoderDecoder.LatLngZ point) {
+        double lat = point.lat;
+        double lng = point.lng;
+
+        // Setting vehicle location
+        setLatitude(lat);
+        setLongitude(lng);
+    }
+
+    public void prepareEquipmentPayload() {
+        for (payload.equipment.Payload equipmentPayload : equipmentPayloads) {
+            equipmentPayload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
+
+            // Randomizing the payload values
+            equipmentPayload.setTilt(PayloadDataGenerator.generateTilt());
+            equipmentPayload.setLight(PayloadDataGenerator.generateLightSensor());
+            equipmentPayload.setTemperature(PayloadDataGenerator.generateTemperature());
+            equipmentPayload.setPressure(PayloadDataGenerator.generatePressure());
+            equipmentPayload.setHumidity(PayloadDataGenerator.generateHumidity());
+            equipmentPayload.setShock(PayloadDataGenerator.generateShock());
+            equipmentPayload.setAmbientTemperature(PayloadDataGenerator.generateAmbientTemperature());
+            equipmentPayload.setTamperDetection(PayloadDataGenerator.generateTamperDetection());
+        }
+
+        for (payload.equipment.Payload shipUnitPayload : shipUnitPayloads) {
+            shipUnitPayload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
+
+            // Randomizing the payload values
+            shipUnitPayload.setTilt(PayloadDataGenerator.generateTilt());
+            shipUnitPayload.setLight(PayloadDataGenerator.generateLightSensor());
+            shipUnitPayload.setTemperature(PayloadDataGenerator.generateTemperature());
+            shipUnitPayload.setPressure(PayloadDataGenerator.generatePressure());
+            shipUnitPayload.setHumidity(PayloadDataGenerator.generateHumidity());
+            shipUnitPayload.setShock(PayloadDataGenerator.generateShock());
+            shipUnitPayload.setAmbientTemperature(PayloadDataGenerator.generateAmbientTemperature());
+            shipUnitPayload.setTamperDetection(PayloadDataGenerator.generateTamperDetection());
+        }
+
+        for (payload.equipment.Payload shipItemPayload : shipItemPayloads) {
+            shipItemPayload.setMeasurementTime(DateTime.localDateTimeToIso8601(LocalDateTime.now()));
+
+            // Randomizing the payload values
+            shipItemPayload.setTilt(PayloadDataGenerator.generateTilt());
+            shipItemPayload.setLight(PayloadDataGenerator.generateLightSensor());
+            shipItemPayload.setTemperature(PayloadDataGenerator.generateTemperature());
+            shipItemPayload.setPressure(PayloadDataGenerator.generatePressure());
+            shipItemPayload.setHumidity(PayloadDataGenerator.generateHumidity());
+            shipItemPayload.setShock(PayloadDataGenerator.generateShock());
+            shipItemPayload.setAmbientTemperature(PayloadDataGenerator.generateAmbientTemperature());
+            shipItemPayload.setTamperDetection(PayloadDataGenerator.generateTamperDetection());
+        }
+
     }
 
     //endregion

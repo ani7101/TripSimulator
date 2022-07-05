@@ -18,8 +18,6 @@ import java.util.concurrent.TimeoutException;
 public class ConnectorAPIClient extends APIClient {
     private final String authHeader;
 
-    private final String connectorUrl;
-
     private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
@@ -27,13 +25,11 @@ public class ConnectorAPIClient extends APIClient {
     //---------------------------------------------------------------------------------------
 
     /**
-     *
-     * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
+     * Constructor to hold the basic authentication required for the IoT server.
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
      */
-    public ConnectorAPIClient(String connectorUrl, String username, String password) {
-        this.connectorUrl = connectorUrl;
+    public ConnectorAPIClient(String username, String password) {
         this.authHeader = generateAuthenticationHeader(username, password);
     }
 
@@ -45,10 +41,11 @@ public class ConnectorAPIClient extends APIClient {
 
     /**
      * Posts the input payload to the IoT server instance.
+     * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
      * @param payload Payload with the device identifier (or hardware ID) to be posted
      * @return String: Request status response. It returns "<i>Request Accepted</i>" when no exceptions are called
      */
-    public <T> String postPayload(T payload) {
+    public <T> String postPayload(String connectorUrl, T payload) {
         String response = null;
 
         try {

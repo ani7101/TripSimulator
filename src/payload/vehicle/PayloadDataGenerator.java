@@ -38,7 +38,7 @@ public class PayloadDataGenerator {
     public static double MIN_THROTTLE_POSITION = 25;
     public static double MAX_THROTTLE_POSITION = 100;
 
-    public static double DTC_PROBABILITY = 0.02;
+    public static double DTC_PROBABILITY = 0.05;
 
 
     //endregion
@@ -70,7 +70,7 @@ public class PayloadDataGenerator {
     }
 
     public static double generateThrottlePosition(int engineRPM) {
-        return engineRPM / MAX_ENGINE_RPM;
+        return engineRPM * 1.0 / MAX_ENGINE_RPM;
     }
 
     public static double generateThrottlePosition() {

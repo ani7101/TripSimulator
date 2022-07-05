@@ -1,6 +1,10 @@
 package trip;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import shipItemsAndEquipments.Equipment;
+import shipItemsAndEquipments.ShipItem;
+import shipItemsAndEquipments.ShipOrder;
+import shipItemsAndEquipments.ShipUnit;
 import trip.subclasses.TripDriverInfoModel;
 import trip.subclasses.TripStopRecord;
 import trip.subclasses.TripVehicleInfoModel;
@@ -11,6 +15,8 @@ import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Trip {
+
+    public static final String TRIP_STATUS_VALUE = "IN_PROGRESS";
 
     //region Jackson References
     //---------------------------------------------------------------------------------------
@@ -37,9 +43,15 @@ public class Trip {
 
     public static final String STOPS = "stops";
 
-    public static final String TRIP_TEMPLATE_ID = "tripTemplateId";
-
     public static final String VEHICLE = "vehicle";
+
+    public static final String EQUIPMENTS = "equipments";
+
+    public static final String SHIP_ORDERS = "shipOrders";
+
+    public static final String SHIP_UNITS = "shipUnits";
+
+    public static final String SHIP_ITEMS = "shipItems";
 
     public static final String TRIP_STATUS = "tripStatus";
 
@@ -81,11 +93,20 @@ public class Trip {
     @JsonProperty(STOPS)
     private ArrayList<TripStopRecord> stops;    // Optional
 
-    @JsonProperty(TRIP_TEMPLATE_ID)
-    private String tripTemplateId;              // Optional
-
     @JsonProperty(VEHICLE)
     private TripVehicleInfoModel vehicle;       // Optional
+
+    @JsonProperty(EQUIPMENTS)
+    private ArrayList<Equipment> equipments;
+
+    @JsonProperty(SHIP_ORDERS)
+    private ArrayList<ShipOrder> shipOrders;
+
+    @JsonProperty(SHIP_UNITS)
+    private ArrayList<ShipUnit> shipUnits;
+
+    @JsonProperty(SHIP_ITEMS)
+    private ArrayList<ShipItem> shipItems;
 
     @JsonProperty(TRIP_STATUS)
     private String tripStatus;
@@ -103,7 +124,7 @@ public class Trip {
         this.source = source;
         this.stops = stops;
 
-        tripStatus = "IN_PROGRESS";
+        tripStatus = TRIP_STATUS_VALUE;
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle, TripDriverInfoModel driver) {
@@ -113,7 +134,7 @@ public class Trip {
         this.stops = stops;
         this.vehicle = vehicle;
 
-        tripStatus = "IN_PROGRESS";
+        tripStatus = TRIP_STATUS_VALUE;
     }
 
     public Trip(TripStopRecord source, TripStopRecord destination, ArrayList<TripStopRecord> stops, TripVehicleInfoModel vehicle) {
@@ -122,7 +143,7 @@ public class Trip {
         this.stops = stops;
         this.vehicle = vehicle;
 
-        tripStatus = "IN_PROGRESS";
+        tripStatus = TRIP_STATUS_VALUE;
     }
 
     // Empty constructor for jackson to serialize/deserialize
@@ -223,20 +244,44 @@ public class Trip {
         this.stops = stops;
     }
 
-    public String getTripTemplateId() {
-        return tripTemplateId;
-    }
-
-    public void setTripTemplateId(String tripTemplateId) {
-        this.tripTemplateId = tripTemplateId;
-    }
-
     public TripVehicleInfoModel getVehicle() {
         return vehicle;
     }
 
     public void setVehicle(TripVehicleInfoModel vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public ArrayList<Equipment> getEquipments() {
+        return equipments;
+    }
+
+    public void setEquipments(ArrayList<Equipment> equipments) {
+        this.equipments = equipments;
+    }
+
+    public ArrayList<ShipOrder> getShipOrders() {
+        return shipOrders;
+    }
+
+    public void setShipOrders(ArrayList<ShipOrder> shipOrders) {
+        this.shipOrders = shipOrders;
+    }
+
+    public ArrayList<ShipUnit> getShipUnits() {
+        return shipUnits;
+    }
+
+    public void setShipUnits(ArrayList<ShipUnit> shipUnits) {
+        this.shipUnits = shipUnits;
+    }
+
+    public ArrayList<ShipItem> getShipItems() {
+        return shipItems;
+    }
+
+    public void setShipItems(ArrayList<ShipItem> shipItems) {
+        this.shipItems = shipItems;
     }
 
     public String getTripStatus() { return tripStatus; }

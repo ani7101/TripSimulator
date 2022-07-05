@@ -11,17 +11,20 @@ import utils.Generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bulkGenerators.DeviceConnectorBulkGenerator.bulkCreateDevice;
+import static bulkGenerators.DeviceBulkGenerator.bulkCreateVehicleDevices;
 
 public class TestDeviceConnector {
     DeviceAPIClient deviceClient;
     ConnectorAPIClient connectorClient;
 
+    String vehicleConnectorUrl;
+
     @Test(priority = 1)
     @Parameters({"baseUrl", "connectorUrl", "username", "password"})
-    public void testConfig(String baseUrl, String connectorUrl, String username, String password) {
+    public void testConfig(String baseUrl, String vehicleConnectorUrl, String username, String password) {
         deviceClient = new DeviceAPIClient(baseUrl, username, password);
-        connectorClient = new ConnectorAPIClient(connectorUrl, username, password);
+        connectorClient = new ConnectorAPIClient(username, password);
+        this.vehicleConnectorUrl = vehicleConnectorUrl;
     }
     @Test(priority = 2)
     public void testFetchAll() {
@@ -54,13 +57,13 @@ public class TestDeviceConnector {
 
         payload.setData(payloadData);
 
-        System.out.println(connectorClient.postPayload(payload));
+        System.out.println(connectorClient.postPayload(vehicleConnectorUrl, payload));
     }
 
     @Test(priority = 4)
     @Parameters({"baseUrl", "connectorUrl", "username", "password"})
     public void createDevicesUsingConnectors(String baseUrl, String connectorUrl, String username, String password) {
-        ArrayList<Device> devices = bulkCreateDevice(baseUrl, connectorUrl, username, password, 3, new ArrayList<String>(List.of("Test1", "Test2", "Test3")));
+        ArrayList<Device> devices = bulkCreateVehicleDevices(baseUrl, connectorUrl, username, password, 3, new ArrayList<>(List.of("Test1", "Test2", "Test3")));
 
         assert devices.size() == 3;
     }

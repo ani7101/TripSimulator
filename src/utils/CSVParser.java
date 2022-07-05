@@ -21,15 +21,16 @@ public class CSVParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVParser.class);
 
 
+    //region Geolocation
 
     /**
      * Returns an ArrayList of the geoLocations in the format ArrayList(ArrayList(Double))
-     * @param filePath Absolute path to the CSV file
+     * @param pathName Absolute path to the CSV file
      * @return ArrayList of the geolocations in the csv file
      */
-    public static ArrayList<ArrayList<Double>> parseGeoLocation(String filePath) {
+    public static ArrayList<ArrayList<Double>> parseGeoLocation(String pathName) {
         ArrayList<ArrayList<Double>> records = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(filePath))) {
+        try (Scanner scanner = new Scanner(new File(pathName))) {
             while (scanner.hasNextLine()) {
                 records.add(getGeoLocationFromLine(scanner.nextLine()));
             }
@@ -58,5 +59,36 @@ public class CSVParser {
         }
         return values;
     }
+
+    //endregion
+    //region Vehicle speeds
+
+    public static ArrayList<Double> parseVehicleSpeeds(String pathName) {
+        ArrayList<Double> records = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(pathName))) {
+            while (scanner.hasNextLine()) {
+                records.add(getVehicleSpeedFromLine(scanner.nextLine()));
+            }
+        } catch (FileNotFoundException fnfe) {
+            LOGGER.error("CSV File does not exist:", fnfe);
+            fnfe.printStackTrace();
+        }
+
+        return records;
+    }
+
+    private static Double getVehicleSpeedFromLine(String line) {
+        ArrayList<String> values = new ArrayList<>();
+
+        try (Scanner rowScanner = new Scanner(line)) {
+            rowScanner.useDelimiter(COMMA_DELIMITER);
+            while (rowScanner.hasNext()) {
+                values.add(rowScanner.next());
+            }
+        }
+        return Double.valueOf(values.get(1));
+    }
+
+    //endregion
 
 }

@@ -44,6 +44,7 @@ public class Device {
     @JsonProperty(CONNECTIVITY_STATUS)
     private String connectivityStatus;
 
+
     //endregion
     //region Getters/Setters
     //---------------------------------------------------------------------------------------
