@@ -1,15 +1,17 @@
-package shipItemsAndEquipments;
+package equipment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import shipItemsAndEquipments.subclasses.AttributeValue;
-import shipItemsAndEquipments.subclasses.Tracker;
+import equipment.shipunit.ShipUnit;
+import equipment.subclasses.AttributeValue;
+import equipment.subclasses.Tracker;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Equipment {
+public class Equipment implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------
@@ -31,6 +33,7 @@ public class Equipment {
     public static final String TRACKERS = "trackers";
 
 
+    //endregion
     //region Class variables
     //---------------------------------------------------------------------------------------
 
@@ -62,6 +65,7 @@ public class Equipment {
     private ArrayList<ShipUnit> shipUnits = new ArrayList<>();
 
 
+    //endregion
     //region Constructors
     //---------------------------------------------------------------------------------------
 
@@ -76,9 +80,11 @@ public class Equipment {
         this.trackers = trackers;
     }
 
-    public Equipment() {}
+    public Equipment() {
+    }
 
 
+    //endregion
     //region Getters/Setters
     //---------------------------------------------------------------------------------------
 
@@ -131,13 +137,21 @@ public class Equipment {
         this.maxVolume = maxVolume;
     }
 
-    public String getEquipmentType() { return equipmentType; }
+    public String getEquipmentType() {
+        return equipmentType;
+    }
 
-    public void setEquipmentType(String equipmentType) { this.equipmentType = equipmentType; }
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
 
-    public ArrayList<Tracker> getTrackers() { return trackers; }
+    public ArrayList<Tracker> getTrackers() {
+        return trackers;
+    }
 
-    public void setTrackers(ArrayList<Tracker> trackers) { this.trackers = trackers; }
+    public void setTrackers(ArrayList<Tracker> trackers) {
+        this.trackers = trackers;
+    }
 
     @JsonIgnore
     public ArrayList<ShipUnit> getShipUnits() {

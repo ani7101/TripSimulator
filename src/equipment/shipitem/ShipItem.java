@@ -1,36 +1,38 @@
-package shipItemsAndEquipments;
+package equipment.shipitem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import shipItemsAndEquipments.subclasses.AttributeValue;
-import shipItemsAndEquipments.subclasses.Tracker;
+import equipment.subclasses.AttributeValue;
+import equipment.subclasses.Tracker;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShipUnit {
+public class ShipItem implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------
 
-    public static final String SHIP_ORDER_NUMBERS = "shipOrderNumbers";
+    public static final String SHIP_ORDER_NUMBER = "shipOrderNumber";
 
     public static final String SHIP_UNIT_NUMBER = "shipUnitNumber";
 
     public static final String TRIP_EQUIPMENT_REF = "tripEquipmentRef";
 
-    public static final String SHIP_UNIT_KEY = "shipUnitKey";
+    public static final String SHIP_ITEM_KEY = "shipItemKey";
 
-    public static final String SHIP_UNIT_TYPE = "shipUnitType";
+    public static final String SHIP_ITEM_NUMBER = "shipItemNumber";
 
-    public static final String COMMODITIES = "commodities";
-
+    public static final String COMMODITY = "commodity";
 
     public static final String WEIGHT = "weight";
 
-    public static final String VOLUME = "volume";
+    public static final String QUANTITY = "quantity";
 
+    public static final String VOLUME = "volume";
 
     public static final String PICKUP_STOP_SEQUENCE = "pickupStopSequence";
 
@@ -43,8 +45,8 @@ public class ShipUnit {
     //region Class variables
     //---------------------------------------------------------------------------------------
 
-    @JsonProperty(SHIP_ORDER_NUMBERS)
-    private ArrayList<String> shipOrderNumbers;
+    @JsonProperty(SHIP_ORDER_NUMBER)
+    private String shipOrderNumber;
 
     @JsonProperty(SHIP_UNIT_NUMBER)
     private String shipUnitNumber;
@@ -52,17 +54,21 @@ public class ShipUnit {
     @JsonProperty(TRIP_EQUIPMENT_REF)
     private String tripEquipmentRef;
 
-    @JsonProperty(SHIP_UNIT_KEY)
-    private String shipUnitKey;
+    @JsonProperty(SHIP_ITEM_KEY)
+    private String shipItemKey;
 
-    @JsonProperty(SHIP_UNIT_TYPE)
-    private String shipUnitType;
+    @JsonProperty(SHIP_ITEM_NUMBER)
+    private String shipItemNumber;
 
-    @JsonProperty(COMMODITIES)
-    private ArrayList<String> commodities;
+    @JsonProperty(COMMODITY)
+    private String commodity;
+
 
     @JsonProperty(WEIGHT)
     private AttributeValue weight;
+
+    @JsonProperty(QUANTITY)
+    private int quantity;
 
     @JsonProperty(VOLUME)
     private AttributeValue volume;
@@ -77,18 +83,19 @@ public class ShipUnit {
     private ArrayList<Tracker> trackers;
 
     @JsonIgnore
-    private ArrayList<ShipItem> shipItems;
+    private ShipOrder shipOrder;
 
     //endregion
     //region Getters/Setters
     //---------------------------------------------------------------------------------------
 
-    public ArrayList<String> getShipOrderNumbers() {
-        return shipOrderNumbers;
+
+    public String getShipOrderNumber() {
+        return shipOrderNumber;
     }
 
-    public void setShipOrderNumbers(ArrayList<String> shipOrderNumbers) {
-        this.shipOrderNumbers = shipOrderNumbers;
+    public void setShipOrderNumber(String shipOrderNumber) {
+        this.shipOrderNumber = shipOrderNumber;
     }
 
     public String getShipUnitNumber() {
@@ -99,36 +106,32 @@ public class ShipUnit {
         this.shipUnitNumber = shipUnitNumber;
     }
 
-    public String getTripEquipmentRef() {
-        return tripEquipmentRef;
+    public String getTripEquipmentRef() { return tripEquipmentRef; }
+
+    public void setTripEquipmentRef(String tripEquipmentRef) { this.tripEquipmentRef = tripEquipmentRef; }
+
+    public String getShipItemKey() {
+        return shipItemKey;
     }
 
-    public void setTripEquipmentRef(String tripEquipmentRef) {
-        this.tripEquipmentRef = tripEquipmentRef;
+    public void setShipItemKey(String shipItemKey) {
+        this.shipItemKey = shipItemKey;
     }
 
-    public String getShipUnitKey() {
-        return shipUnitKey;
+    public String getShipItemNumber() {
+        return shipItemNumber;
     }
 
-    public void setShipUnitKey(String shipUnitKey) {
-        this.shipUnitKey = shipUnitKey;
+    public void setShipItemNumber(String shipItemNumber) {
+        this.shipItemNumber = shipItemNumber;
     }
 
-    public String getShipUnitType() {
-        return shipUnitType;
+    public String getCommodity() {
+        return commodity;
     }
 
-    public void setShipUnitType(String shipUnitType) {
-        this.shipUnitType = shipUnitType;
-    }
-
-    public ArrayList<String> getCommodities() {
-        return commodities;
-    }
-
-    public void setCommodities(ArrayList<String> commodities) {
-        this.commodities = commodities;
+    public void setCommodity(String commodity) {
+        this.commodity = commodity;
     }
 
     public AttributeValue getWeight() {
@@ -137,6 +140,14 @@ public class ShipUnit {
 
     public void setWeight(AttributeValue weight) {
         this.weight = weight;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public AttributeValue getVolume() {
@@ -167,19 +178,15 @@ public class ShipUnit {
         return trackers;
     }
 
-    public void setTrackers (ArrayList<Tracker> trackers) {
+    public void setTrackers(ArrayList<Tracker> trackers) {
         this.trackers = trackers;
     }
 
     @JsonIgnore
-    public ArrayList<ShipItem> getShipItems() {
-        return shipItems;
-    }
+    public ShipOrder getShipOrder() { return shipOrder; }
 
     @JsonIgnore
-    public void setShipItems(ArrayList<ShipItem> shipItems) {
-        this.shipItems = shipItems;
-    }
+    public void setShipOrder(ShipOrder shipOrder) { this.shipOrder = shipOrder; }
 
     //endregion
 

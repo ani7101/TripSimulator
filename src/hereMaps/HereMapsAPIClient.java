@@ -1,6 +1,7 @@
 package hereMaps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import hereMaps.deserializerClasses.HereMapsRouteSection;
 import hereMaps.deserializerClasses.hereMapsRoutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ public class HereMapsAPIClient extends APIClient {
     private static final Logger HERE_MAPS_LOGGER = LoggerFactory.getLogger("here-maps");
 
     //region Geolocation
+    //---------------------------------------------------------------------------------------
+
 
     /**
      * Retrieves the information (address, pin code, etc.) of the location given by latitude and longitude.
@@ -43,6 +46,8 @@ public class HereMapsAPIClient extends APIClient {
 
     //endregion
     //region Routing
+    //---------------------------------------------------------------------------------------
+
 
     /**
      * Finds the route from the source to the destination via the stop points.

@@ -3,6 +3,8 @@ package user.subclasses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * User email address format as per the IoT server.
  * Contains the following fields - <br>
@@ -13,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * </ol>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserEmailAddress {
+public class UserEmailAddress implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------

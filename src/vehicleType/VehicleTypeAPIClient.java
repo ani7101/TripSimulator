@@ -1,6 +1,7 @@
 package vehicleType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import device.subclasses.DeviceList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.APIClient;
@@ -62,6 +63,11 @@ public class VehicleTypeAPIClient extends APIClient {
         return list;
     }
 
+    /**
+     * Sends a request to the IoT server instance FM API to get a vehicle type with queried vehicle type ID
+     * @param typeId Identifier for the vehicle type
+     * @return VehicleType: Response from the request
+     */
     public VehicleType getOne(String typeId) {
         VehicleType response = null;
 
@@ -133,6 +139,38 @@ public class VehicleTypeAPIClient extends APIClient {
         }
 
         return response;
+    }
+
+    /**
+     * Sends a request to the IoT server instance FM API to search for the vehicle type with input name.
+     * @param vehicleTypeName Queried name
+     * @return VehicleType: Response from the API call
+     */
+    public VehicleType getOneByName(String vehicleTypeName) {
+        VehicleType vehicleType = null;
+
+        /*
+         * URI encoding reference
+         * Refer to https://www.eso.org/~ndelmott/url_encode.html for more information
+         * %7B - {
+         * %7C - }
+         * %22 - "
+         * %3A - :
+         */
+
+        String query = "?q=%7B%22name%22%3A%22" + vehicleTypeName + "%22%7D";
+
+
+        try {
+            String json = AsyncGET(baseUrl + "/fleetMonitoring/clientapi/v2/vehicleTypes" + query, authHeader);
+            vehicleType = ParseJson.deserializeResponse(json, VehicleTypeList.class).getItems().get(0);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting device using name:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting device using name:", e);
+        }
+
+        return vehicleType;
     }
 
     /**

@@ -34,14 +34,14 @@ public class OBD2VehicleTypeGenerator {
         // Values for year field
         ArrayList<Integer> years = getYears(YEARS_SUPPORTED);
 
-        VehicleType type = new VehicleType(name, years);
+        VehicleType vehicleType = new VehicleType(name, years);
 
         // Value for the description field
-        type.setDescription("Type for the simulation of a trip, vehicle type name: " + name);
+        vehicleType.setDescription("Type for the simulation of a trip, vehicle type name: " + name);
 
-        type.setAttributes(getOBD2Attributes());
+        vehicleType.setAttributes(getOBD2Attributes());
 
-        return type;
+        return vehicleType;
     }
 
 

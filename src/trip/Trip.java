@@ -1,20 +1,21 @@
 package trip;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import shipItemsAndEquipments.Equipment;
-import shipItemsAndEquipments.ShipItem;
-import shipItemsAndEquipments.ShipOrder;
-import shipItemsAndEquipments.ShipUnit;
+import equipment.Equipment;
+import equipment.shipitem.ShipItem;
+import equipment.shipitem.ShipOrder;
+import equipment.shipunit.ShipUnit;
 import trip.subclasses.TripDriverInfoModel;
 import trip.subclasses.TripStopRecord;
 import trip.subclasses.TripVehicleInfoModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Trip {
+public class Trip implements Serializable {
 
     public static final String TRIP_STATUS_VALUE = "IN_PROGRESS";
 

@@ -1,5 +1,7 @@
 package hereMaps;
 
+import hereMaps.deserializerClasses.HereMapsRouteSection;
+
 import java.util.ArrayList;
 import java.util.List;
 

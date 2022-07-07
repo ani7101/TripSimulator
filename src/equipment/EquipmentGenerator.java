@@ -1,18 +1,32 @@
-package shipItemsAndEquipments;
+package equipment;
 
-import shipItemsAndEquipments.subclasses.AttributeValue;
-import shipItemsAndEquipments.subclasses.Tracker;
+import equipment.shipitem.ShipItem;
+import equipment.shipitem.ShipOrder;
+import equipment.shipunit.ShipUnit;
+import equipment.subclasses.AttributeValue;
+import equipment.subclasses.Tracker;
 import utils.Generator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static shipItemsAndEquipments.EquipmentDeviceGenerator.createEquipmentDevice;
+import static equipment.EquipmentDeviceGenerator.createEquipmentDevice;
 
 public class EquipmentGenerator {
 
     //region Equipments
 
+    /**
+     * Generates randomly populated equipment with given number of ship units & ship items
+     * @param equipmentConnectorUrl URL (inclusive of the complete path) to the connector for creating equipments. It is found in the connectors' info under the configuration options
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param pickupStopSequence Stop where the equipment is picked up
+     * @param dropStopSequence Stop where the equipment is dropped
+     * @param requiredShipUnits Number of ship units to be created in one equipment
+     * @param requiredShipItems Number of ship items to be created in one ship unit
+     * @return Equipment: Created equipment with device linked to it
+     */
     public static Equipment randomizedEquipment(
             String equipmentConnectorUrl,
             String username,
@@ -61,9 +75,20 @@ public class EquipmentGenerator {
     }
 
     //endregion
-
     //region Ship units
 
+    /**
+     * Generates randomly populated ship unit as per the payload.
+     * @param equipmentConnectorUrl URL (inclusive of the complete path) to the connector for creating equipments. It is found in the connectors' info under the configuration options
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param uniqueId Unique ID for naming the ship unit as per NamingConvention.MD
+     * @param tripEquipmentRef Reference to the equipment to link it to
+     * @param pickupStopSequence Stop where the equipment is picked up
+     * @param dropStopSequence Stop where the equipment is dropped
+     * @param requiredShipItems Number of ship items to be created in one ship unit
+     * @return ShipUnit: Randomized ship unit
+     */
     public static ShipUnit randomizedShipUnit(
             String equipmentConnectorUrl,
             String username,
@@ -127,6 +152,19 @@ public class EquipmentGenerator {
     //endregion
     //region Ship items
 
+    /**
+     * Generates randomly populated ship item with payload structured.
+     * @param equipmentConnectorUrl URL (inclusive of the complete path) to the connector for creating equipments. It is found in the connectors' info under the configuration options
+     * @param username Username of the admin user in the given IoT server instance
+     * @param password Corresponding password
+     * @param uniqueId Unique ID for naming the ship unit as per NamingConvention.MD
+     * @param shipUnitNumber Ship unit to which the ship item is linked
+     * @param tripEquipmentRef Reference to the equipment to link it to
+     * @param pickupStopSequence Stop where the equipment is picked up
+     * @param dropStopSequence Stop where the equipment is dropped
+     * @param commodityNumber commodity identifier which it carries
+     * @return ShipItem: Randomized ship item
+     */
     public static ShipItem randomizedShipItem(
             String equipmentConnectorUrl,
             String username,

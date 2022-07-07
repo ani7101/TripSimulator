@@ -130,7 +130,6 @@ public class TripAPIClient extends APIClient {
         try {
             String json = AsyncPOST(baseUrl + "/fleetMonitoring/clientapi/v2/trips/", authHeader, POJOToJson(trip));
             response = ParseJson.deserializeResponse(json, Trip.class);
-
         } catch (ExecutionException | InterruptedException e) {
             IOT_API_LOGGER.error("Exception while creating a trip:", e);
         } catch (TimeoutException | JsonProcessingException e) {
@@ -173,17 +172,6 @@ public class TripAPIClient extends APIClient {
             IOT_API_LOGGER.error("Exception while deleting a trip:", e);
         } catch (TimeoutException e) {
             IOT_API_LOGGER.warn("Exception while deleting a trip:", e);
-        }
-    }
-
-    //endregion
-    //region Utils
-
-    public void cleanUp() {
-        for (Trip trip : getAll()) {
-            if (trip.getName().contains("Trip simulator")) {
-                delete(trip.getId());
-            }
         }
     }
 

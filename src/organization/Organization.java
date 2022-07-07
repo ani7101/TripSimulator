@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import utils.IoTDeserializerLinks;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Organization {
+public class Organization implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------

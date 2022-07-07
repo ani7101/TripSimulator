@@ -1,5 +1,5 @@
 import bulkGenerators.TripBulkGenerator;
-import simulation.eventLoops.TripSimulator;
+import simulation.TripSimulator;
 import simulation.models.TripModel;
 import utils.*;
 
@@ -10,16 +10,17 @@ public class Main {
     private static final HashMap<String, String> credentials = new HashMap<>();
 
     public static void main(String[] args) {
+        // Loading the credentials from the credentials.properties file
         loadCredentials();
 
-        // Additionally, we can create trips and store then locally using createTrips.
-        // createTrips(2);
+        // Demonstration for creating trips
+//         createTrips(50);
 
         // The saved trips can also be loaded later on.
-        ArrayList<TripModel> tripModels = LocalStorage.read("tripModels.ser");
+//        ArrayList<TripModel> tripModels = LocalStorage.read("tripModels.ser");
 
         // Sample simulation
-        TripSimulator tripSimulator = new TripSimulator(2, 10, Navigation.kmphToMilesPerHour(40));
+        TripSimulator tripSimulator = new TripSimulator(5, 20, Navigation.kmphToMilesPerHour(40));
         tripSimulator.run();
     }
 
@@ -49,8 +50,8 @@ public class Main {
                 "ORA_DEFAULT_ORG",
                 requiredTrips,
                 1,
-                1,
-                1,
+                2,
+                2,
                 1
         );
 

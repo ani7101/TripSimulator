@@ -133,16 +133,5 @@ public class UserAPIClient extends APIClient {
     }
 
     //endregion
-    //region Utils
-
-    public void cleanUp() {
-        for (User user : getAll()) {
-            if (user.getName().contains("simulation-driver")) {
-                delete(user.getId());
-            }
-        }
-    }
-
-    //endregion
 
 }

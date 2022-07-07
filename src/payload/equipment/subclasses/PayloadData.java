@@ -31,7 +31,7 @@ public class PayloadData implements Serializable {
 
     public static final String LONGITUDE = "longitude";
 
-    public static final String TILT = "tile";
+    public static final String TILT = "tilt";
 
     public static final String LIGHT = "light";
 

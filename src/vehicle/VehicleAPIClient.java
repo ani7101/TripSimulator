@@ -176,7 +176,6 @@ public class VehicleAPIClient extends APIClient {
 
         try {
             String json = AsyncUPDATE(baseUrl + "/fleetMonitoring/clientapi/v2/vehicles/" + vehicleId, authHeader, POJOToJson(updatedVehicle));
-
             response = ParseJson.deserializeResponse(json, Vehicle.class);
         } catch (ExecutionException | InterruptedException e) {
             IOT_API_LOGGER.error("Exception while updating a vehicle:", e);
@@ -198,17 +197,6 @@ public class VehicleAPIClient extends APIClient {
             IOT_API_LOGGER.error("Exception while deleting a vehicle:", e);
         } catch (TimeoutException e) {
             IOT_API_LOGGER.warn("Exception while deleting a vehicle:", e);
-        }
-    }
-
-    //endregion
-    //region Utils
-
-    public void cleanUp() {
-        for (Vehicle vehicle : getAll()) {
-            if (vehicle.getName().contains("simulation-vehicle")) {
-                delete(vehicle.getId());
-            }
         }
     }
 

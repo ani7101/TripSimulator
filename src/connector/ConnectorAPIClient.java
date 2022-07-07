@@ -3,7 +3,6 @@ package connector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import payload.vehicle.Payload;
 import utils.APIClient;
 
 import java.util.concurrent.ExecutionException;
@@ -41,6 +40,7 @@ public class ConnectorAPIClient extends APIClient {
 
     /**
      * Posts the input payload to the IoT server instance.
+     * @param <T> Payload data type to be posted. In our case, its either vehicle or equipment payload
      * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
      * @param payload Payload with the device identifier (or hardware ID) to be posted
      * @return String: Request status response. It returns "<i>Request Accepted</i>" when no exceptions are called

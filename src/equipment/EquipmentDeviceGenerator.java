@@ -1,4 +1,4 @@
-package shipItemsAndEquipments;
+package equipment;
 
 import connector.ConnectorAPIClient;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class EquipmentDeviceGenerator {
     private static final Logger IOT_API_LOGGER = LoggerFactory.getLogger("iot-api");
 
 
-    //region bulk generators
+    //region Bulk generators
     //---------------------------------------------------------------------------------------
 
     /**

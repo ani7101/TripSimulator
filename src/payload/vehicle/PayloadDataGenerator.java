@@ -31,7 +31,7 @@ public class PayloadDataGenerator {
     public static int MAX_ENGINE_RPM = 10000;
 
     public static double MIN_COOLANT_TEMP = 30; // In celsius
-    public static double MAX_COOLANT_TEMP = 45;
+    public static double MAX_COOLANT_TEMP = 55;
 
 
     // Indicated in percentages

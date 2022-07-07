@@ -2,11 +2,11 @@ package bulkGenerators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import shipItemsAndEquipments.EquipmentDeviceGenerator;
+import equipment.EquipmentDeviceGenerator;
 import payload.equipment.Payload;
-import shipItemsAndEquipments.Equipment;
-import shipItemsAndEquipments.ShipItem;
-import shipItemsAndEquipments.ShipUnit;
+import equipment.Equipment;
+import equipment.shipitem.ShipItem;
+import equipment.shipunit.ShipUnit;
 import simulation.models.TripModel;
 import trip.GeoLocationRepository;
 import trip.Trip;
@@ -56,8 +56,7 @@ public class TripBulkGenerator {
      * @param accessTokenUsername Username for the admin user of the access token generation internal IoT server
      * @param accessTokenPassword  Password corresponding to the access token username.
      * @param baseUrl URL (top level domain) to the IoT server instance without the path
-     * @param vehicleConnectorUrl
-     *URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options
+     * @param vehicleConnectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options
      * @param equipmentConnectorUrl Equipment connector to create devices for the equipments
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password

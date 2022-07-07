@@ -89,6 +89,11 @@ public class DeviceAPIClient extends APIClient {
         return response;
     }
 
+    /**
+     * Searches for a device from the device identifier (hardware ID) in the list of all devices and returns it
+     * @param deviceIdentifier query device identifier
+     * @return Device: Device with the queried device identifier
+     */
     public Device getOneByIdentifier(String deviceIdentifier) {
         Device response = null;
 
@@ -150,17 +155,6 @@ public class DeviceAPIClient extends APIClient {
         }
     }
 
-
-    //endregion
-    //region Utils
-
-    public void cleanUp() {
-        for (Device device : getAll(LIMIT)) {
-            if (device.getIdentifier().contains("simulation-obd2-sensor")) {
-                delete(device.getId());
-            }
-        }
-    }
 
     //endregion
 

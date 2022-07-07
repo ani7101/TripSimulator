@@ -40,6 +40,10 @@ public class TripInstance extends Thread {
     // a system where every nth device is a failure is used.
     private static final int FAILURE_PROBABILITY = 4;
 
+    private static final int CORNER_VEHICLE_SPEED_PERCENTAGE = 40;
+
+    private static final int CORNER_VEHICLE_DISTANCE = 50;
+
 
     //endregion
     //region Constructors
@@ -56,8 +60,7 @@ public class TripInstance extends Thread {
         this.equipmentConnectorUrl = equipmentConnectorUrl;
 
         // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
-        // stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
-        stopTime = 20;
+         stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
     }
 
 
@@ -71,7 +74,7 @@ public class TripInstance extends Thread {
     @Override
     public void run() {
         SIMULATION_LOGGER.info("vehicle for trip {} started moving", tripModel.getId());
-        System.out.println("Vehicle for trip " + tripModel.getId() + " started moving");
+        // System.out.println("Vehicle for trip " + tripModel.getId() + " started moving");
 
         for (int i = 0; i < tripModel.getRoute().size(); i++) {
 
@@ -85,14 +88,14 @@ public class TripInstance extends Thread {
             simulateTrip(i);
 
             SIMULATION_LOGGER.info("vehicle for trip {} finished section {} and is waiting for {}", tripModel.getId(), i, stopTime);
-            System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime + "s");
+            // System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime + "s");
 
             // Sleeping at each stop for the IoT server to finish processing
             sleep(LocalDateTime.now(), stopTime);
         }
 
         SIMULATION_LOGGER.info("vehicle for trip {} finished it's trip", tripModel.getId());
-        System.out.println("Vehicle for trip " + tripModel.getId() + " finished it's trip");
+        // System.out.println("Vehicle for trip " + tripModel.getId() + " finished it's trip");
     }
 
 
@@ -106,7 +109,7 @@ public class TripInstance extends Thread {
      * @param routeSection id to the section of the route
      */
     private void simulateTrip(int routeSection) {
-        System.out.println("Number of positions in route section " + routeSection + " is " + tripModel.getRoute().get(routeSection).size());
+       //  System.out.println("Number of positions in route section " + routeSection + " is " + tripModel.getRoute().get(routeSection).size());
         try {
             // Main loop for iterating over route position
             while (!interrupted()) {
@@ -136,7 +139,7 @@ public class TripInstance extends Thread {
                 // Moving the vehicle and posting the payload
                 updateVehicleAndPost(routeSection);
 
-                System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + " and route position: " + tripModel.getRoutePosition());
+                // System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + " and route position: " + tripModel.getRoutePosition());
 
                 sleep(startTime, reportInterval);
             }
@@ -192,7 +195,16 @@ public class TripInstance extends Thread {
             LatLngZ pt2 = route.get(i + 1);
             double routeDistance = Navigation.getDistance(pt1, pt2); // in meters
 
-            excessDistance = distanceFromStart > routeDistance ? distanceFromStart - routeDistance : 0.0;
+            // For every corner (say last 50m), the vehicle reduces its velocity to CORNER_VELOCITY_PERCENTAGE * vehicleSpeed / 100.
+            routeDistance += routeDistance > CORNER_VEHICLE_DISTANCE ?
+                    CORNER_VEHICLE_DISTANCE * 100.0 / CORNER_VEHICLE_SPEED_PERCENTAGE - CORNER_VEHICLE_DISTANCE
+                    :
+                    routeDistance * 100 / CORNER_VEHICLE_SPEED_PERCENTAGE - routeDistance;
+
+            excessDistance = distanceFromStart > routeDistance ?
+                    distanceFromStart - routeDistance
+                    :
+                    0.0;
 
             if (Double.doubleToLongBits(excessDistance) == 0) {
                 // Obtaining newer position along the points pt1 and pt2, in case it can't traverse the full distance
@@ -214,8 +226,6 @@ public class TripInstance extends Thread {
 
                 // Generating randomized payload data for other fields
                 tripModel.prepareVehiclePayload();
-
-                // TODO: 05/07/2022 Add vehicle speed reduction for route corners
 
                 // Send the updated vehicle payload to the connector
                 connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
@@ -257,7 +267,7 @@ public class TripInstance extends Thread {
                         !equipment.isFailure()
             ) {
 
-                System.out.println("Equipment is moved to " + lat + ", " + lng);
+                // System.out.println("Equipment is moved to " + lat + ", " + lng);
                 equipment.setLatitude(lat);
                 equipment.setLongitude(lng);
 
@@ -274,7 +284,7 @@ public class TripInstance extends Thread {
         // Updating and posting the ship unit payload
         for (Payload shipUnit : tripModel.getShipUnitPayloads()) {
             if (
-                    (routeSection >= shipUnit.getPickupStopSequence() && routeSection < shipUnit.getDropStopSequence())
+                    (routeSection >= shipUnit.getPickupStopSequence() - 1 && routeSection < shipUnit.getDropStopSequence() - 1)
                             &&
                             !shipUnit.isFailure()
             ) {
@@ -284,6 +294,13 @@ public class TripInstance extends Thread {
                 tripModel.prepareEquipmentPayload();
                 connectorClient.postPayload(equipmentConnectorUrl, shipUnit);
             }
+
+            // Handling detaches in the ship unit
+            if (shipUnit.isFailure()) {
+                tripModel.prepareEquipmentPayload();
+                connectorClient.postPayload(equipmentConnectorUrl, shipUnit);
+            }
+
             // Handling failures in equipments
             if (count % FAILURE_PROBABILITY == 0) {
                 shipUnit.setFailure(true);
@@ -294,7 +311,7 @@ public class TripInstance extends Thread {
         // Updating and posting the ship item payload
         for (Payload shipItem : tripModel.getShipItemPayloads()) {
             if (
-                    (routeSection >= shipItem.getPickupStopSequence() && routeSection < shipItem.getDropStopSequence())
+                    (routeSection >= shipItem.getPickupStopSequence() - 1 && routeSection < shipItem.getDropStopSequence() - 1)
                             &&
                             !shipItem.isFailure()
             ) {
@@ -327,17 +344,6 @@ public class TripInstance extends Thread {
             SIMULATION_LOGGER.warn("Exception generated while vehicle is sleeping: " + ie);
         }
     }
-
-    private static void sleepCorneringTime(int routePosition,int initialRoutePosition) {
-        // For every corner we reach let us sleep for 0.1s
-        try {
-            long sleepTime = (routePosition - initialRoutePosition) * 100L;
-            sleep(sleepTime);
-        } catch (InterruptedException ie) {
-            SIMULATION_LOGGER.warn("Exception generated while vehicle is sleeping: " + ie);
-        }
-    }
-
 
     /**
      * Stops the path if the stop has already been reached.

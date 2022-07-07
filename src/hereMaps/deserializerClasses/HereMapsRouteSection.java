@@ -1,7 +1,8 @@
-package hereMaps;
+package hereMaps.deserializerClasses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import hereMaps.deserializerClasses.HereMapsRouteSummary;
 
 /**
  * This is the template of the response sent from the HERE maps routing API in the routes -> 1st element (only one route is asked at a time) -> sections field

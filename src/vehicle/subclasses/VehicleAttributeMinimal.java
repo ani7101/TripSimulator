@@ -3,8 +3,10 @@ package vehicle.subclasses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VehicleAttributeMinimal {
+public class VehicleAttributeMinimal implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------

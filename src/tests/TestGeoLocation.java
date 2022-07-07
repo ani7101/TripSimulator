@@ -20,9 +20,9 @@ public class TestGeoLocation {
                 CSVParser.parseGeoLocation("locationRepository/stops.csv")
         );
 
-        System.out.println(geoLocationRepository.getSources());
-        System.out.println(geoLocationRepository.getDestinations());
-        System.out.println(geoLocationRepository.getStops());
+        System.out.println("Sources: " + geoLocationRepository.getSources());
+        System.out.println("Destinations: " + geoLocationRepository.getDestinations());
+        System.out.println("Stops: " + geoLocationRepository.getStops());
     }
 
     @Test(priority = 2)

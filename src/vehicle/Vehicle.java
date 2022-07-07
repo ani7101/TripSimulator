@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import vehicle.subclasses.VehicleAttributeMinimal;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Vehicle {
+public class Vehicle implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------

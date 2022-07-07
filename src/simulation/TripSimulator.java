@@ -1,4 +1,4 @@
-package simulation.eventLoops;
+package simulation;
 
 import bulkGenerators.TripBulkGenerator;
 
@@ -23,6 +23,8 @@ public class TripSimulator {
     //region Global constants
 
     private static final int NO_STOPS = 1;
+
+    public static final int EQUIPMENT_PER_TRIP = 1;
 
     public static final int SHIP_UNITS_PER_EQUIPMENT = 2;
 
@@ -150,7 +152,7 @@ public class TripSimulator {
                 credentials.get("password"),
                 organizationId,
                 requiredInstances,
-                1,
+                EQUIPMENT_PER_TRIP,
                 SHIP_UNITS_PER_EQUIPMENT,
                 SHIP_ITEMS_PER_SHIP_UNIT,
                 NO_STOPS

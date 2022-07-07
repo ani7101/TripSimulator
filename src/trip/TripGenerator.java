@@ -1,10 +1,13 @@
 package trip;
 
+import equipment.shipitem.ShipItem;
+import equipment.shipitem.ShipOrder;
+import equipment.shipunit.ShipUnit;
 import hereMaps.HereMapsAPIClient;
-import hereMaps.HereMapsRouteSection;
+import hereMaps.deserializerClasses.HereMapsRouteSection;
 
 import hereMaps.accessToken.AccessToken;
-import shipItemsAndEquipments.*;
+import equipment.*;
 import trip.subclasses.*;
 import user.User;
 import user.UserAPIClient;

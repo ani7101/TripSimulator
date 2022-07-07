@@ -1,11 +1,13 @@
-package shipItemsAndEquipments;
+package equipment.shipitem;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShipOrder {
+public class ShipOrder implements Serializable {
 
     //region Jackson References
     //---------------------------------------------------------------------------------------

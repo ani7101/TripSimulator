@@ -1,17 +1,18 @@
-package equipmentDeviceModel;
+package deviceModel;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.LoggerFactory;
 import utils.APIClient;
 
 import org.slf4j.Logger;
 import utils.ParseJson;
-import vehicle.Vehicle;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Used in initializing equipment payloads by creating the required device model.
+ */
 public class DeviceModelAPIClient extends APIClient {
 
     private final String authHeader;
@@ -38,6 +39,7 @@ public class DeviceModelAPIClient extends APIClient {
 
     //endregion
     //region API Client methods
+    //---------------------------------------------------------------------------------------
 
     /**
      * Sends a request to the IoT server instance API to get all device models.
@@ -57,6 +59,7 @@ public class DeviceModelAPIClient extends APIClient {
 
         return response;
     }
+
 
     /**
      * Sends a request to the IoT server instance API to get the all the devices and then returns the device with given ID. We cannot call for only one device at a time, so instead all devices are queried at once.
@@ -98,6 +101,10 @@ public class DeviceModelAPIClient extends APIClient {
         return response;
     }
 
+    /**
+     * Creates the equipment device model based on <a href="https://github.com/Anirudh-Raghav/TripSimulator/blob/fe3e4102667900819b0fe9f2b03081b100d3f65e/src/equipmentDeviceModel/EquipmentDeviceModel.json">EquipmentDeviceModel.json</a> on the IoT server
+     * @return String response from the device model creation request
+     */
     public String createDefaultEquipment() {
         String data = null;
 

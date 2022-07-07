@@ -1,4 +1,4 @@
-package hereMaps;
+package hereMaps.deserializerClasses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

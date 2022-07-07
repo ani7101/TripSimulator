@@ -1,7 +1,7 @@
 package tests;
 
 import hereMaps.HereMapsAPIClient;
-import hereMaps.HereMapsRouteSection;
+import hereMaps.deserializerClasses.HereMapsRouteSection;
 import org.testng.annotations.Test;
 import utils.PolylineEncoderDecoder;
 

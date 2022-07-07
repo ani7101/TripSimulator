@@ -33,7 +33,7 @@ public class VehicleBulkGenerator {
     /**
      * Creates multiple vehicles on the IoT server instance.
      * @param baseUrl URL (top level domain) to the IoT server instance without the path
-     * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
+     * @param vehicleConnectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
      * @param uniqueIds Unique UUIDs for naming the vehicles (as per NamingConvention.MD)
@@ -42,7 +42,7 @@ public class VehicleBulkGenerator {
      */
     public static ArrayList<Vehicle> bulkCreateVehicles(
             String baseUrl,
-            String connectorUrl,
+            String vehicleConnectorUrl,
             String username,
             String password,
             ArrayList<String> uniqueIds,
@@ -53,10 +53,16 @@ public class VehicleBulkGenerator {
         VehicleTypeAPIClient typeClient = new VehicleTypeAPIClient(baseUrl, username, password);
 
         // Creating devices
-        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
+        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, vehicleConnectorUrl, username, password, requiredVehicles, uniqueIds);
 
         // Creating a vehicle type based on the OBD2 data model
-        VehicleType type = typeClient.create(OBD2VehicleTypeGenerator.randomizedType());
+        VehicleType queryVehicleType = OBD2VehicleTypeGenerator.randomizedType();
+        VehicleType vehicleType = typeClient.create(queryVehicleType);
+
+        // In case the vehicle type already exists, let us call for it
+        if (vehicleType.getId() == null) {
+           vehicleType =  typeClient.getOneByName(queryVehicleType.getName());
+        }
 
         ArrayList<Vehicle> vehicles = new ArrayList<>(requiredVehicles);
 
@@ -66,7 +72,7 @@ public class VehicleBulkGenerator {
                 Device device = devices.get(i);
 
                 Vehicle vehicle = vehicleClient.create(
-                        OBD2VehicleGenerator.randomizedVehicleFromVehicleType(type.getId(), device.getId(), uniqueIds.get(i))
+                        OBD2VehicleGenerator.randomizedVehicleFromVehicleType(vehicleType.getId(), device.getId(), uniqueIds.get(i))
                 );
 
                 // Adding the device details to the vehicle
@@ -87,7 +93,7 @@ public class VehicleBulkGenerator {
     /**
      * Creates multiple vehicles on the IoT server instance.
      * @param baseUrl URL (top level domain) to the IoT server instance without the path
-     * @param connectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
+     * @param vehicleConnectorUrl URL (inclusive of the complete path) to the connector. It is found in the connectors' info under the configuration options.
      * @param username Username of the admin user in the given IoT server instance
      * @param password Corresponding password
      * @param vehicleTypeId vehicle type to be which the vehicles belong
@@ -97,7 +103,7 @@ public class VehicleBulkGenerator {
      */
     public static ArrayList<Vehicle> bulkCreateVehiclesFromVehicleType(
             String baseUrl,
-            String connectorUrl,
+            String vehicleConnectorUrl,
             String username,
             String password,
             String vehicleTypeId,
@@ -108,7 +114,7 @@ public class VehicleBulkGenerator {
         VehicleAPIClient vehicleClient = new VehicleAPIClient(baseUrl, username, password);
 
         // Creating devices
-        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, connectorUrl, username, password, requiredVehicles, uniqueIds);
+        ArrayList<Device> devices = DeviceBulkGenerator.bulkCreateVehicleDevices(baseUrl, vehicleConnectorUrl, username, password, requiredVehicles, uniqueIds);
 
 
         ArrayList<Vehicle> vehicles = new ArrayList<>(requiredVehicles);

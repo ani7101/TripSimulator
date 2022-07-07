@@ -25,10 +25,12 @@ public class Navigation {
     /**
      * Calculate distance between two points in lat and longitude taking
      * into account height difference. If you are not interested in height
-     * difference pass 0.0. Uses Haversine method as its base.
+     * difference pass 0. Uses Haversine method as its base.
      *
      * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
      * el2 End altitude in meters
+     * <br>
+     * <a href="https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude">Reference</a>
      * @return double: Distance in Meters
      */
     public static double getDistance(double lat1, double lat2, double lon1,
