@@ -89,7 +89,7 @@ public class DeviceBulkGenerator {
             0,              // vehicle speed
             0,              // engine RPM
             0,              // number of DTCs (at the time)
-            26.8,           // engine coolant temp
+            25,             // engine coolant temp
             0,              // odometer
             0,              // throttle position
             0,              // total fuel used

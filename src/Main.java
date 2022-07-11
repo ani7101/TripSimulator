@@ -10,17 +10,29 @@ public class Main {
     private static final HashMap<String, String> credentials = new HashMap<>();
 
     public static void main(String[] args) {
-        // Loading the credentials from the credentials.properties file
-        loadCredentials();
-
-        // Demonstration for creating trips
-//         createTrips(50);
+        // Demonstration of creating trips
+        createTrips(2);
 
         // The saved trips can also be loaded later on.
-//        ArrayList<TripModel> tripModels = LocalStorage.read("tripModels.ser");
+        ArrayList<TripModel> tripModels = LocalStorage.read("tripModels.ser");
 
         // Sample simulation
-        TripSimulator tripSimulator = new TripSimulator(5, 20, Navigation.kmphToMilesPerHour(40));
+        TripSimulator tripSimulator = new TripSimulator(
+                tripModels,                         // Trip models stored locally
+                20,                                 // Report interval
+                Navigation.kmphToMilesPerHour(50)   // Default vehicle speed (in mph)
+        );
+
+        // Another alternative call to the trip simulator is to pass number of instances instead of an array of TripModels
+        // The following commented call does the same
+        /*
+            TripSimulator tripSimulator1 = new TripSimulator(
+                    10,             // Number of trip instances to be created
+                    20,             // Report interval
+                    50              // Default vehicle speed (in mph)
+            );
+         */
+
         tripSimulator.run();
     }
 
@@ -37,6 +49,9 @@ public class Main {
     }
 
     public static ArrayList<TripModel> createTrips(int requiredTrips) {
+        // Loading the credentials from the credentials.properties file
+        loadCredentials();
+
         // For creating and storing trip models locally (remove the comments)
         ArrayList<TripModel> tripModels = TripBulkGenerator.bulkCreateTrips(
                 credentials.get("accessTokenUrl"),
@@ -55,9 +70,9 @@ public class Main {
                 1
         );
 
+        // Storing it for later use
         LocalStorage.write(tripModels, "tripModels.ser");
 
-        // Storing it for later use
         return tripModels;
     }
 

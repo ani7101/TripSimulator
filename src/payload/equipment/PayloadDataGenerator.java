@@ -4,12 +4,15 @@ import java.util.Random;
 
 public class PayloadDataGenerator {
 
+    public static Random random = new Random();
+
     //region Constant values
     //---------------------------------------------------------------------------------------
 
+    public static double BASE_VARIATION = 0.02;
+
     // Tilt (in degrees)
-    public static double BASE_TILT = 5;
-    public static double TILT_VARIATION = 5;
+    public static double BASE_TILT = 0; // Completely horizontal
 
 
     // Higher the light (analog) sensor value, the area is darker
@@ -19,18 +22,15 @@ public class PayloadDataGenerator {
 
     // Temperature variation range for temperature or ambient temperature (in Celsius)
     public static double BASE_TEMPERATURE = 25;
-    public static double BASE_AMBIENT_TEMPERATURE = 25;
-    public static double TEMPERATURE_VARIATION = 5;
 
 
     // Humidity (in percentage)
-    public static double MIN_HUMIDITY = 40;
-    public static double MAX_HUMIDITY = 85;
+
+    public static double HUMIDITY = 70;
 
 
     // Pressure (in ATMs)
-    public static double MIN_PRESSURE = 0.5;
-    public static double MAX_PRESSURE = 1.5;
+    public static double PRESSURE = 1;
 
 
     // Shock values
@@ -39,13 +39,8 @@ public class PayloadDataGenerator {
 
 
     // Tamper detection (values between 0 to 1)
-    public static double MIN_TAMPER_DETECTION = 0;
-    public static double MAX_TAMPER_DETECTION = 1;
 
     public static double TAMPER_DETECTION_THRESHOLD = 0.7;
-
-    // Dropping off the equipment/ship unit/ship items
-    public static double DROPPED_PROBABILITY = 0.05;
 
 
     //endregion
@@ -53,23 +48,23 @@ public class PayloadDataGenerator {
     //---------------------------------------------------------------------------------------
 
     public static double generateTilt() {
-        return generateRandomNumber(BASE_TILT - TILT_VARIATION, BASE_TILT + TILT_VARIATION);
+        return BASE_TILT + random.nextGaussian();
     }
 
     public static int generateLightSensor() {
-        return (int) generateRandomNumber(MIN_LIGHT, MAX_LIGHT);
+        return (int) ((MIN_LIGHT + MAX_LIGHT) * (1 + BASE_VARIATION * random.nextGaussian()) / 2);
     }
 
     public static double generateTemperature() {
-        return generateRandomNumber(BASE_TEMPERATURE - TEMPERATURE_VARIATION, BASE_TEMPERATURE + TEMPERATURE_VARIATION);
+        return BASE_TEMPERATURE * (1 + BASE_VARIATION * random.nextGaussian());
     }
 
     public static double generatePressure() {
-        return generateRandomNumber(MIN_PRESSURE, MAX_PRESSURE);
+        return PRESSURE * (1 + BASE_VARIATION * random.nextGaussian());
     }
 
     public static double generateHumidity() {
-        return generateRandomNumber(MIN_HUMIDITY, MAX_HUMIDITY);
+        return HUMIDITY * (1 + BASE_VARIATION * random.nextGaussian());
     }
 
     public static double generateShock() {
@@ -77,11 +72,11 @@ public class PayloadDataGenerator {
     }
 
     public static double generateAmbientTemperature() {
-        return generateRandomNumber(BASE_AMBIENT_TEMPERATURE - TEMPERATURE_VARIATION, BASE_AMBIENT_TEMPERATURE + TEMPERATURE_VARIATION);
+        return BASE_TEMPERATURE + random.nextGaussian();
     }
 
     public static double generateTamperDetection() {
-        return generateRandomNumber(MIN_TAMPER_DETECTION, MAX_TAMPER_DETECTION);
+        return (TAMPER_DETECTION_THRESHOLD / 2.0) * (1 + BASE_VARIATION * random.nextGaussian());
     }
 
 
@@ -97,9 +92,6 @@ public class PayloadDataGenerator {
         BASE_TILT = baseTilt;
     }
 
-    public static void setBaseAmbientTemperature(double baseAmbientTemperature) {
-        BASE_AMBIENT_TEMPERATURE = baseAmbientTemperature;
-    }
 
     //endregion
     //region Utils

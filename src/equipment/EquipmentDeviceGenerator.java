@@ -61,7 +61,9 @@ public class EquipmentDeviceGenerator {
         return deviceName;
     }
 
-    //Utils
+    //endregion
+    //region Utils
+    //---------------------------------------------------------------------------------------
 
     public static String generateEquipmentDeviceIdentifier(String uniqueId, String type) {
         return "simulator-" + type + "-sensor-" + uniqueId;
@@ -75,7 +77,7 @@ public class EquipmentDeviceGenerator {
         return deviceName.substring(deviceName.indexOf("-") + 1);
     }
 
-
+    //endregion
     //region Equipment payload
     //---------------------------------------------------------------------------------------
 
@@ -142,7 +144,6 @@ public class EquipmentDeviceGenerator {
         return payload;
     }
 
-    //endregion
     //endregion
 
 }

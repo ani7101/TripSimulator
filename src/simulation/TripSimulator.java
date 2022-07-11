@@ -2,13 +2,19 @@ package simulation;
 
 import bulkGenerators.TripBulkGenerator;
 
+import device.DeviceAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import payload.equipment.Payload;
 import simulation.models.TripInstance;
 import simulation.models.TripModel;
 
+import trip.TripAPIClient;
 import utils.CSVParser;
 import utils.CredentialManager;
+import vehicle.Vehicle;
+import vehicle.VehicleAPIClient;
+import vehicleType.VehicleTypeAPIClient;
 
 import java.io.*;
 import java.util.*;
@@ -106,6 +112,15 @@ public class TripSimulator {
         SIMULATION_LOGGER.info("Started simulation");
         for (TripInstance instance : instances) {
             instance.start();
+        }
+
+        System.out.println("Should the entities be delete on the server?");
+
+        Scanner scan = new Scanner(System.in);
+        boolean toClean = scan.nextBoolean();
+
+        if (toClean) {
+            cleanUp();
         }
 
     }
@@ -262,6 +277,62 @@ public class TripSimulator {
     }
 
     //endregion
+
+    public void cleanUp() {
+        for(TripInstance instance : instances) {
+            //Setting up the clients
+            VehicleTypeAPIClient vehicleTypeClient = new VehicleTypeAPIClient(
+                    credentials.get("baseUrl"),
+                    credentials.get("username"),
+                    credentials.get("password")
+            );
+            VehicleAPIClient vehicleClient = new VehicleAPIClient(
+                    credentials.get("baseUrl"),
+                    credentials.get("username"),
+                    credentials.get("password")
+            );
+            TripAPIClient tripClient = new TripAPIClient(
+                    credentials.get("baseUrl"),
+                    credentials.get("username"),
+                    credentials.get("password")
+            );
+            DeviceAPIClient deviceClient = new DeviceAPIClient(
+                    credentials.get("baseUrl"),
+                    credentials.get("username"),
+                    credentials.get("password")
+            );
+
+            TripModel tripModel = instance.getTripModel();
+            Vehicle vehicle = vehicleClient.getOneByName(tripModel.getVehicleName());
+
+            // Deleting the vehicle type
+            vehicleTypeClient.delete(vehicle.getType());
+
+            // Deleting the vehicle
+            vehicleClient.delete(vehicle.getId());
+
+            // Deleting the vehicle device
+            deviceClient.delete(deviceClient.getOneByIdentifier(tripModel.getVehiclePayload().getDeviceIdentifier()).getId());
+
+            // Deleting the equipment devices
+            for (Payload equipment : tripModel.getEquipmentPayloads()) {
+                deviceClient.delete(deviceClient.getOneByIdentifier(equipment.getDeviceIdentifier()).getId());
+            }
+
+            // Deleting the ship unit devices
+            for (Payload shipUnit : tripModel.getShipUnitPayloads()) {
+                deviceClient.delete(deviceClient.getOneByIdentifier(shipUnit.getDeviceIdentifier()).getId());
+            }
+
+            // Deleting the ship item devices
+            for (Payload shipItem : tripModel.getShipItemPayloads()) {
+                deviceClient.delete(deviceClient.getOneByIdentifier(shipItem.getDeviceIdentifier()).getId());
+            }
+
+            // Deleting the trip
+            tripClient.delete(tripModel.getId());
+        }
+    }
     //endregion
 
 }

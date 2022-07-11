@@ -25,6 +25,7 @@ public class TestOrganization {
     public void testAddUserToOrganization() {
         ArrayList<String> userIds = new ArrayList<String>(2);
 
+        // Example users
         userIds.add("43RYGXEM2JR0");
         userIds.add("3ZKM9Z3M2JR0");
 

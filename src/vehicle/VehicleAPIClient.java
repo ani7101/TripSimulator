@@ -186,6 +186,32 @@ public class VehicleAPIClient extends APIClient {
         return response;
     }
 
+    public Vehicle getOneByName(String vehicleName) {
+        Vehicle response = null;
+
+        /*
+         * URI encoding reference
+         * Refer to https://www.eso.org/~ndelmott/url_encode.html for more information
+         * %7B - {
+         * %7C - }
+         * %22 - "
+         * %3A - :
+         */
+
+        String query = "?q=%7B%22name%22%3A%22" + vehicleName + "%22%7D";
+
+        try {
+            String json = AsyncGET(baseUrl + "/iot/api/v2/devices" + query, authHeader);
+            response = ParseJson.deserializeResponse(json, VehicleList.class).getItems().get(0);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting vehicle using name:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting vehicle using name:", e);
+        }
+
+        return response;
+    }
+
     /**
      * Sends a request to the IoT server instance FM API to delete a vehicle.
      * @param vehicleId ID (identifier) to access the vehicle to be deleted

@@ -18,8 +18,12 @@ import vehicle.OBD2VehicleGenerator;
 
 import vehicle.VehicleAPIClient;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static hereMaps.HereMapsParsers.parseHEREMapsPolyline;
@@ -44,6 +48,8 @@ public class TripGenerator {
     public static final int SHIP_UNITS_PER_EQUIPMENT = 1;
 
     public static final int SHIP_ITEMS_PER_SHIP_UNIT = 1;
+
+    private static final int MAX_INPUT_WAIT_TIME = 30;
 
     //region Randomized generators (without equipment)
     //---------------------------------------------------------------------------------------
@@ -524,14 +530,53 @@ public class TripGenerator {
         AccessToken accessToken = new AccessToken(accessTokenUrl, accessTokenUsername, accessTokenPassword);
 
         // Picking out the source, destination and the stop geolocations
-        TripStopRecord source = new TripStopRecord(geoLocationRepository.getRandomSource());
-        TripStopRecord destination = new TripStopRecord(geoLocationRepository.getRandomDestination());
+        TripStopRecord source;
+        TripStopRecord destination;
+        ArrayList<TripStopRecord> stopRecords ;
+        ArrayList<ArrayList<Double>> stops;
 
-        ArrayList<TripStopRecord> stopRecords = new ArrayList<>();
-        ArrayList<ArrayList<Double>> stops = geoLocationRepository.getRandomStop(noStops);
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter 1 if the stop points are to be randomized & 0 if you want to enter the stop points yourself:");
 
-        for (ArrayList<Double> stop : stops) {
-            stopRecords.add(new TripStopRecord(stop));
+        if (waitForResponse()) { // Returns true in case we need to randomize
+
+            // Randomizing the stops
+            source = new TripStopRecord(geoLocationRepository.getRandomSource());
+            destination = new TripStopRecord(geoLocationRepository.getRandomDestination());
+
+            stopRecords = new ArrayList<>();
+            stops = geoLocationRepository.getRandomStop(noStops);
+            for (ArrayList<Double> stop : stops) {
+                stopRecords.add(new TripStopRecord(stop));
+            }
+        }
+        else {
+            System.out.println("Enter the source latitude:");
+            double sourceLat = scan.nextDouble();
+            System.out.println("Enter the source latitude:");
+            double sourceLong = scan.nextDouble();
+            source = new TripStopRecord(sourceLat, sourceLong);
+
+            System.out.println("Enter the destination latitude:");
+            double destinationLat = scan.nextDouble();
+            System.out.println("Enter the destination latitude:");
+            double destinationLong = scan.nextDouble();
+            destination = new TripStopRecord(destinationLat, destinationLong);
+
+            stopRecords = new ArrayList<>();
+            stops = new ArrayList<>();
+
+            System.out.println("Enter stop(Y or N):");
+            while(scan.next().equals("Y")) {
+                System.out.println("Enter the stop latitude:");
+                double stopLat = scan.nextDouble();
+                System.out.println("Enter the stop latitude:");
+                double stopLong = scan.nextDouble();
+                stops.add(new ArrayList<>(List.of(stopLat, sourceLong)));
+                stopRecords.add(new TripStopRecord(stopLat, stopLong));
+
+                System.out.println("Do you want to enter add another stop (Y or N):");
+            }
         }
 
 
@@ -607,6 +652,24 @@ public class TripGenerator {
         return HereMapsAPIClient.getRoute(sourceLat, sourceLng,
                 destinationLat, destinationLng,
                 stopsLat, stopsLong, accessToken);
+    }
+
+    public static boolean waitForResponse()
+    {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        long startTime = System.currentTimeMillis();
+        try {
+            while ((System.currentTimeMillis() - startTime) < MAX_INPUT_WAIT_TIME * 1000
+                    && !in.ready()) {
+            }
+
+            if (in.ready()) {
+                return in.read() == 1;
+            }
+            return false;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //endregion

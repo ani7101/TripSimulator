@@ -10,6 +10,7 @@ import utils.PolylineEncoderDecoder.LatLngZ;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Contains one instance of the simulation. It is a child class of <i>Thread</i> & as a result can be run concurrently.
@@ -34,6 +35,8 @@ public class TripInstance extends Thread {
     private final int stopTime;
 
     private static final Logger SIMULATION_LOGGER = LoggerFactory.getLogger("simulation");
+
+    private final boolean ENABLE_CONSOLE_UPDATES = false;
 
     // Probability indicates that 1 in the number given below will not make it to their final destinations
     // Instead of using a randomization for finding if there is a failure in the equipment,
@@ -60,7 +63,7 @@ public class TripInstance extends Thread {
         this.equipmentConnectorUrl = equipmentConnectorUrl;
 
         // Stop time is the smaller value among either 5 times the reportInterval or 5 minutes
-         stopTime =  reportInterval < 60 ? 300 : 5 * reportInterval;
+          stopTime =  3 * reportInterval < 200 ? 200 : 3 * reportInterval;
     }
 
 
@@ -74,7 +77,9 @@ public class TripInstance extends Thread {
     @Override
     public void run() {
         SIMULATION_LOGGER.info("vehicle for trip {} started moving", tripModel.getId());
-        // System.out.println("Vehicle for trip " + tripModel.getId() + " started moving");
+        if (ENABLE_CONSOLE_UPDATES) {
+            System.out.println("Vehicle, " + tripModel.getVehicleName() + " for " + tripModel.getId() + " started moving");
+        }
 
         for (int i = 0; i < tripModel.getRoute().size(); i++) {
 
@@ -88,14 +93,20 @@ public class TripInstance extends Thread {
             simulateTrip(i);
 
             SIMULATION_LOGGER.info("vehicle for trip {} finished section {} and is waiting for {}", tripModel.getId(), i, stopTime);
-            // System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime + "s");
+            if (ENABLE_CONSOLE_UPDATES) {
+                System.out.println("Vehicle for trip " + tripModel.getId() + " finished section " + i + " and is waiting for " + stopTime + "s");
+            }
+
+            tripModel.setEngineCoolantTemperature(25); // Room temperature
 
             // Sleeping at each stop for the IoT server to finish processing
             sleep(LocalDateTime.now(), stopTime);
         }
 
         SIMULATION_LOGGER.info("vehicle for trip {} finished it's trip", tripModel.getId());
-        // System.out.println("Vehicle for trip " + tripModel.getId() + " finished it's trip");
+        if (ENABLE_CONSOLE_UPDATES) {
+            System.out.println("Vehicle for trip " + tripModel.getId() + " finished it's trip");
+        }
     }
 
 
@@ -103,13 +114,16 @@ public class TripInstance extends Thread {
     //region Utils
     //---------------------------------------------------------------------------------------
 
+    private static double generateRandomNumber(double max, double min) {
+        return min + (max - min) * new Random().nextDouble();
+    }
+
     /**
      * Simulates one section of the route.
      * It updates the properties of the vehicle at a given input interval & sleeps for the rest of the time.
      * @param routeSection id to the section of the route
      */
     private void simulateTrip(int routeSection) {
-       //  System.out.println("Number of positions in route section " + routeSection + " is " + tripModel.getRoute().get(routeSection).size());
         try {
             // Main loop for iterating over route position
             while (!interrupted()) {
@@ -139,7 +153,9 @@ public class TripInstance extends Thread {
                 // Moving the vehicle and posting the payload
                 updateVehicleAndPost(routeSection);
 
-                // System.out.println("Vehicle has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + " and route position: " + tripModel.getRoutePosition());
+                if (ENABLE_CONSOLE_UPDATES) {
+                    System.out.println("Vehicle " + tripModel.getVehicleName() + " has moved and is at " + tripModel.getLatitude() + ", " + tripModel.getLongitude() + " and route position: " + tripModel.getRoutePosition());
+                }
 
                 sleep(startTime, reportInterval);
             }
@@ -228,7 +244,12 @@ public class TripInstance extends Thread {
                 tripModel.prepareVehiclePayload();
 
                 // Send the updated vehicle payload to the connector
+                // Send a different velocity to counter cornering
+                double speed = tripModel.getVehicleSpeed();
+                tripModel.setVehicleSpeed(generateRandomNumber(speed * (CORNER_VEHICLE_SPEED_PERCENTAGE + 2) / 100, speed * (CORNER_VEHICLE_SPEED_PERCENTAGE - 2) / 100));
                 connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
+
+                tripModel.setVehicleSpeed(speed);
 
                 // Send the updated equipment payloads to the connector
                 updateEquipmentAndPost(routeSection, updatedPos.lat, updatedPos.lng);
@@ -241,8 +262,17 @@ public class TripInstance extends Thread {
             // If the vehicle moves towards the ending of the route to turn we can slow down the vehicle in the last
         }
 
+        // Here the velocity is not changed to corner velocity as it is in between the
+        double speed = tripModel.getVehicleSpeed();
+        if (distanceFromStart > 50) {
+            tripModel.setVehicleSpeed(generateRandomNumber(speed * 1.03, speed * 0.97));
+        } else {
+            tripModel.setVehicleSpeed(generateRandomNumber(speed * (CORNER_VEHICLE_SPEED_PERCENTAGE + 2) / 100, speed * (CORNER_VEHICLE_SPEED_PERCENTAGE - 2) / 100));
+        }
         // Send the updated vehicle payload to the connector
         connectorClient.postPayload(vehicleConnectorUrl, tripModel.getVehiclePayload());
+
+        tripModel.setVehicleSpeed(speed);
 
         // Send the updated equipment payloads to the connector
         updateEquipmentAndPost(routeSection, tripModel.getLatitude(), tripModel.getLongitude());
@@ -266,8 +296,6 @@ public class TripInstance extends Thread {
                     &&
                         !equipment.isFailure()
             ) {
-
-                // System.out.println("Equipment is moved to " + lat + ", " + lng);
                 equipment.setLatitude(lat);
                 equipment.setLongitude(lng);
 
@@ -382,6 +410,10 @@ public class TripInstance extends Thread {
 
     public double getVehicleSpeed() {
         return tripModel.getVehicleSpeed();
+    }
+
+    public TripModel getTripModel() {
+        return tripModel;
     }
 
     //endregion

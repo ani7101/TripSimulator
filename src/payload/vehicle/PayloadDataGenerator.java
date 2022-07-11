@@ -53,6 +53,10 @@ public class PayloadDataGenerator {
         return generateRandomNumber(MIN_COOLANT_TEMP, MAX_COOLANT_TEMP);
     }
 
+    public static double generateEngineCoolantTemp(double engineCoolantTemp) {
+        return engineCoolantTemp + generateRandomNumber(0, +0.3);
+    }
+
     public static double generateMassAirFlow(int engineRPM) {
         if (engineRPM < 500) {
             return generateRandomNumber(0, 1);
@@ -115,7 +119,7 @@ public class PayloadDataGenerator {
         // Independent data values
         int engineRPM = generateEngineRPM();
         payload.setEngineRPM(engineRPM);
-        payload.setEngineCoolantTemperature(generateEngineCoolantTemp());
+        payload.setEngineCoolantTemperature(generateEngineCoolantTemp(payload.getEngineCoolantTemperature()));
 
         payload.setThrottlePosition(generateThrottlePosition(engineRPM));
         payload.setMassAirFlow(generateMassAirFlow(engineRPM));

@@ -1,6 +1,7 @@
 package user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import device.subclasses.DeviceList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import user.subclasses.UserList;
@@ -97,6 +98,32 @@ public class UserAPIClient extends APIClient {
             IOT_API_LOGGER.error("Exception while getting one user:", e);
         } catch (TimeoutException | JsonProcessingException e) {
             IOT_API_LOGGER.warn("Exception while getting one user:", e);
+        }
+
+        return response;
+    }
+
+    public User getOneByLoginId(String userLoginId) {
+        User response = null;
+
+        /*
+         * URI encoding reference
+         * Refer to https://www.eso.org/~ndelmott/url_encode.html for more information
+         * %7B - {
+         * %7C - }
+         * %22 - "
+         * %3A - :
+         */
+
+        String query = "?q=%7B%22 %22%3A%22" + userLoginId + "%22%7D";
+
+        try {
+            String json = AsyncGET(baseUrl + "/iot/privateclientapi/v2/users" + query, authHeader);
+            response = ParseJson.deserializeResponse(json, UserList.class).getItems().get(0);
+        } catch (ExecutionException | InterruptedException e) {
+            IOT_API_LOGGER.error("Exception while getting device using name:", e);
+        } catch (TimeoutException | JsonProcessingException e) {
+            IOT_API_LOGGER.warn("Exception while getting device using name:", e);
         }
 
         return response;
